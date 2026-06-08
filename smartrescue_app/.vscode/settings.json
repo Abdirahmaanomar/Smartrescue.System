@@ -1,0 +1,9 @@
+{
+  "dart.devToolsLocation": "beside",
+  "dart.openDevTools": "never",
+  "dart.showDevToolsDebugToolBarButtons": false,
+  "dart.previewFlutterUiGuides": false,
+  "dart.flutterGutterIcons": false,
+  "workbench.activityBar.visible": true,
+  "terminal.integrated.showExitAlert": true
+}

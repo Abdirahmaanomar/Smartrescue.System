@@ -1,0 +1,4 @@
+# php_value session.save_path "c:/xampp/htdocs/SmartRescueApp/smartrescue/sessions"
+php_value session.cookie_lifetime 2592000
+php_value session.gc_maxlifetime 2592000
+php_value auto_prepend_file "c:/xampp/htdocs/SmartRescueApp/smartrescue/includes/session_prep.php"

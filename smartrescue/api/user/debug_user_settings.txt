@@ -1,0 +1,3570 @@
+2026-05-20 09:56:42
+POST: Array
+(
+    [action] => change_password
+    [old_password] => 00000000
+    [new_password] => 11111111
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:00:25
+POST: Array
+(
+    [action] => change_password
+    [old_password] => 00000000
+    [new_password] => 12345678
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:01:32
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:01:38
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:01:42
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:01:44
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:01:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:01:53
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:02:04
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:23:16
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => 1
+    [user_id] => 1
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 10:26:36
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 10:26:39
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 10:26:46
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 10:26:51
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 10:27:00
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 14:52:38
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1007
+    [fullname] => haniomar
+    [phone] => 614545454
+    [email] => haniomar@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:53:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => false
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:53:07
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => false
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:53:09
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => true
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:54:04
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => true
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:54:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => false
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:54:34
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 14:54:56
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:55:03
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => true
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:56:09
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B-
+Allergies: hhhh
+Chronic Conditions: fttytt
+Medications: 888mg
+Emergency Notes:
+    [emergency_contacts] => 
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:56:47
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B-
+Allergies: hhhh
+Chronic Conditions: fttytt
+Medications: 888mg
+Emergency Notes:
+    [emergency_contacts] => byiygiyggyh: 8888888: Brother
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:56:54
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B-
+Allergies: hhhh
+Chronic Conditions: fttytt
+Medications: 888mg
+Emergency Notes:
+    [emergency_contacts] => 
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:57:24
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => false
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:57:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => true
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 14:58:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => true
+    [user_id] => 1007
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:09:45
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:09:47
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:09:49
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:09:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:10:17
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:10:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:10:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:10:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:10:56
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_enabled
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 16:10:58
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_enabled
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-20 17:34:06
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 17:34:09
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 18:06:10
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-20 18:06:13
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-21 17:37:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-21 17:37:56
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-21 17:37:59
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-21 17:38:00
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => live_sos_location
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-23 10:37:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-23 10:37:49
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1039
+    [fullname] => llli
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-05-24 11:10:16
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => maxmed saciid sahal: 613065946: Friend
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 11:14:44
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => maxmed saciid sahal: 613065946: Friend
+yyyyyy: 66666: Son
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 11:14:48
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => yyyyyy: 66666: Son
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 11:15:14
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => 
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 11:16:01
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => madoowe: 613065946: Family
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 11:42:16
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 11:42:24
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 12:06:36
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 12:06:42
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 12:06:47
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 13:43:28
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:18:27
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:18:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:18:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:18:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:19:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:19:05
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-24 14:46:45
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 10:19:59
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => 
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 10:20:36
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => maanka: 611226645: Son
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 10:29:34
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 10:32:10
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => maanka: 611226646: Son
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 11:22:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 11:32:16
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 11:32:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 11:37:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 11:37:55
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 12:36:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 12:37:06
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 12:37:33
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-25 13:17:31
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 10:58:10
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1040
+    [fullname] => liicaaye
+    [role] => admin
+    [profile_image] => 
+)
+
+
+2026-05-26 10:58:11
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1040
+    [fullname] => liicaaye
+    [role] => admin
+    [profile_image] => 
+)
+
+
+2026-05-26 10:58:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+)
+
+SESSION: Array
+(
+    [user_id] => 1040
+    [fullname] => liicaaye
+    [role] => admin
+    [profile_image] => 
+)
+
+
+2026-05-26 11:23:33
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: eggs
+Chronic Conditions: qa;lal
+Medications: 500mg
+Emergency Notes: bbabb
+    [emergency_contacts] => maanka: 611226646: Son
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:24:00
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: eggs
+Chronic Conditions: qa;lal
+Medications: 500mg
+Emergency Notes: bbabb
+    [emergency_contacts] => maanka: 611226646: Son
+faarx: 6199999999: Family
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:24:38
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:24:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:24:57
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:25:41
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:25:54
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 11:42:41
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1035
+    [fullname] => Maanka
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-05-26 11:42:44
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1035
+    [fullname] => Maanka
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-05-26 14:27:07
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1041
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 15:03:45
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 15:15:13
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-26 15:15:23
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:33:25
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:33:27
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:33:52
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: eggs
+Chronic Conditions: qa;lal
+Medications: 500mg
+Emergency Notes: bbabb
+    [emergency_contacts] => maanka: 611226646: Son
+faarx: 6199999999: Family
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:34:59
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1026
+    [fullname] => gacalcabdi
+    [phone] => 612151515
+    [email] => gacalabdi@gmail.cm
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:35:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:35:20
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-29 15:35:41
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1026
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 12:08:42
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 12:08:45
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 12:23:59
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1048
+    [fullname] => Maxamed Saciid 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-05-30 12:24:00
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1048
+    [fullname] => Maxamed Saciid 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-05-30 13:02:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 13:03:12
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 16:49:03
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: A-
+Allergies: ukun
+Chronic Conditions: neef
+Medications: 600mg
+Emergency Notes: 
+Volunteer Blood Donor: No
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => A-
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 16:56:00
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: A-
+Allergies: ukun
+Chronic Conditions: neef
+Medications: 600mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => A-
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 16:56:52
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: A-
+Allergies: ukun
+Chronic Conditions: neef
+Medications: 600mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => A-
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 17:48:36
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-05-30 17:50:01
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maanka: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 08:34:48
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maanka: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 10:14:00
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 10:14:06
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 10:18:31
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: No
+    [emergency_contacts] => maanka: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 10:18:49
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maanka: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:09:33
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:10:10
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:10:23
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:19:33
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: O+
+Allergies: qiica , barfuun ka
+Chronic Conditions: diabetes , asthma
+Medications: 500mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1051
+    [is_blood_donor] => 1
+    [blood_group] => O+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:24:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1051
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:53:20
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1051
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 11:54:14
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: O+
+Allergies: qiica , barfuun ka
+Chronic Conditions: diabetes , asthma
+Medications: 500mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => user1: 611000000: Friend
+    [user_id] => 1051
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 12:02:46
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maanka: 611226645: Son
+611223344: 611000000: Friend
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => User1
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-06-01 13:38:41
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-01 14:00:09
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 10:08:21
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maanka: 611226645: Son
+user2: 611223344: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 10:09:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 10:10:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 11:51:24
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:13:30
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:13:32
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:18:52
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => user2: 611223344: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:18:53
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:19:44
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:20:23
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maxamed omar: 616115395: Brother
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:58:05
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => User1
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:58:43
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => User1
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:59:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:59:20
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:59:27
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 18:59:31
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-02 20:07:57
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-02 20:07:58
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-02 20:07:59
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-02 20:08:07
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-02 20:08:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-02 20:09:08
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-02 20:12:39
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-03 10:56:49
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => User1
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780419523.jpeg
+)
+
+
+2026-06-03 11:03:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-03 11:14:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+)
+
+
+2026-06-03 11:21:55
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => Faarax Cilmi
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-03 11:25:43
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maxamed omar: 616115395: Brother
+cali geedi: 61542676233: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-03 11:28:28
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maxamed omar: 616115395: Brother
+cali geedi: 61542676233: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-03 11:48:26
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-06 09:44:13
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => Faarax Cilmi
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 09:46:42
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => maxamed omar: 616115395: Brother
+cali geedi: 61542676233: Friend
+Abdirahmaan Mohamed Omar: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:12:51
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => cali geedi: 61542676233: Friend
+Abdirahmaan Mohamed Omar: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:12:53
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Abdirahmaan Mohamed Omar: 611226645: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:12:54
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:13:24
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:13:51
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+Abdirahmaan Mohmamed: 611226645: Brother
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:13:55
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:14:29
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:14:59
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:15:27
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:15:59
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:16:48
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+laki axmed: 610111111: Daughter
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:17:17
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+laki axmed: 610111111: Daughter
+shukri cabdi: 612000000: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:17:52
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+laki axmed: 610111111: Daughter
+shukri cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:18:09
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+laki axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:18:27
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:18:43
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:18:57
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+shukri cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:19:12
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+istar abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:19:26
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+Istar Abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:20:17
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+Istar Abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Nasteexo Cabdi: 615852465: Daughter
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:20:50
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+Istar Abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Zakariye Maxamed: 615852465: Family
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:20:52
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+Istar Abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:21:43
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Maxamed omar: 616115395: Son
+Istar Abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 10:34:35
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 11:01:12
+POST: Array
+(
+    [fullname] => Libaan Axmed
+    [phone] => 611223344
+    [email] => 
+    [action] => update_profile
+)
+
+SESSION: Array
+(
+    [user_id] => 1051
+    [fullname] => user2
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-06-07 11:01:36
+POST: Array
+(
+    [fullname] => Libaan Axmed
+    [phone] => 611223344
+    [email] => liiban@gmail.com
+    [action] => update_profile
+)
+
+SESSION: Array
+(
+    [user_id] => 1051
+    [fullname] => Libaan Axmed
+    [role] => user
+    [profile_image] => 
+)
+
+
+2026-06-07 12:30:16
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-07 12:30:24
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 08:31:58
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => Faarax Cilmi
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 08:39:42
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => Faarax Cilmi
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:44:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:44:45
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:45:56
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:47:57
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => location_history
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:50:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:53:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:53:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:53:51
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:54:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:54:08
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:54:12
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:57:11
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:57:13
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:57:59
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 09:59:55
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 10:01:19
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1045_1780905595.jpg
+    [fullname] => eng haaji Ahmed
+)
+
+
+2026-06-08 10:06:32
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 10:24:24
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 10:25:01
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 10:45:53
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 11:13:38
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1045_1780905679.jpg
+    [fullname] => eng haaji Ahmed
+)
+
+
+2026-06-08 11:15:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1045_1780905679.jpg
+    [fullname] => eng haaji Ahmed
+)
+
+
+2026-06-08 11:15:02
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1045_1780905679.jpg
+    [fullname] => eng haaji Ahmed
+)
+
+
+2026-06-08 11:30:03
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1056
+    [fullname] => geedi rooble
+    [phone] => 689109810
+    [email] => geedi@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-08 11:31:03
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1056
+    [fullname] => Kumar maxamed
+    [phone] => 689109810
+    [email] => geedi@gmail.com
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1056_1780911003.jpg
+    [fullname] => geedi rooble
+)
+
+

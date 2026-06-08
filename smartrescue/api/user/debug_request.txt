@@ -1,0 +1,30 @@
+Array
+(
+    [session] => Array
+        (
+        )
+
+    [post] => Array
+        (
+            [preference] => dark_mode
+            [user_id] => 1
+            [value] => 1
+            [action] => toggle_preference
+        )
+
+    [get] => Array
+        (
+        )
+
+    [headers] => Array
+        (
+            [User-Agent] => Mozilla/5.0 (Windows NT; Windows NT 10.0; en-GB) WindowsPowerShell/5.1.26100.8457
+            [Content-Type] => application/x-www-form-urlencoded
+            [Host] => localhost
+            [Content-Length] => 63
+            [Expect] => 100-continue
+            [Connection] => Keep-Alive
+        )
+
+    [method] => POST
+)
