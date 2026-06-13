@@ -25,7 +25,7 @@ class _UserMapScreenState extends State<UserMapScreen> {
   LatLng? _currentLocation;
   Timer? _locationTimer;
   String _mapType = 'std'; // std, sat, terrain
-  double _gpsAccuracy = 75.0;
+  double _gpsAccuracy = 74.0;
   bool _hasFittedBounds = false;
 
   List<LatLng> _routePoints = [];

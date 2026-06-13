@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import '../../providers/sos_provider.dart';
 import '../../utils/helpers.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 import '../../components/call_screen.dart';
 import 'user_shell.dart';
 
@@ -29,7 +30,9 @@ class UserResponseTimelineScreen extends StatelessWidget {
         title: Text(AppTranslator.t(context, 'Response Timeline'), style: const TextStyle(fontWeight: FontWeight.w800)),
         centerTitle: true,
       ),
-      body: _buildActiveTimeline(context, sos, request, scheme),
+      body: Responsive(context).wrapWidescreen(
+        _buildActiveTimeline(context, sos, request, scheme),
+      ),
     );
   }
 
@@ -200,7 +203,7 @@ class UserResponseTimelineScreen extends StatelessWidget {
     }
 
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(24),
+      padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
@@ -311,7 +314,7 @@ class UserResponseTimelineScreen extends StatelessWidget {
           
           // Premium Timeline Milestones Container
           Container(
-            padding: const EdgeInsets.all(24),
+            padding: EdgeInsets.all(Responsive(context).hPad),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E293B) : Colors.white,
               borderRadius: BorderRadius.circular(24),

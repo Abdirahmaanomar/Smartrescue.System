@@ -5,6 +5,7 @@ import '../../services/api_service.dart';
 import '../../utils/helpers.dart';
 import '../../components/app_drawer.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class EmergencyContact {
   String name;
@@ -145,70 +146,72 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
               color: isDark ? Colors.white : const Color(0xFF1E293B),
             ),
           ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: nameController,
-                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                decoration: InputDecoration(
-                  labelText: AppTranslator.t(context, 'Name'),
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Icon(Icons.person_rounded, color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF2563EB)),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: phoneController,
-                keyboardType: TextInputType.phone,
-                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                decoration: InputDecoration(
-                  labelText: AppTranslator.t(context, 'Phone'),
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Icon(Icons.phone_rounded, color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF2563EB)),
+          content: SingleChildScrollView(
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                TextField(
+                  controller: nameController,
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  decoration: InputDecoration(
+                    labelText: AppTranslator.t(context, 'Name'),
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.person_rounded, color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF2563EB)),
+                    ),
                   ),
                 ),
-              ),
-              const SizedBox(height: 16),
-              DropdownButtonFormField<String>(
-                initialValue: relationshipController.text.isEmpty ? 'Family' : relationshipController.text,
-                dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                decoration: InputDecoration(
-                  labelText: AppTranslator.t(context, 'Family Relationship'),
-                  labelStyle: const TextStyle(color: Colors.grey),
-                  prefixIcon: const Icon(Icons.people_alt_rounded, color: Colors.grey),
-                  enabledBorder: UnderlineInputBorder(
-                    borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
-                  ),
-                  focusedBorder: const UnderlineInputBorder(
-                    borderSide: BorderSide(color: Color(0xFF2563EB)),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: phoneController,
+                  keyboardType: TextInputType.phone,
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  decoration: InputDecoration(
+                    labelText: AppTranslator.t(context, 'Phone'),
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.phone_rounded, color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF2563EB)),
+                    ),
                   ),
                 ),
-                items: relationshipOptions.map((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(AppTranslator.t(context, value)),
-                  );
-                }).toList(),
-                onChanged: (val) {
-                  if (val != null) {
-                    relationshipController.text = val;
-                  }
-                },
-              ),
-            ],
+                const SizedBox(height: 16),
+                DropdownButtonFormField<String>(
+                  initialValue: relationshipController.text.isEmpty ? 'Family' : relationshipController.text,
+                  dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
+                  style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                  decoration: InputDecoration(
+                    labelText: AppTranslator.t(context, 'Family Relationship'),
+                    labelStyle: const TextStyle(color: Colors.grey),
+                    prefixIcon: const Icon(Icons.people_alt_rounded, color: Colors.grey),
+                    enabledBorder: UnderlineInputBorder(
+                      borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
+                    ),
+                    focusedBorder: const UnderlineInputBorder(
+                      borderSide: BorderSide(color: Color(0xFF2563EB)),
+                    ),
+                  ),
+                  items: relationshipOptions.map((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(AppTranslator.t(context, value)),
+                    );
+                  }).toList(),
+                  onChanged: (val) {
+                    if (val != null) {
+                      relationshipController.text = val;
+                    }
+                  },
+                ),
+              ],
+            ),
           ),
           actions: [
             TextButton(
@@ -282,8 +285,9 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        child: Responsive(context).wrapWidescreen(
+          SingleChildScrollView(
+            padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 10),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -291,43 +295,46 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        AppTranslator.t(context, 'GUARDIAN NETWORK'),
-                        style: TextStyle(
-                          fontSize: 11,
-                          fontWeight: FontWeight.w800,
-                          color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
-                          letterSpacing: 1.5,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          AppTranslator.t(context, 'GUARDIAN NETWORK'),
+                          style: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.w800,
+                            color: isDark ? Colors.grey.shade400 : const Color(0xFF64748B),
+                            letterSpacing: 1.5,
+                          ),
                         ),
-                      ),
-                      const SizedBox(height: 4),
-                      RichText(
-                        text: TextSpan(
-                          children: [
-                            TextSpan(
-                              text: '${AppTranslator.t(context, 'Emergency')} ',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: titleColor,
+                        const SizedBox(height: 4),
+                        RichText(
+                          text: TextSpan(
+                            children: [
+                              TextSpan(
+                                text: '${AppTranslator.t(context, 'Emergency')} ',
+                                style: TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  color: titleColor,
+                                ),
                               ),
-                            ),
-                            TextSpan(
-                              text: AppTranslator.t(context, 'Contacts'),
-                              style: const TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.w900,
-                                color: Color(0xFF2563EB), // Blue color
+                              TextSpan(
+                                text: AppTranslator.t(context, 'Contacts'),
+                                style: const TextStyle(
+                                  fontSize: 24,
+                                  fontWeight: FontWeight.w900,
+                                  color: Color(0xFF2563EB), // Blue color
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
+                  const SizedBox(width: 16),
                   // Add Contact Button
                   ElevatedButton.icon(
                     onPressed: () => _showContactDialog(),
@@ -443,12 +450,15 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
                               ),
                               title: Row(
                                 children: [
-                                  Text(
-                                    contact.name,
-                                    style: TextStyle(
-                                      fontWeight: FontWeight.w800,
-                                      fontSize: 15,
-                                      color: isDark ? Colors.white : const Color(0xFF1E293B),
+                                  Flexible(
+                                    child: Text(
+                                      contact.name,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.w800,
+                                        fontSize: 15,
+                                        color: isDark ? Colors.white : const Color(0xFF1E293B),
+                                      ),
                                     ),
                                   ),
                                   const SizedBox(width: 8),
@@ -508,6 +518,7 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

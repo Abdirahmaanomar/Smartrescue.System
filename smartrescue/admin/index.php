@@ -807,8 +807,8 @@ $page_subtitle = '';
 
         const victimIcon = L.divIcon({
             className: '',
-            html: `<div style="width:16px;height:16px;background:#ef4444;border-radius:50%;border:2.5px solid white;box-shadow:0 0 0 3px rgba(239,68,68,0.2),0 4px 12px rgba(239,68,68,0.3);animation:map-pulse 2s infinite"></div>`,
-            iconSize: [16, 16], iconAnchor: [8, 8]
+            html: `<div style="background:#ef4444;color:#ffffff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(239,68,68,0.2), 0 4px 12px rgba(239,68,68,0.3);border:2px solid #ffffff;animation:map-pulse 2s infinite;"><i class="fa-solid fa-rss" style="font-size:12px"></i></div>`,
+            iconSize: [28, 28], iconAnchor: [14, 14]
         });
 
         const unitIcon = L.divIcon({

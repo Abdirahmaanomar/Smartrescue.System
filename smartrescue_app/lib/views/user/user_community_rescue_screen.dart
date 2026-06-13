@@ -10,6 +10,7 @@ import '../../services/api_service.dart';
 import '../../constants/api_constants.dart';
 import 'user_shell.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 class UserCommunityRescueScreen extends StatefulWidget {
   const UserCommunityRescueScreen({super.key});
 
@@ -730,195 +731,197 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
         ],
       ),
       body: SafeArea(
-        child: RefreshIndicator(
-          onRefresh: _fetchIncidents,
-          color: scheme.primary,
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            padding: const EdgeInsets.all(20),
-            children: [
-              // Header Banner Card
-              AnimatedContainer(
-                duration: const Duration(milliseconds: 300),
-                width: double.infinity,
-                padding: const EdgeInsets.all(24),
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: isVolunteer
-                        ? [const Color(0xFF059669), const Color(0xFF10B981)]
-                        : [const Color(0xFF1D4ED8), const Color(0xFF3B82F6)],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
+        child: Responsive(context).wrapWidescreen(
+          RefreshIndicator(
+            onRefresh: _fetchIncidents,
+            color: scheme.primary,
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.all(20),
+              children: [
+                // Header Banner Card
+                AnimatedContainer(
+                  duration: const Duration(milliseconds: 300),
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(24),
+                  decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                      colors: isVolunteer
+                          ? [const Color(0xFF059669), const Color(0xFF10B981)]
+                          : [const Color(0xFF1D4ED8), const Color(0xFF3B82F6)],
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                    ),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: [
+                      BoxShadow(
+                        color: (isVolunteer ? const Color(0xFF10B981) : const Color(0xFF3B82F6)).withValues(alpha: 0.3),
+                        blurRadius: 15,
+                        offset: const Offset(0, 8),
+                      )
+                    ],
                   ),
-                  borderRadius: BorderRadius.circular(24),
-                  boxShadow: [
-                    BoxShadow(
-                      color: (isVolunteer ? const Color(0xFF10B981) : const Color(0xFF3B82F6)).withValues(alpha: 0.3),
-                      blurRadius: 15,
-                      offset: const Offset(0, 8),
-                    )
-                  ],
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withValues(alpha: 0.2),
-                            borderRadius: BorderRadius.circular(12),
-                          ),
-                          child: Icon(
-                            isVolunteer ? Icons.volunteer_activism_rounded : Icons.shield_rounded,
-                            color: Colors.white,
-                            size: 24,
-                          ),
-                        ),
-                        const SizedBox(width: 12),
-                        Expanded(
-                          child: Text(
-                            isVolunteer
-                                ? AppTranslator.t(context, 'Active Volunteer Force')
-                                : AppTranslator.t(context, 'Local Heroes Needed'),
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 18,
-                              fontWeight: FontWeight.w900,
-                            ),
-                          ),
-                        ),
-                        if (isVolunteer)
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.green.shade800,
-                              borderRadius: BorderRadius.circular(10),
-                              border: Border.all(color: Colors.green.shade300, width: 1.5),
-                            ),
-                            child: Row(
-                              children: [
-                                const Icon(Icons.lens, color: Colors.green, size: 8),
-                                const SizedBox(width: 4),
-                                Text(
-                                  AppTranslator.t(context, 'ON DUTY'),
-                                  style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
-                                )
-                              ],
-                            ),
-                          ),
-                      ],
-                    ),
-                    const SizedBox(height: 16),
-                    Text(
-                      isVolunteer
-                          ? AppTranslator.t(context, 'Thank you for serving the Mogadishu community! You can now view active community rescue incidents and offer support.')
-                          : AppTranslator.t(context, 'Join the community rescue force and help neighbors in need during local emergencies.'),
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontWeight: FontWeight.w500,
-                        height: 1.4,
-                      ),
-                    ),
-                    const SizedBox(height: 20),
-                    ElevatedButton(
-                      onPressed: () => _toggleVolunteerStatus(isVolunteer),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.white,
-                        foregroundColor: isVolunteer ? const Color(0xFF059669) : const Color(0xFF1D4ED8),
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                      ),
-                      child: Text(
-                        isVolunteer ? AppTranslator.t(context, 'Leave Force') : AppTranslator.t(context, 'Join as Volunteer'),
-                        style: const TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-              const SizedBox(height: 28),
-
-              // Subheading
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    AppTranslator.t(context, 'Nearby Incidents'),
-                    style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.w900,
-                      color: isDark ? Colors.white : const Color(0xFF0F172A),
-                      letterSpacing: -0.5,
-                    ),
-                  ),
-                  if (_isLoading)
-                    const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2.5),
-                    ),
-                ],
-              ),
-              const SizedBox(height: 16),
-
-              // Incident list view
-              if (_incidents.isEmpty && !_isLoading)
-                Container(
-                  padding: const EdgeInsets.all(40),
-                  alignment: Alignment.center,
                   child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Icon(Icons.assignment_turned_in_rounded, size: 60, color: Colors.grey.shade500),
-                      const SizedBox(height: 12),
-                      Text(
-                        AppTranslator.t(context, 'No Active Incidents'),
-                        style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
+                      Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(8),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withValues(alpha: 0.2),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: Icon(
+                              isVolunteer ? Icons.volunteer_activism_rounded : Icons.shield_rounded,
+                              color: Colors.white,
+                              size: 24,
+                            ),
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              isVolunteer
+                                  ? AppTranslator.t(context, 'Active Volunteer Force')
+                                  : AppTranslator.t(context, 'Local Heroes Needed'),
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.w900,
+                              ),
+                            ),
+                          ),
+                          if (isVolunteer)
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.green.shade800,
+                                borderRadius: BorderRadius.circular(10),
+                                border: Border.all(color: Colors.green.shade300, width: 1.5),
+                              ),
+                              child: Row(
+                                children: [
+                                  const Icon(Icons.lens, color: Colors.green, size: 8),
+                                  const SizedBox(width: 4),
+                                  Text(
+                                    AppTranslator.t(context, 'ON DUTY'),
+                                    style: const TextStyle(color: Colors.white, fontSize: 10, fontWeight: FontWeight.bold),
+                                  )
+                                ],
+                              ),
+                            ),
+                        ],
                       ),
-                      const SizedBox(height: 6),
+                      const SizedBox(height: 16),
                       Text(
-                        AppTranslator.t(context, 'The community is currently safe. Thank you!'),
-                        style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                        isVolunteer
+                            ? AppTranslator.t(context, 'Thank you for serving the Mogadishu community! You can now view active community rescue incidents and offer support.')
+                            : AppTranslator.t(context, 'Join the community rescue force and help neighbors in need during local emergencies.'),
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                          height: 1.4,
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      ElevatedButton(
+                        onPressed: () => _toggleVolunteerStatus(isVolunteer),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.white,
+                          foregroundColor: isVolunteer ? const Color(0xFF059669) : const Color(0xFF1D4ED8),
+                          elevation: 0,
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+                        ),
+                        child: Text(
+                          isVolunteer ? AppTranslator.t(context, 'Leave Force') : AppTranslator.t(context, 'Join as Volunteer'),
+                          style: const TextStyle(fontWeight: FontWeight.bold),
+                        ),
                       ),
                     ],
                   ),
-                )
-              else
-                ..._incidents.map((incident) {
-                  // Calculate distance
-                  double? distanceMeters;
-                  if (_userLat != null && _userLng != null && incident['lat'] != null && incident['lng'] != null) {
-                    distanceMeters = Geolocator.distanceBetween(
-                      _userLat!,
-                      _userLng!,
-                      incident['lat'],
-                      incident['lng'],
-                    );
-                  }
+                ),
+                const SizedBox(height: 28),
 
-                  String distanceText = AppTranslator.t(context, 'Distance unknown');
-                  if (distanceMeters != null) {
-                    if (distanceMeters < 1000) {
-                      distanceText = '${distanceMeters.toStringAsFixed(0)} ${AppTranslator.t(context, 'm away')}';
-                    } else {
-                      distanceText = '${(distanceMeters / 1000).toStringAsFixed(1)} ${AppTranslator.t(context, 'km away')}';
+                // Subheading
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text(
+                      AppTranslator.t(context, 'Nearby Incidents'),
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.w900,
+                        color: isDark ? Colors.white : const Color(0xFF0F172A),
+                        letterSpacing: -0.5,
+                      ),
+                    ),
+                    if (_isLoading)
+                      const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2.5),
+                      ),
+                  ],
+                ),
+                const SizedBox(height: 16),
+
+                // Incident list view
+                if (_incidents.isEmpty && !_isLoading)
+                  Container(
+                    padding: const EdgeInsets.all(40),
+                    alignment: Alignment.center,
+                    child: Column(
+                      children: [
+                        Icon(Icons.assignment_turned_in_rounded, size: 60, color: Colors.grey.shade500),
+                        const SizedBox(height: 12),
+                        Text(
+                          AppTranslator.t(context, 'No Active Incidents'),
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: Colors.grey),
+                        ),
+                        const SizedBox(height: 6),
+                        Text(
+                          AppTranslator.t(context, 'The community is currently safe. Thank you!'),
+                          style: TextStyle(fontSize: 13, color: Colors.grey.shade500),
+                        ),
+                      ],
+                    ),
+                  )
+                else
+                  ..._incidents.map((incident) {
+                    // Calculate distance
+                    double? distanceMeters;
+                    if (_userLat != null && _userLng != null && incident['lat'] != null && incident['lng'] != null) {
+                      distanceMeters = Geolocator.distanceBetween(
+                        _userLat!,
+                        _userLng!,
+                        incident['lat'],
+                        incident['lng'],
+                      );
                     }
-                  }
 
-                  return _buildIncidentCard(
-                    context: context,
-                    incident: incident,
-                    isDark: isDark,
-                    isVolunteer: isVolunteer,
-                    currentUserId: user?.id ?? 0,
-                    distanceText: distanceText,
-                    distanceMeters: distanceMeters,
-                  );
-                }),
-            ],
+                    String distanceText = AppTranslator.t(context, 'Distance unknown');
+                    if (distanceMeters != null) {
+                      if (distanceMeters < 1000) {
+                        distanceText = '${distanceMeters.toStringAsFixed(0)} ${AppTranslator.t(context, 'm away')}';
+                      } else {
+                        distanceText = '${(distanceMeters / 1000).toStringAsFixed(1)} ${AppTranslator.t(context, 'km away')}';
+                      }
+                    }
+
+                    return _buildIncidentCard(
+                      context: context,
+                      incident: incident,
+                      isDark: isDark,
+                      isVolunteer: isVolunteer,
+                      currentUserId: user?.id ?? 0,
+                      distanceText: distanceText,
+                      distanceMeters: distanceMeters,
+                    );
+                  }),
+              ],
+            ),
           ),
         ),
       ),

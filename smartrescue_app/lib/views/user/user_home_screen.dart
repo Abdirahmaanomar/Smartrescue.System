@@ -7,6 +7,7 @@ import '../../providers/sos_provider.dart';
 import '../../services/api_service.dart';
 import '../../services/sound_service.dart';
 import '../../utils/helpers.dart';
+import '../../utils/responsive.dart';
 import 'user_shell.dart';
 import 'user_response_timeline_screen.dart';
 import '../../components/whatsapp_banner_widget.dart';
@@ -706,7 +707,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     }
 
     final isDark = Theme.of(context).brightness == Brightness.dark;
-    final isWide = MediaQuery.of(context).size.width > 800;
+
 
     String actionGuideText = '';
     switch (sos.selectedType) {
@@ -872,9 +873,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           ),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-        child: Column(
+      body: Responsive(context).wrapWidescreen(
+        SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 10),
+          child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Emergency Command Center Header Part
@@ -1063,10 +1065,10 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               GridView.count(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
-                crossAxisCount: isWide ? 4 : 2,
+                crossAxisCount: Responsive(context).typeCardColumns,
                 mainAxisSpacing: 12,
                 crossAxisSpacing: 12,
-                childAspectRatio: isWide ? 2.2 : 1.25,
+                childAspectRatio: Responsive(context).typeCardAspectRatio,
                 children: [
                   _buildTypeCard('Medical', sos),
                   _buildTypeCard('Fire', sos),
@@ -1159,6 +1161,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             ],
           ],
         ),
+      ),
       ),
     );
   }
@@ -1525,21 +1528,24 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Icon Container
-            AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              width: 48,
-              height: 48,
-              decoration: BoxDecoration(
-                color:
-                    isSelected ? primaryColor : primaryColor.withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(14),
-              ),
-              child: Icon(
-                icon,
-                color: isSelected ? Colors.white : primaryColor,
-                size: 24,
-              ),
-            ),
+            Builder(builder: (context) {
+              final iconBox = Responsive(context).dp(44);
+              return AnimatedContainer(
+                duration: const Duration(milliseconds: 200),
+                width: iconBox,
+                height: iconBox,
+                decoration: BoxDecoration(
+                  color:
+                      isSelected ? primaryColor : primaryColor.withValues(alpha: 0.1),
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Icon(
+                  icon,
+                  color: isSelected ? Colors.white : primaryColor,
+                  size: Responsive(context).dp(22),
+                ),
+              );
+            }),
             const SizedBox(height: 10),
             // Title
             Text(
@@ -1574,9 +1580,13 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     required IconData icon,
     required List<Color> gradient,
   }) {
-    return Container(
-      width: 175,
-      height: 85,
+    return Builder(builder: (context) {
+      final r = Responsive(context);
+      final cardW = r.dp(165).clamp(140.0, 200.0);
+      final cardH = r.dp(82).clamp(72.0, 95.0);
+      return Container(
+      width: cardW,
+      height: cardH,
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
@@ -1652,6 +1662,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         ],
       ),
     );
+    });
   }
 
 
@@ -1996,58 +2007,61 @@ class _SosPulseButtonState extends State<SosPulseButton> with TickerProviderStat
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 32, vertical: 22),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Transform.rotate(
-                        angle: angle,
-                        child: Icon(
-                          isActive
-                              ? Icons.check_circle_rounded
-                              : Icons.warning_amber_rounded,
-                          color: Colors.white,
-                          size: 32,
+                Builder(builder: (ctx) {
+                  final r = Responsive(ctx);
+                  return Padding(
+                    padding: EdgeInsets.symmetric(horizontal: r.dp(28), vertical: r.dp(20)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Transform.rotate(
+                          angle: angle,
+                          child: Icon(
+                            isActive
+                                ? Icons.check_circle_rounded
+                                : Icons.warning_amber_rounded,
+                            color: Colors.white,
+                            size: r.dp(30),
+                          ),
                         ),
-                      ),
-                      const SizedBox(width: 16),
-                      Flexible(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              isActive ? 'SOS SENT' : 'ACTIVATE SOS',
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontWeight: FontWeight.w900,
-                                fontSize: 24,
-                                letterSpacing: 2.0,
-                                height: 1.0,
+                        SizedBox(width: r.dp(14)),
+                        Flexible(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                isActive ? 'SOS SENT' : 'ACTIVATE SOS',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.w900,
+                                  fontSize: r.sp(22),
+                                  letterSpacing: 2.0,
+                                  height: 1.0,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            const SizedBox(height: 3),
-                            Text(
-                              isActive
-                                  ? 'RESCUE IS ON THE WAY'
-                                  : 'TAP ONCE TO SEND ALERT',
-                              style: const TextStyle(
-                                color: Colors.white70,
-                                fontWeight: FontWeight.w700,
-                                fontSize: 10.88,
-                                letterSpacing: 2.0,
+                              const SizedBox(height: 3),
+                              Text(
+                                isActive
+                                    ? 'RESCUE IS ON THE WAY'
+                                    : 'TAP ONCE TO SEND ALERT',
+                                style: TextStyle(
+                                  color: Colors.white70,
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: r.sp(10),
+                                  letterSpacing: 2.0,
+                                ),
+                                overflow: TextOverflow.ellipsis,
                               ),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
-                      ),
-                    ],
-                  ),
-                ),
+                      ],
+                    ),
+                  );
+                }),
               ],
             ),
           ),

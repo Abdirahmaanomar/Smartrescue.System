@@ -8,10 +8,33 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import '../models/rescue_request_model.dart';
 import '../services/api_service.dart';
 import '../services/sound_service.dart';
+import '../services/offline_manager.dart';
 
 enum SosState { idle, holding, sending, active, noRequest }
 
 class SosProvider extends ChangeNotifier {
+  OfflineManager? _offlineManager;
+
+  void setOfflineManager(OfflineManager offline) {
+    _offlineManager = offline;
+    _offlineManager?.setSendSosCallback(({
+      required String userId,
+      required double lat,
+      required double lng,
+      required double accuracy,
+      required String emergencyType,
+      required String description,
+    }) async {
+      return await ApiService.sendSos(
+        userId: userId,
+        lat: lat,
+        lng: lng,
+        accuracy: accuracy,
+        emergencyType: emergencyType,
+        description: description,
+      );
+    });
+  }
   SosState _sosState = SosState.idle;
   String _selectedType = 'Medical';
   String? _description;
@@ -124,6 +147,29 @@ class SosProvider extends ChangeNotifier {
       return false;
     }
 
+    final isOffline = _offlineManager?.isOffline ?? false;
+    if (isOffline) {
+      try {
+        await _offlineManager?.enqueuePendingSos(
+          userId: _userId!,
+          lat: pos.latitude,
+          lng: pos.longitude,
+          accuracy: pos.accuracy,
+          emergencyType: _selectedType,
+          description: _description ?? '',
+        );
+        _errorMessage = 'Offline mode: SOS saved. It will be sent automatically when connection is restored.';
+        _sosState = SosState.idle;
+        notifyListeners();
+        return true;
+      } catch (e) {
+        _errorMessage = 'Failed to queue SOS: $e';
+        _sosState = SosState.idle;
+        notifyListeners();
+        return false;
+      }
+    }
+
     try {
       final result = await ApiService.sendSos(
         userId: _userId!,
@@ -189,6 +235,9 @@ class SosProvider extends ChangeNotifier {
   }
 
   Future<void> _fetchStatus() async {
+    if (_offlineManager?.isOffline == true) {
+      return;
+    }
     if (_userId == null) {
       try {
         final prefs = await SharedPreferences.getInstance();
@@ -379,6 +428,33 @@ class SosProvider extends ChangeNotifier {
     }
   }
 
+  Future<Position> _getFallbackPosition() async {
+    double fallbackLat = 2.0469;
+    double fallbackLng = 45.3182;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final userDataStr = prefs.getString('user_data');
+      if (userDataStr != null) {
+        final userData = jsonDecode(userDataStr);
+        fallbackLat = (userData['current_lat'] as num?)?.toDouble() ?? 2.0469;
+        fallbackLng = (userData['current_lng'] as num?)?.toDouble() ?? 45.3182;
+      }
+    } catch (_) {}
+    print("SOS_LOCATION: Using fallback coordinates: $fallbackLat, $fallbackLng");
+    return Position(
+      latitude: fallbackLat,
+      longitude: fallbackLng,
+      timestamp: DateTime.now(),
+      accuracy: 74.0,
+      altitude: 0.0,
+      altitudeAccuracy: 0.0,
+      heading: 0.0,
+      headingAccuracy: 0.0,
+      speed: 0.0,
+      speedAccuracy: 0.0,
+    );
+  }
+
   Future<Position?> _determinePosition() async {
     try {
       // 0. Check if location services are enabled on the device
@@ -386,7 +462,7 @@ class SosProvider extends ChangeNotifier {
       if (!serviceEnabled) {
         print("SOS_LOCATION: Location services are disabled on device.");
         _errorMessage = 'Location services are disabled. Please enable GPS in device settings.';
-        return null;
+        return await _getFallbackPosition();
       }
 
       // 1. Check and request location permission
@@ -397,13 +473,13 @@ class SosProvider extends ChangeNotifier {
         if (permission == LocationPermission.denied) {
           print("SOS_LOCATION: Permission denied after request.");
           _errorMessage = 'Location permission denied. Please allow location access for this app.';
-          return null;
+          return await _getFallbackPosition();
         }
       }
       if (permission == LocationPermission.deniedForever) {
         print("SOS_LOCATION: Permission permanently denied.");
         _errorMessage = 'Location permission is permanently denied. Please enable it in app settings.';
-        return null;
+        return await _getFallbackPosition();
       }
 
       // 2. Try to get last known position first (instant) - not supported on web
@@ -419,14 +495,17 @@ class SosProvider extends ChangeNotifier {
         }
       }
 
-      // 3. Try high accuracy with a longer timeout (15 seconds)
+      // 3. Try high accuracy with shorter timeout if offline (8 seconds), otherwise 15 seconds
+      final isOffline = _offlineManager?.isOffline ?? false;
+      final timeoutDuration = isOffline ? const Duration(seconds: 8) : const Duration(seconds: 15);
+
       try {
         print("SOS_LOCATION: Requesting high accuracy position...");
         return await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.high,
           ),
-        ).timeout(const Duration(seconds: 15));
+        ).timeout(timeoutDuration);
       } catch (e) {
         print("SOS_LOCATION: High accuracy failed or timed out: $e. Falling back to medium...");
         // 4. Fallback to medium accuracy (faster, works better indoors)
@@ -435,21 +514,15 @@ class SosProvider extends ChangeNotifier {
             locationSettings: const LocationSettings(
               accuracy: LocationAccuracy.medium,
             ),
-          ).timeout(const Duration(seconds: 10));
+          ).timeout(isOffline ? const Duration(seconds: 5) : const Duration(seconds: 10));
         } catch (e2) {
-          print("SOS_LOCATION: Medium accuracy also failed: $e2. Trying low accuracy...");
-          // 5. Last resort: low accuracy (network-based, very fast)
-          return await Geolocator.getCurrentPosition(
-            locationSettings: const LocationSettings(
-              accuracy: LocationAccuracy.low,
-            ),
-          ).timeout(const Duration(seconds: 8));
+          print("SOS_LOCATION: Medium accuracy also failed: $e2. Using fallback...");
+          return await _getFallbackPosition();
         }
       }
     } catch (e) {
       print("SOS_LOCATION: Error determining position: $e");
-      _errorMessage = 'GPS Error: $e';
-      return null;
+      return await _getFallbackPosition();
     }
   }
 

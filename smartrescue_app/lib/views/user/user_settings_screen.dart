@@ -8,6 +8,7 @@ import '../../components/app_drawer.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'user_notifications_screen.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserSettingsScreen extends StatefulWidget {
   const UserSettingsScreen({super.key});
@@ -123,8 +124,9 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: Responsive(context).wrapWidescreen(
+        SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -229,6 +231,7 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

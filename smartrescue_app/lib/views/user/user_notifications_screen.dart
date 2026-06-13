@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../../services/api_service.dart';
 import '../../components/app_drawer.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserNotificationsScreen extends StatefulWidget {
   const UserNotificationsScreen({super.key});
@@ -266,37 +267,39 @@ class _UserNotificationsScreenState extends State<UserNotificationsScreen>
       body: RefreshIndicator(
         onRefresh: () async => _refresh(),
         color: const Color(0xFF2563EB),
-        child: FutureBuilder<List<dynamic>>(
-          future: _notifsFuture,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(
-                child: CircularProgressIndicator(
-                  valueColor:
-                      AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
-                ),
+        child: Responsive(context).wrapWidescreen(
+          FutureBuilder<List<dynamic>>(
+            future: _notifsFuture,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                  child: CircularProgressIndicator(
+                    valueColor:
+                        AlwaysStoppedAnimation<Color>(Color(0xFF2563EB)),
+                  ),
+                );
+              }
+
+              final list = snapshot.data ?? [];
+
+              if (list.isEmpty) {
+                return _buildEmptyState(isDark);
+              }
+
+              return ListView.separated(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
+                itemCount: list.length + 1, // +1 for header
+                separatorBuilder: (_, __) => const SizedBox(height: 12),
+                itemBuilder: (context, index) {
+                  if (index == 0) return _buildHeader(isDark, list.length);
+
+                  final item = list[index - 1];
+                  return _buildNotifCard(context, item, isDark);
+                },
               );
-            }
-
-            final list = snapshot.data ?? [];
-
-            if (list.isEmpty) {
-              return _buildEmptyState(isDark);
-            }
-
-            return ListView.separated(
-              physics: const AlwaysScrollableScrollPhysics(),
-              padding: const EdgeInsets.fromLTRB(20, 12, 20, 32),
-              itemCount: list.length + 1, // +1 for header
-              separatorBuilder: (_, __) => const SizedBox(height: 12),
-              itemBuilder: (context, index) {
-                if (index == 0) return _buildHeader(isDark, list.length);
-
-                final item = list[index - 1];
-                return _buildNotifCard(context, item, isDark);
-              },
-            );
-          },
+            },
+          ),
         ),
       ),
     );

@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
 import 'user_medical_screen.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserOnlineRespondersScreen extends StatefulWidget {
   const UserOnlineRespondersScreen({super.key});
@@ -108,111 +109,113 @@ class _UserOnlineRespondersScreenState extends State<UserOnlineRespondersScreen>
       child: Scaffold(
         backgroundColor: isDark ? const Color(0xFF0F172A) : const Color(0xFFF1F5F9),
         body: SafeArea(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Header
-              Padding(
-                padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          AppTranslator.t(context, 'More'),
-                          style: TextStyle(
-                            fontSize: 28,
-                            fontWeight: FontWeight.w900,
-                            color: isDark ? Colors.white : const Color(0xFF0F172A),
-                            letterSpacing: -0.5,
+          child: Responsive(context).wrapWidescreen(
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // Header
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(20, 20, 20, 8),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            AppTranslator.t(context, 'More'),
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.w900,
+                              color: isDark ? Colors.white : const Color(0xFF0F172A),
+                              letterSpacing: -0.5,
+                            ),
                           ),
-                        ),
-                        const SizedBox(height: 4),
-                        Text(
-                          AppTranslator.t(context, 'Available emergency units nearby'),
-                          style: TextStyle(
-                            fontSize: 13,
-                            color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                            fontWeight: FontWeight.w500,
+                          const SizedBox(height: 4),
+                          Text(
+                            AppTranslator.t(context, 'Available emergency units nearby'),
+                            style: TextStyle(
+                              fontSize: 13,
+                              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                              fontWeight: FontWeight.w500,
+                            ),
                           ),
-                        ),
-                      ],
-                    ),
-                    IconButton(
-                      onPressed: () {
-                        _fetchResponders();
-                        _fetchBloodDonors();
-                        _fetchAnalytics();
-                      },
-                      icon: Icon(Icons.refresh_rounded, color: isDark ? Colors.white : Colors.black87),
-                    ),
-                  ],
-                ),
-              ),
-
-              // TabBar
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-                child: Container(
-                  height: 44,
-                  decoration: BoxDecoration(
-                    color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade200,
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: TabBar(
-                    indicatorSize: TabBarIndicatorSize.tab,
-                    dividerColor: Colors.transparent,
-                    indicator: BoxDecoration(
-                      color: const Color(0xFFE11D48),
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    labelColor: Colors.white,
-                    unselectedLabelColor: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
-                    labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
-                    tabs: [
-                      Tab(text: AppTranslator.t(context, 'Rescue Units')),
-                      Tab(text: AppTranslator.t(context, 'Blood Donors')),
-                      Tab(text: AppTranslator.t(context, 'Analytics')),
+                        ],
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          _fetchResponders();
+                          _fetchBloodDonors();
+                          _fetchAnalytics();
+                        },
+                        icon: Icon(Icons.refresh_rounded, color: isDark ? Colors.white : Colors.black87),
+                      ),
                     ],
                   ),
                 ),
-              ),
-              
-              // Tab Views
-              Expanded(
-                child: TabBarView(
-                  children: [
-                    // Tab 1: Rescue Units
-                    _isLoading
-                        ? const Center(child: CircularProgressIndicator())
-                        : _responders.isEmpty
-                            ? _buildEmptyState(isDark, AppTranslator.t(context, 'No Responders Online'), AppTranslator.t(context, 'Check back later for available units.'))
-                            : RefreshIndicator(
-                                onRefresh: _fetchResponders,
-                                child: ListView.builder(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                                  itemCount: _responders.length,
-                                  itemBuilder: (context, index) {
-                                    return _buildResponderCard(isDark, _responders[index]);
-                                  },
-                                ),
-                              ),
-                              
-                    // Tab 2: Blood Donors
-                    _isLoadingDonors
-                        ? const Center(child: CircularProgressIndicator())
-                        : _buildBloodDonorsSection(isDark),
 
-                    // Tab 3: Analytics Dashboard
-                    _isLoadingAnalytics
-                        ? const Center(child: CircularProgressIndicator())
-                        : _buildAnalyticsSection(isDark),
-                  ],
+                // TabBar
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                  child: Container(
+                    height: 44,
+                    decoration: BoxDecoration(
+                      color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade200,
+                      borderRadius: BorderRadius.circular(12),
+                    ),
+                    child: TabBar(
+                      indicatorSize: TabBarIndicatorSize.tab,
+                      dividerColor: Colors.transparent,
+                      indicator: BoxDecoration(
+                        color: const Color(0xFFE11D48),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      labelColor: Colors.white,
+                      unselectedLabelColor: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                      labelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 13),
+                      tabs: [
+                        Tab(text: AppTranslator.t(context, 'Rescue Units')),
+                        Tab(text: AppTranslator.t(context, 'Blood Donors')),
+                        Tab(text: AppTranslator.t(context, 'Analytics')),
+                      ],
+                    ),
+                  ),
                 ),
-              ),
-            ],
+                
+                // Tab Views
+                Expanded(
+                  child: TabBarView(
+                    children: [
+                      // Tab 1: Rescue Units
+                      _isLoading
+                          ? const Center(child: CircularProgressIndicator())
+                          : _responders.isEmpty
+                              ? _buildEmptyState(isDark, AppTranslator.t(context, 'No Responders Online'), AppTranslator.t(context, 'Check back later for available units.'))
+                              : RefreshIndicator(
+                                  onRefresh: _fetchResponders,
+                                  child: ListView.builder(
+                                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+                                    itemCount: _responders.length,
+                                    itemBuilder: (context, index) {
+                                      return _buildResponderCard(isDark, _responders[index]);
+                                    },
+                                  ),
+                                ),
+                                
+                      // Tab 2: Blood Donors
+                      _isLoadingDonors
+                          ? const Center(child: CircularProgressIndicator())
+                          : _buildBloodDonorsSection(isDark),
+
+                      // Tab 3: Analytics Dashboard
+                      _isLoadingAnalytics
+                          ? const Center(child: CircularProgressIndicator())
+                          : _buildAnalyticsSection(isDark),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),

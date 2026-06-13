@@ -44,18 +44,18 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // ─── Login ───────────────────────────────────────────────────────────────────
-  Future<bool> login(String phone, String password) async {
+  Future<bool> login(String phoneOrEmail, String password) async {
     _status = AuthStatus.loading;
     _errorMessage = null;
     notifyListeners();
 
-    final result = await ApiService.login(phone, password);
+    final result = await ApiService.login(phoneOrEmail, password);
 
     if (result['status'] == 'success') {
       final userData = <String, dynamic>{
         'id': result['id'] ?? 0,
         'fullname': result['fullname'] ?? '',
-        'phone': phone,
+        'phone': result['phone'] ?? phoneOrEmail,
         'email': result['email'] ?? '',
         'role': result['role'] ?? 'user',
         'profile_image': result['profile_image'] ?? '',

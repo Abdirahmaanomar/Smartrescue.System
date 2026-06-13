@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import '../constants/api_constants.dart';
+import 'offline_manager.dart';
 
 class ApiService {
   static const String _cookieKey = 'session_cookie';
@@ -48,13 +49,14 @@ class ApiService {
 
   // ─── Auth ────────────────────────────────────────────────────────────────────
   static Future<Map<String, dynamic>> login(
-      String phone, String password) async {
+      String phoneOrEmail, String password) async {
     try {
       final response = await http.post(
         Uri.parse(ApiConstants.login),
         headers: {'Content-Type': 'application/x-www-form-urlencoded'},
         body: {
-          'phone': phone,
+          'phone_or_email': phoneOrEmail,
+          'phone': phoneOrEmail,
           'password': password,
           'login_btn': '1',
           'flutter': '1',
@@ -87,6 +89,7 @@ class ApiService {
         'message': 'Server error: ${response.statusCode}'
       };
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {
         'status': 'error',
         'message': 'Connection failed: ${e.toString()}'
@@ -130,6 +133,7 @@ class ApiService {
         return {'status': 'error', 'message': 'Registration failed'};
       }
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {
         'status': 'error',
         'message': 'Connection failed: ${e.toString()}'
@@ -205,6 +209,7 @@ class ApiService {
       final response = await http.Response.fromStream(streamed);
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {
         'status': 'error',
         'message': 'Failed to send SOS: ${e.toString()}'
@@ -227,6 +232,7 @@ class ApiService {
           .timeout(const Duration(seconds: 10));
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error'};
     }
   }
@@ -242,6 +248,7 @@ class ApiService {
           .timeout(const Duration(seconds: 10));
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }
@@ -271,6 +278,9 @@ class ApiService {
           .get(Uri.parse(url), headers: headers)
           .timeout(const Duration(seconds: 10));
 
+      final prefs = await SharedPreferences.getInstance();
+      await prefs.setString('cached_history', response.body);
+
       // Backend returns { total_count: N, history: [...] }
       final body = json.decode(response.body);
       if (body is Map) {
@@ -282,6 +292,21 @@ class ApiService {
       final list = body as List? ?? [];
       return {'total_count': list.length, 'history': list};
     } catch (e) {
+      OfflineManager.instance?.setOffline();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final cached = prefs.getString('cached_history');
+        if (cached != null) {
+          final body = json.decode(cached);
+          if (body is Map) {
+            final totalCount = (body['total_count'] as num?)?.toInt() ?? 0;
+            final list = (body['history'] as List?) ?? [];
+            return {'total_count': totalCount, 'history': list};
+          }
+          final list = body as List? ?? [];
+          return {'total_count': list.length, 'history': list};
+        }
+      } catch (_) {}
       return {'total_count': 0, 'history': []};
     }
   }
@@ -355,6 +380,7 @@ class ApiService {
       final response = await http.Response.fromStream(streamed);
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }
@@ -376,6 +402,7 @@ class ApiService {
       ).timeout(const Duration(seconds: 15));
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }
@@ -396,6 +423,7 @@ class ApiService {
       ).timeout(const Duration(seconds: 15));
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }
@@ -418,6 +446,7 @@ class ApiService {
       print('togglePreference response for $pref: ${response.statusCode} - ${response.body}');
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       print('togglePreference error: $e');
       return {'status': 'error', 'message': e.toString()};
     }
@@ -442,6 +471,7 @@ class ApiService {
       ).timeout(const Duration(seconds: 10));
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }
@@ -474,10 +504,20 @@ class ApiService {
         headers: headers,
       ).timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('cached_notifications', response.body);
         return json.decode(response.body);
       }
       return [];
     } catch (e) {
+      OfflineManager.instance?.setOffline();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final cached = prefs.getString('cached_notifications');
+        if (cached != null) {
+          return json.decode(cached);
+        }
+      } catch (_) {}
       return [];
     }
   }
@@ -515,6 +555,7 @@ class ApiService {
       }
       return {'success': false, 'message': 'Server error: ${response.statusCode}'};
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'success': false, 'message': e.toString()};
     }
   }
@@ -528,11 +569,24 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'success') {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('cached_online_responders', response.body);
           return data['data'] as List<dynamic>;
         }
       }
       return [];
     } catch (e) {
+      OfflineManager.instance?.setOffline();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final cached = prefs.getString('cached_online_responders');
+        if (cached != null) {
+          final data = json.decode(cached);
+          if (data['status'] == 'success') {
+            return data['data'] as List<dynamic>;
+          }
+        }
+      } catch (_) {}
       return [];
     }
   }
@@ -546,11 +600,24 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['status'] == 'success') {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('cached_community_incidents', response.body);
           return data['data'] as List<dynamic>;
         }
       }
       return [];
     } catch (e) {
+      OfflineManager.instance?.setOffline();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final cached = prefs.getString('cached_community_incidents');
+        if (cached != null) {
+          final data = json.decode(cached);
+          if (data['status'] == 'success') {
+            return data['data'] as List<dynamic>;
+          }
+        }
+      } catch (_) {}
       return [];
     }
   }
@@ -574,6 +641,7 @@ class ApiService {
       ).timeout(const Duration(seconds: 10));
       return json.decode(response.body);
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }
@@ -590,6 +658,7 @@ class ApiService {
       }
       return {};
     } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {};
     }
   }
@@ -603,11 +672,24 @@ class ApiService {
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         if (data['success'] == true) {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setString('cached_blood_donors', response.body);
           return data['donors'] as List<dynamic>;
         }
       }
       return [];
     } catch (e) {
+      OfflineManager.instance?.setOffline();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final cached = prefs.getString('cached_blood_donors');
+        if (cached != null) {
+          final data = json.decode(cached);
+          if (data['success'] == true) {
+            return data['donors'] as List<dynamic>;
+          }
+        }
+      } catch (_) {}
       return [];
     }
   }
@@ -622,10 +704,21 @@ class ApiService {
           )
           .timeout(const Duration(seconds: 10));
       if (response.statusCode == 200) {
-        return json.decode(response.body);
+        final data = json.decode(response.body);
+        final prefs = await SharedPreferences.getInstance();
+        await prefs.setString('cached_profile_$userId', response.body);
+        return data;
       }
       return {'status': 'error', 'message': 'Server returned status ${response.statusCode}'};
     } catch (e) {
+      OfflineManager.instance?.setOffline();
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final cached = prefs.getString('cached_profile_$userId');
+        if (cached != null) {
+          return json.decode(cached) as Map<String, dynamic>;
+        }
+      } catch (_) {}
       return {'status': 'error', 'message': e.toString()};
     }
   }

@@ -7,6 +7,9 @@ import 'views/auth/login_screen.dart';
 import 'views/auth/register_screen.dart';
 import 'views/user/user_shell.dart';
 
+import 'services/offline_manager.dart';
+import 'components/offline_banner.dart';
+
 class SmartRescueApp extends StatelessWidget {
   const SmartRescueApp({super.key});
 
@@ -14,8 +17,15 @@ class SmartRescueApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => OfflineManager()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
-        ChangeNotifierProvider(create: (_) => SosProvider()),
+        ChangeNotifierProxyProvider<OfflineManager, SosProvider>(
+          create: (_) => SosProvider(),
+          update: (_, offline, sos) {
+            sos!.setOfflineManager(offline);
+            return sos;
+          },
+        ),
       ],
       child: Consumer<AuthProvider>(
         builder: (context, auth, _) {
@@ -28,6 +38,7 @@ class SmartRescueApp extends StatelessWidget {
             theme: _buildLightTheme(),
             darkTheme: _buildDarkTheme(),
             initialRoute: '/',
+            builder: (context, child) => OfflineBanner(child: child ?? const SizedBox()),
             routes: {
               '/': (_) => const SplashScreen(),
               '/login': (_) => const LoginScreen(),

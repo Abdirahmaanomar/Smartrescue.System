@@ -3,6 +3,7 @@ import '../../services/api_service.dart';
 import '../../utils/helpers.dart';
 import '../../models/rescue_request_model.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserHistoryScreen extends StatefulWidget {
   const UserHistoryScreen({super.key});
@@ -51,12 +52,13 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
         ),
       ),
       body: SafeArea(
-        child: Column(
+        child: Responsive(context).wrapWidescreen(
+          Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             // Title & Refresh Row
             Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+              padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 10),
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -113,7 +115,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
             // Card Table Container
             Expanded(
               child: Padding(
-                padding: const EdgeInsets.fromLTRB(24, 0, 24, 24),
+                padding: EdgeInsets.fromLTRB(Responsive(context).hPad, 0, Responsive(context).hPad, Responsive(context).hPad),
                 child: Container(
                   decoration: BoxDecoration(
                     color: cardColor,
@@ -138,7 +140,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                       children: [
                         // Table Header Row
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 16),
                           decoration: BoxDecoration(
                             color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
                             border: Border(
@@ -239,6 +241,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
           ],
         ),
       ),
+      ),
     );
   }
 
@@ -247,7 +250,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
     final rowBorderColor = isDark ? const Color(0xFF334155) : Colors.grey.shade100;
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+      padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 16),
       decoration: BoxDecoration(
         border: Border(
           bottom: BorderSide(color: rowBorderColor, width: 1.5),

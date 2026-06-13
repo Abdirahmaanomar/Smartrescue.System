@@ -697,3 +697,27 @@ POST: Array
     [email] => geedi@gmail.com
 )
 
+2026-06-08 21:54:52
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_392834.jpg
+            [full_path] => scaled_392834.jpg
+            [type] => application/octet-stream
+            [tmp_name] => C:\xampp\tmp\phpB4ED.tmp
+            [error] => 0
+            [size] => 74982
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+

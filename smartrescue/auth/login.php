@@ -17,11 +17,18 @@ if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
 // 4. Marka la riixo badanka Login-ka
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
     
-    $phone = clean_input($_POST['phone'], $conn);
+    $identifier = "";
+    if (isset($_POST['phone_or_email'])) {
+        $identifier = clean_input($_POST['phone_or_email'], $conn);
+    } elseif (isset($_POST['phone'])) {
+        $identifier = clean_input($_POST['phone'], $conn);
+    } elseif (isset($_POST['email'])) {
+        $identifier = clean_input($_POST['email'], $conn);
+    }
     $password = $_POST['password'];
 
     // Ka raadi user-ka database-ka
-    $sql = "SELECT * FROM users WHERE phone = '$phone' LIMIT 1";
+    $sql = "SELECT * FROM users WHERE (phone = '$identifier' OR email = '$identifier') LIMIT 1";
     $result = mysqli_query($conn, $sql);
 
     if (mysqli_num_rows($result) > 0) {
@@ -72,10 +79,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
     } else {
         if (isset($_POST['flutter'])) {
             header('Content-Type: application/json');
-            echo json_encode(['status' => 'error', 'message' => 'This number is not registered!']);
+            echo json_encode(['status' => 'error', 'message' => 'This phone number or email is not registered!']);
             exit();
         }
-        $message = "<div class='alert alert-danger shadow-sm mt-3 p-3'>This number is not registered!</div>";
+        $message = "<div class='alert alert-danger shadow-sm mt-3 p-3'>This phone number or email is not registered!</div>";
     }
 }
 ?>
@@ -162,8 +169,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
             <form action="login.php" method="POST">
                 
                 <div class="form-floating mb-3">
-                    <input type="tel" name="phone" class="form-control" id="phone" placeholder="61XXXXXXX" required>
-                    <label for="phone"><i class="fa-solid fa-phone me-2 text-muted"></i> Phone Number</label>
+                    <input type="text" name="phone_or_email" class="form-control" id="phone_or_email" placeholder="Phone or Email" required>
+                    <label for="phone_or_email"><i class="fa-solid fa-user me-2 text-muted"></i> Phone or Email</label>
                 </div>
                 
                 <div class="form-floating mb-4">

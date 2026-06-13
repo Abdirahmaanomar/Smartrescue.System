@@ -4,6 +4,7 @@ import '../../providers/auth_provider.dart';
 import '../../components/app_button.dart';
 import '../../components/app_text_field.dart';
 import '../../utils/helpers.dart';
+import '../../utils/responsive.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -95,138 +96,141 @@ class _RegisterScreenState extends State<RegisterScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
-          child: Form(
-            key: _formKey,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                const Text(
-                  'Create Account',
-                  style: TextStyle(
-                    fontSize: 32,
-                    fontWeight: FontWeight.w900,
-                    letterSpacing: -1,
-                    color: Color(0xFF0F172A),
+        child: Responsive(context).wrapWidescreen(
+          SingleChildScrollView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+            child: Form(
+              key: _formKey,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
+                children: [
+                  const Text(
+                    'Create Account',
+                    style: TextStyle(
+                      fontSize: 32,
+                      fontWeight: FontWeight.w900,
+                      letterSpacing: -1,
+                      color: Color(0xFF0F172A),
+                    ),
                   ),
-                ),
-                const SizedBox(height: 8),
-                const Text(
-                  'Join the most advanced emergency network.',
-                  style: TextStyle(
-                    fontSize: 16,
-                    color: Color(0xFF64748B),
-                    fontWeight: FontWeight.w500,
+                  const SizedBox(height: 8),
+                  const Text(
+                    'Join the most advanced emergency network.',
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Color(0xFF64748B),
+                      fontWeight: FontWeight.w500,
+                    ),
                   ),
-                ),
-                const SizedBox(height: 30),
-                
-                AppTextField(
-                  label: 'Full Name',
-                  controller: _nameController,
-                  prefixIcon: Icons.person_rounded,
-                  validator: (val) => val == null || val.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 16),
-                
-                AppTextField(
-                  label: 'Phone Number',
-                  controller: _phoneController,
-                  keyboardType: TextInputType.phone,
-                  prefixIcon: Icons.phone_rounded,
-                  validator: (val) => val == null || val.isEmpty ? 'Required' : null,
-                ),
-                const SizedBox(height: 16),
-                
-                AppTextField(
-                  label: 'Email (Optional)',
-                  controller: _emailController,
-                  keyboardType: TextInputType.emailAddress,
-                  prefixIcon: Icons.email_rounded,
-                ),
-                const SizedBox(height: 16),
+                  const SizedBox(height: 30),
+                  
+                  AppTextField(
+                    label: 'Full Name',
+                    controller: _nameController,
+                    prefixIcon: Icons.person_rounded,
+                    validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  AppTextField(
+                    label: 'Phone Number',
+                    controller: _phoneController,
+                    keyboardType: TextInputType.phone,
+                    prefixIcon: Icons.phone_rounded,
+                    validator: (val) => val == null || val.isEmpty ? 'Required' : null,
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  AppTextField(
+                    label: 'Email (Optional)',
+                    controller: _emailController,
+                    keyboardType: TextInputType.emailAddress,
+                    prefixIcon: Icons.email_rounded,
+                  ),
+                  const SizedBox(height: 16),
 
-                
-                Row(
-                  children: [
-                    Expanded(
-                      child: GestureDetector(
-                        onTap: _pickDate,
+                  
+                  Row(
+                    children: [
+                      Expanded(
+                        child: GestureDetector(
+                          onTap: _pickDate,
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                            decoration: BoxDecoration(
+                              color: const Color(0xFFF8FAFC),
+                              borderRadius: BorderRadius.circular(14),
+                              border: Border.all(color: const Color(0xFFE2E8F0)),
+                            ),
+                            child: Row(
+                              children: [
+                                Icon(Icons.calendar_today_rounded, color: scheme.primary, size: 20),
+                                const SizedBox(width: 10),
+                                Text(
+                                  _selectedDate == null 
+                                      ? 'Birth Date' 
+                                      : '${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}',
+                                  style: TextStyle(
+                                    color: _selectedDate == null ? const Color(0xFF94A3B8) : const Color(0xFF0F172A),
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
                         child: Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 16),
+                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                           decoration: BoxDecoration(
                             color: const Color(0xFFF8FAFC),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(color: const Color(0xFFE2E8F0)),
                           ),
-                          child: Row(
-                            children: [
-                              Icon(Icons.calendar_today_rounded, color: scheme.primary, size: 20),
-                              const SizedBox(width: 10),
-                              Text(
-                                _selectedDate == null 
-                                    ? 'Birth Date' 
-                                    : '${_selectedDate!.year}-${_selectedDate!.month.toString().padLeft(2, '0')}-${_selectedDate!.day.toString().padLeft(2, '0')}',
-                                style: TextStyle(
-                                  color: _selectedDate == null ? const Color(0xFF94A3B8) : const Color(0xFF0F172A),
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                          child: DropdownButtonHideUnderline(
+                            child: DropdownButton<String>(
+                              value: _gender,
+                              isExpanded: true,
+                              icon: const Icon(Icons.keyboard_arrow_down_rounded),
+                              items: ['Male', 'Female'].map((String value) {
+                                return DropdownMenuItem<String>(
+                                  value: value,
+                                  child: Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
+                                );
+                              }).toList(),
+                              onChanged: (val) {
+                                if (val != null) setState(() => _gender = val);
+                              },
+                            ),
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(width: 16),
-                    Expanded(
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                        decoration: BoxDecoration(
-                          color: const Color(0xFFF8FAFC),
-                          borderRadius: BorderRadius.circular(14),
-                          border: Border.all(color: const Color(0xFFE2E8F0)),
-                        ),
-                        child: DropdownButtonHideUnderline(
-                          child: DropdownButton<String>(
-                            value: _gender,
-                            isExpanded: true,
-                            icon: const Icon(Icons.keyboard_arrow_down_rounded),
-                            items: ['Male', 'Female'].map((String value) {
-                              return DropdownMenuItem<String>(
-                                value: value,
-                                child: Text(value, style: const TextStyle(fontWeight: FontWeight.w600)),
-                              );
-                            }).toList(),
-                            onChanged: (val) {
-                              if (val != null) setState(() => _gender = val);
-                            },
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                const SizedBox(height: 16),
-                
-                AppTextField(
-                  label: 'Password',
-                  controller: _passwordController,
-                  obscure: true,
-                  prefixIcon: Icons.lock_rounded,
-                  validator: (val) => val != null && val.length < 6 ? 'Min 6 chars' : null,
-                ),
-                const SizedBox(height: 30),
-                
-                AppButton(
-                  label: 'REGISTER NOW',
-                  onPressed: _register,
-                  loading: auth.status == AuthStatus.loading,
-                ),
-                const SizedBox(height: 20),
-              ],
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  
+                  AppTextField(
+                    label: 'Password',
+                    controller: _passwordController,
+                    obscure: true,
+                    prefixIcon: Icons.lock_rounded,
+                    validator: (val) => val != null && val.length < 6 ? 'Min 6 chars' : null,
+                  ),
+                  const SizedBox(height: 30),
+                  
+                  AppButton(
+                    label: 'REGISTER NOW',
+                    onPressed: _register,
+                    loading: auth.status == AuthStatus.loading,
+                  ),
+                  const SizedBox(height: 20),
+                ],
+              ),
             ),
           ),
+          maxWidth: 500,
         ),
       ),
     );

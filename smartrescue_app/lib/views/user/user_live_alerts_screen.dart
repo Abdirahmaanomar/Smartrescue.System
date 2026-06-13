@@ -4,6 +4,7 @@ import '../../providers/sos_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../models/rescue_request_model.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserLiveAlertsScreen extends StatefulWidget {
   final VoidCallback? onGoToSos;
@@ -62,39 +63,41 @@ class _UserLiveAlertsScreenState extends State<UserLiveAlertsScreen>
               final request = sos.activeRequest;
               final hasActive = sos.hasActiveRequest;
 
-              return CustomScrollView(
-                slivers: [
-                  // ── Header ──────────────────────────────────────────────
-                  SliverToBoxAdapter(
-                    child: _buildHeader(context, isDark, hasActive),
-                  ),
-
-                  // ── Live Status Card ─────────────────────────────────────
-                  if (hasActive && request != null)
+              return Responsive(context).wrapWidescreen(
+                CustomScrollView(
+                  slivers: [
+                    // ── Header ──────────────────────────────────────────────
                     SliverToBoxAdapter(
-                      child: _buildLiveStatusCard(context, isDark, request),
+                      child: _buildHeader(context, isDark, hasActive),
                     ),
 
-                  // ── Alert Timeline ───────────────────────────────────────
-                  if (hasActive && request != null)
-                    SliverToBoxAdapter(
-                      child: _buildAlertTimeline(context, isDark, request),
-                    ),
+                    // ── Live Status Card ─────────────────────────────────────
+                    if (hasActive && request != null)
+                      SliverToBoxAdapter(
+                        child: _buildLiveStatusCard(context, isDark, request),
+                      ),
 
-                  // ── Responder Info ───────────────────────────────────────
-                  if (hasActive && request != null && (request.driverAssigned || request.unitName.isNotEmpty))
-                    SliverToBoxAdapter(
-                      child: _buildResponderCard(context, isDark, request),
-                    ),
+                    // ── Alert Timeline ───────────────────────────────────────
+                    if (hasActive && request != null)
+                      SliverToBoxAdapter(
+                        child: _buildAlertTimeline(context, isDark, request),
+                      ),
 
-                  // ── No Active SOS ────────────────────────────────────────
-                  if (!hasActive)
-                    SliverFillRemaining(
-                      child: _buildNoActiveState(context, isDark),
-                    ),
+                    // ── Responder Info ───────────────────────────────────────
+                    if (hasActive && request != null && (request.driverAssigned || request.unitName.isNotEmpty))
+                      SliverToBoxAdapter(
+                        child: _buildResponderCard(context, isDark, request),
+                      ),
 
-                  const SliverToBoxAdapter(child: SizedBox(height: 32)),
-                ],
+                    // ── No Active SOS ────────────────────────────────────────
+                    if (!hasActive)
+                      SliverFillRemaining(
+                        child: _buildNoActiveState(context, isDark),
+                      ),
+
+                    const SliverToBoxAdapter(child: SizedBox(height: 32)),
+                  ],
+                ),
               );
             },
           ),

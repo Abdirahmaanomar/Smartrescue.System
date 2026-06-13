@@ -3568,3 +3568,423 @@ SESSION: Array
 )
 
 
+2026-06-08 11:57:55
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: gshs
+Chronic Conditions: gxhz
+Medications: dhuss
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1056
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1056_1780911003.jpg
+    [fullname] => Kumar maxamed
+)
+
+
+2026-06-08 11:59:09
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1056
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1056_1780911003.jpg
+    [fullname] => Kumar maxamed
+)
+
+
+2026-06-08 11:59:12
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1056
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1056_1780911003.jpg
+    [fullname] => Kumar maxamed
+)
+
+
+2026-06-08 21:54:52
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 12:22:49
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:47
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Istar Abdi: 615678499: Mother
+Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:48
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Shukri Cabdi: 615637780: Family
+Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:48
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Abdi qani Omar: 618755531: Sister
+Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:49
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Omar Mohamed: 615842565: Friend
+Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:49
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Laki Axmed: 610111111: Daughter
+Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:50
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Shukri Cabdi: 612000000: Father
+Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:50
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Raxmo Hassan: 612223344: Son
+Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:51
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Sihaam Xarbi: 615042819: Father
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:53:51
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:54:13
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => shaaruukhaan: 68454364: Daughter
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:59:22
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 17:59:55
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: O+
+Allergies: qiica , barfuun ka
+Chronic Conditions: diabetes , asthma
+Medications: 500mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1051
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-09 18:03:59
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-10 10:09:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-10 10:15:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-13 10:51:52
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+

@@ -5,6 +5,7 @@ import '../../services/api_service.dart';
 import '../../utils/helpers.dart';
 import '../../components/app_drawer.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserMedicalScreen extends StatefulWidget {
   const UserMedicalScreen({super.key});
@@ -296,8 +297,9 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
         ),
       ),
       body: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 10),
+        child: Responsive(context).wrapWidescreen(
+          SingleChildScrollView(
+          padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 10),
           child: Form(
             key: _formKey,
             child: Column(
@@ -532,6 +534,7 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }

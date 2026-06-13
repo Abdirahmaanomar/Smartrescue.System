@@ -11,6 +11,7 @@ import '../../utils/helpers.dart';
 import '../../components/app_drawer.dart';
 import 'user_notifications_screen.dart';
 import '../../utils/translator.dart';
+import '../../utils/responsive.dart';
 
 class UserProfileScreen extends StatefulWidget {
   const UserProfileScreen({super.key});
@@ -196,31 +197,33 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 AppTranslator.t(ctx, 'Delete Account'),
                 style: const TextStyle(color: Color(0xFFE11D48), fontWeight: FontWeight.bold),
               ),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Text(
-                    AppTranslator.t(ctx, 'Are you absolutely sure you want to delete your account? This action cannot be undone.'),
-                    style: const TextStyle(fontSize: 14),
-                  ),
-                  const SizedBox(height: 16),
-                  TextField(
-                    controller: passwordController,
-                    obscureText: true,
-                    style: TextStyle(color: isDark ? Colors.white : Colors.black87),
-                    decoration: InputDecoration(
-                      labelText: AppTranslator.t(ctx, 'Confirm Password'),
-                      labelStyle: const TextStyle(color: Colors.grey),
-                      prefixIcon: const Icon(Icons.lock_rounded, color: Colors.grey),
-                      enabledBorder: UnderlineInputBorder(
-                        borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
-                      ),
-                      focusedBorder: const UnderlineInputBorder(
-                        borderSide: BorderSide(color: Color(0xFFE11D48)),
+              content: SingleChildScrollView(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      AppTranslator.t(ctx, 'Are you absolutely sure you want to delete your account? This action cannot be undone.'),
+                      style: const TextStyle(fontSize: 14),
+                    ),
+                    const SizedBox(height: 16),
+                    TextField(
+                      controller: passwordController,
+                      obscureText: true,
+                      style: TextStyle(color: isDark ? Colors.white : Colors.black87),
+                      decoration: InputDecoration(
+                        labelText: AppTranslator.t(ctx, 'Confirm Password'),
+                        labelStyle: const TextStyle(color: Colors.grey),
+                        prefixIcon: const Icon(Icons.lock_rounded, color: Colors.grey),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
+                        ),
+                        focusedBorder: const UnderlineInputBorder(
+                          borderSide: BorderSide(color: Color(0xFFE11D48)),
+                        ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               actions: [
                 TextButton(
@@ -324,8 +327,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
           const SizedBox(width: 8),
         ],
       ),
-      body: SingleChildScrollView(
-        padding: const EdgeInsets.all(24),
+      body: Responsive(context).wrapWidescreen(
+        SingleChildScrollView(
+          padding: EdgeInsets.all(Responsive(context).hPad),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -582,6 +586,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             ),
           ],
         ),
+      ),
       ),
     );
   }

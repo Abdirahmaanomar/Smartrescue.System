@@ -16,6 +16,9 @@ dependencies:
   # Networking
   http: ^1.2.2
 
+  # Connectivity / Offline Detection
+  connectivity_plus: ^6.0.3
+
   # State Management
   provider: ^6.1.2
 
