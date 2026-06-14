@@ -281,7 +281,12 @@ body::before{
   background:rgba(255,255,255,0.2);
   color:#fff;
 }
-.stat-value{font-size:1.7rem;font-weight:900;line-height:1;color:#fff;}
+.stat-icon svg{
+  display:block;
+  width:24px;
+  height:24px;
+}
+.stat-value{font-size:2.1rem;font-weight:800;line-height:1.1;color:#fff;}
 .stat-label{font-size:0.7rem;font-weight:700;color:rgba(255,255,255,0.75);text-transform:uppercase;letter-spacing:0.8px;margin-top:5px;}
 .stat-trend{font-size:0.68rem;font-weight:700;color:rgba(255,255,255,0.6);margin-top:3px;}
 
@@ -1313,7 +1318,15 @@ body::before{
     <!-- STAT CARDS -->
     <div class="stat-grid">
       <div class="stat-card red-card">
-        <div class="stat-icon"><i class="fa fa-siren-on"></i></div>
+        <div class="stat-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <circle cx="12" cy="12" r="2.5" fill="#ffffff" />
+            <path d="M16.24 7.76a6 6 0 0 1 0 8.49" />
+            <path d="M7.76 16.24a6 6 0 0 1 0-8.49" />
+            <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+            <path d="M4.93 19.07a10 10 0 0 1 0-14.14" />
+          </svg>
+        </div>
         <div>
           <div class="stat-value"><?php echo $total_sos; ?></div>
           <div class="stat-label">Total SOS Sent</div>

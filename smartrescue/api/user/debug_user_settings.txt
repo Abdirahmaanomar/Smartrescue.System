@@ -3988,3 +3988,37 @@ SESSION: Array
 )
 
 
+2026-06-14 18:37:00
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+)
+
+
+2026-06-14 18:37:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+)
+
+

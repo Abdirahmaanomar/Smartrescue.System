@@ -72,112 +72,104 @@ $page_subtitle = '';
         }
 
         .kpi-card {
-            background: var(--card-bg);
             border-radius: 20px;
-            padding: 24px 22px;
-            box-shadow: var(--shadow);
-            border: 1px solid rgba(0, 0, 0, 0.04);
+            padding: 20px 24px;
             display: flex;
             align-items: center;
-            gap: 18px;
+            gap: 16px;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: default;
             position: relative;
             overflow: hidden;
+            border: none;
+            color: #ffffff;
         }
 
         .kpi-card::before {
             content: '';
             position: absolute;
-            top: 0;
-            right: 0;
-            width: 80px;
-            height: 80px;
+            top: -20px;
+            right: -20px;
+            width: 90px;
+            height: 90px;
             border-radius: 50%;
-            opacity: 0.06;
-            transform: translate(20px, -20px);
+            background: rgba(255, 255, 255, 0.08);
+            pointer-events: none;
         }
 
         .kpi-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
         }
 
-        .kpi-card.danger::before {
-            background: var(--danger);
+        .kpi-card.danger {
+            background: linear-gradient(135deg, #e11d48, #be123c);
+            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.18);
         }
 
-        .kpi-card.success::before {
-            background: var(--success);
+        .kpi-card.success {
+            background: linear-gradient(135deg, #10b981, #047857);
+            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.18);
         }
 
-        .kpi-card.primary::before {
-            background: var(--accent);
+        .kpi-card.primary {
+            background: linear-gradient(135deg, #2563eb, #1d4ed8);
+            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
         }
 
-        .kpi-card.warning::before {
-            background: var(--warning);
+        .kpi-card.warning {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.18);
         }
 
         .kpi-icon {
-            width: 52px;
-            height: 52px;
-            border-radius: 14px;
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.2);
+            color: #ffffff !important;
         }
 
-        .kpi-icon.danger {
-            background: rgba(239, 68, 68, 0.12);
-            color: #ef4444;
-        }
-
-        .kpi-icon.success {
-            background: rgba(34, 197, 94, 0.12);
-            color: #22c55e;
-        }
-
-        .kpi-icon.primary {
-            background: rgba(59, 130, 246, 0.12);
-            color: #3b82f6;
-        }
-
-        .kpi-icon.warning {
-            background: rgba(245, 158, 11, 0.12);
-            color: #f59e0b;
+        .kpi-icon svg {
+            display: block;
+            width: 22px;
+            height: 22px;
         }
 
         .kpi-num {
-            font-size: 2rem;
-            font-weight: 900;
-            line-height: 1;
-            letter-spacing: -1px;
+            font-size: 2.1rem;
+            font-weight: 800;
+            line-height: 1.1;
+            letter-spacing: -0.5px;
+            color: #ffffff;
         }
 
         .kpi-label {
-            font-size: 0.72rem;
+            font-size: 0.7rem;
             font-weight: 700;
             text-transform: uppercase;
-            letter-spacing: 1px;
-            color: var(--text-muted);
-            margin-top: 3px;
+            letter-spacing: 0.5px;
+            color: rgba(255, 255, 255, 0.82);
+            margin-top: 4px;
         }
 
         .kpi-trend {
-            font-size: 0.7rem;
+            font-size: 0.66rem;
             font-weight: 600;
             margin-top: 4px;
         }
 
         .kpi-trend.up {
-            color: var(--success);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         .kpi-trend.down {
-            color: var(--danger);
+            color: rgba(255, 255, 255, 0.9);
         }
 
         /* MAP */
@@ -620,7 +612,15 @@ $page_subtitle = '';
         <!-- KPI Cards -->
         <div class="kpi-grid">
             <div class="kpi-card danger">
-                <div class="kpi-icon danger"><i class="fa fa-triangle-exclamation"></i></div>
+                <div class="kpi-icon">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="12" cy="12" r="2.5" fill="#ffffff" />
+                        <path d="M16.24 7.76a6 6 0 0 1 0 8.49" />
+                        <path d="M7.76 16.24a6 6 0 0 1 0-8.49" />
+                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
+                        <path d="M4.93 19.07a10 10 0 0 1 0-14.14" />
+                    </svg>
+                </div>
                 <div>
                     <div class="kpi-num" id="stat-pending">—</div>
                     <div class="kpi-label"><?= t('Pending SOS') ?></div>
@@ -628,21 +628,21 @@ $page_subtitle = '';
                 </div>
             </div>
             <div class="kpi-card success">
-                <div class="kpi-icon success"><i class="fa fa-person-running"></i></div>
+                <div class="kpi-icon"><i class="fa fa-person-running"></i></div>
                 <div>
                     <div class="kpi-num" id="stat-active">—</div>
                     <div class="kpi-label"><?= t('Active Missions') ?></div>
                 </div>
             </div>
             <div class="kpi-card primary">
-                <div class="kpi-icon primary"><i class="fa fa-truck-medical"></i></div>
+                <div class="kpi-icon"><i class="fa fa-truck-medical"></i></div>
                 <div>
                     <div class="kpi-num" id="stat-fleet">—</div>
                     <div class="kpi-label"><?= t('Available Units') ?></div>
                 </div>
             </div>
             <div class="kpi-card warning">
-                <div class="kpi-icon warning"><i class="fa fa-chart-line"></i></div>
+                <div class="kpi-icon"><i class="fa fa-chart-line"></i></div>
                 <div>
                     <div class="kpi-num" id="stat-total">—</div>
                     <div class="kpi-label"><?= t('Total Today') ?></div>
