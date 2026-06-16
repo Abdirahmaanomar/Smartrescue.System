@@ -81,8 +81,10 @@ $page_subtitle = '';
             cursor: default;
             position: relative;
             overflow: hidden;
-            border: none;
-            color: #ffffff;
+            background: var(--card-bg);
+            border: 1px solid rgba(0, 0, 0, 0.05);
+            color: var(--text);
+            box-shadow: var(--shadow);
         }
 
         .kpi-card::before {
@@ -93,33 +95,57 @@ $page_subtitle = '';
             width: 90px;
             height: 90px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.08);
+            background: rgba(0, 0, 0, 0.02);
             pointer-events: none;
         }
 
         .kpi-card:hover {
             transform: translateY(-4px);
-            box-shadow: 0 16px 40px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
         }
 
         .kpi-card.danger {
-            background: linear-gradient(135deg, #e11d48, #be123c);
-            box-shadow: 0 10px 20px rgba(225, 29, 72, 0.18);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.05);
+        }
+        .kpi-card.danger::before {
+            background: rgba(239, 68, 68, 0.06);
+        }
+        .kpi-card.danger .kpi-icon {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444 !important;
         }
 
         .kpi-card.success {
-            background: linear-gradient(135deg, #10b981, #047857);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.18);
+            box-shadow: 0 10px 25px rgba(34, 197, 94, 0.05);
+        }
+        .kpi-card.success::before {
+            background: rgba(34, 197, 94, 0.06);
+        }
+        .kpi-card.success .kpi-icon {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e !important;
         }
 
         .kpi-card.primary {
-            background: linear-gradient(135deg, #2563eb, #1d4ed8);
-            box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18);
+            box-shadow: 0 10px 25px rgba(59, 130, 246, 0.05);
+        }
+        .kpi-card.primary::before {
+            background: rgba(59, 130, 246, 0.06);
+        }
+        .kpi-card.primary .kpi-icon {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6 !important;
         }
 
         .kpi-card.warning {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            box-shadow: 0 10px 20px rgba(245, 158, 11, 0.18);
+            box-shadow: 0 10px 25px rgba(245, 158, 11, 0.05);
+        }
+        .kpi-card.warning::before {
+            background: rgba(245, 158, 11, 0.06);
+        }
+        .kpi-card.warning .kpi-icon {
+            background: rgba(245, 158, 11, 0.1);
+            color: #f59e0b !important;
         }
 
         .kpi-icon {
@@ -131,8 +157,8 @@ $page_subtitle = '';
             justify-content: center;
             font-size: 1.1rem;
             flex-shrink: 0;
-            background: rgba(255, 255, 255, 0.2);
-            color: #ffffff !important;
+            background: rgba(0, 0, 0, 0.05);
+            color: var(--text);
         }
 
         .kpi-icon svg {
@@ -146,7 +172,7 @@ $page_subtitle = '';
             font-weight: 800;
             line-height: 1.1;
             letter-spacing: -0.5px;
-            color: #ffffff;
+            color: var(--text);
         }
 
         .kpi-label {
@@ -154,7 +180,7 @@ $page_subtitle = '';
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            color: rgba(255, 255, 255, 0.82);
+            color: var(--text-muted);
             margin-top: 4px;
         }
 
@@ -165,11 +191,11 @@ $page_subtitle = '';
         }
 
         .kpi-trend.up {
-            color: rgba(255, 255, 255, 0.9);
+            color: #ef4444;
         }
 
         .kpi-trend.down {
-            color: rgba(255, 255, 255, 0.9);
+            color: #22c55e;
         }
 
         /* MAP */
@@ -613,13 +639,7 @@ $page_subtitle = '';
         <div class="kpi-grid">
             <div class="kpi-card danger">
                 <div class="kpi-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                        <circle cx="12" cy="12" r="2.5" fill="#ffffff" />
-                        <path d="M16.24 7.76a6 6 0 0 1 0 8.49" />
-                        <path d="M7.76 16.24a6 6 0 0 1 0-8.49" />
-                        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-                        <path d="M4.93 19.07a10 10 0 0 1 0-14.14" />
-                    </svg>
+                    <i class="fa-solid fa-triangle-exclamation"></i>
                 </div>
                 <div>
                     <div class="kpi-num" id="stat-pending">—</div>
@@ -683,8 +703,6 @@ $page_subtitle = '';
                             class="fa fa-map"></i> Map</button>
                     <button class="layer-btn" id="btn-layer-sat" onclick="setMapLayer('sat')"><i
                             class="fa fa-satellite"></i> Satellite</button>
-                    <button class="layer-btn" id="btn-layer-3d" onclick="setMapLayer('3d')"><i
-                            class="fa fa-mountain"></i> 3D Terrain</button>
                 </div>
             </div>
         </div>
@@ -787,14 +805,39 @@ $page_subtitle = '';
                 const data = await res.json();
                 if (data && data.address) {
                     const a = data.address;
-                    let p = [];
-                    const place = a.mall || a.shop || a.amenity || a.office || a.tourism || a.leisure || a.public_building || a.historic;
-                    if (place && place !== 'yes') p.push(place);
-                    const building = a.building && a.building !== 'yes' ? a.building : null;
-                    if (building) p.push(building);
-                    if (a.house_number) p.push('#' + a.house_number);
-                    if (a.road) p.push(a.road);
-                    let output = p.length > 0 ? p.slice(0, 2).join(', ') : (data.display_name ? data.display_name.split(',').slice(0, 2).join(', ') : 'Unknown');
+                    
+                    // 1. Get neighborhood/suburb
+                    const neighborhoodName = a.neighbourhood || a.suburb || a.quarter || a.district || a.city_district || a.city || a.town || a.village || '';
+                    
+                    // 2. Get specific landmark/amenity (any key not in the ignore list)
+                    const ignoreKeys = [
+                      'road', 'street', 'house_number', 'house_name', 'postcode', 'country', 
+                      'country_code', 'state', 'county', 'city', 'town', 'village', 'municipality', 
+                      'city_district', 'district', 'quarter', 'suburb', 'neighbourhood', 'subdivision', 
+                      'region', 'state_district', 'ISO3166-2-lvl4'
+                    ];
+                    
+                    let landmarkName = '';
+                    for (const key in a) {
+                      if (ignoreKeys.includes(key)) continue;
+                      const val = a[key];
+                      if (val && val.toString().toLowerCase() !== 'yes' && val.toString().toLowerCase() !== 'no') {
+                        landmarkName = val.toString();
+                        break; // Use the first specific landmark
+                      }
+                    }
+                    
+                    let output = '';
+                    if (neighborhoodName && landmarkName) {
+                      output = `${neighborhoodName} (U dhow ${landmarkName})`;
+                    } else if (neighborhoodName) {
+                      output = neighborhoodName;
+                    } else if (landmarkName) {
+                      output = landmarkName;
+                    } else {
+                      output = data.display_name ? data.display_name.split(',')[0].trim() : 'Unknown';
+                    }
+                    
                     geoCache[k] = output;
                     callback(output);
                 }

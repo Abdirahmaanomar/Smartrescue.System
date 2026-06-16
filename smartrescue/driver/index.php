@@ -1413,8 +1413,6 @@ $app_language = $user['language'] ?? 'en';
                     class="fa fa-map"></i> Map</button>
                 <button class="layer-btn" id="btn-layer-sat" onclick="setMapLayer('sat')"><i
                     class="fa fa-satellite"></i> Satellite</button>
-                <button class="layer-btn" id="btn-layer-3d" onclick="setMapLayer('3d')"><i
-                    class="fa fa-mountain"></i> 3D</button>
               </div>
               <button class="follow-btn active" id="follow-btn" onclick="toggleFollow()" title="Toggle map follow mode">
                 <i class="fa fa-location-crosshairs"></i><span id="follow-label">Following You</span>
@@ -2002,8 +2000,7 @@ $app_language = $user['language'] ?? 'en';
 
     const mapLayers = {
       std: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: '0123', maxZoom: 20, attribution: '© Google Maps' }),
-      sat: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { subdomains: '0123', maxZoom: 20, attribution: '© Google Maps' }),
-      '3d': L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', { subdomains: '0123', maxZoom: 20, attribution: '© Google Maps' })
+      sat: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', { subdomains: '0123', maxZoom: 20, attribution: '© Google Maps' })
     };
 
     mapLayers.std.addTo(mapObj); // Default layer
@@ -2327,11 +2324,39 @@ $app_language = $user['language'] ?? 'en';
         const data = await res.json();
         if (data && data.address) {
           const a = data.address;
-          let p = [];
-          if (a.building || a.amenity) p.push(a.building || a.amenity);
-          if (a.road) p.push(a.road);
-          if (a.neighbourhood || a.suburb) p.push(a.neighbourhood || a.suburb);
-          const output = p.length > 0 ? p.join(', ') : (data.display_name ? data.display_name.split(',')[0] : '');
+          
+          // 1. Get neighborhood/suburb
+          const neighborhoodName = a.neighbourhood || a.suburb || a.quarter || a.district || a.city_district || a.city || a.town || a.village || '';
+          
+          // 2. Get specific landmark/amenity (any key not in the ignore list)
+          const ignoreKeys = [
+            'road', 'street', 'house_number', 'house_name', 'postcode', 'country', 
+            'country_code', 'state', 'county', 'city', 'town', 'village', 'municipality', 
+            'city_district', 'district', 'quarter', 'suburb', 'neighbourhood', 'subdivision', 
+            'region', 'state_district', 'ISO3166-2-lvl4'
+          ];
+          
+          let landmarkName = '';
+          for (const key in a) {
+            if (ignoreKeys.includes(key)) continue;
+            const val = a[key];
+            if (val && val.toString().toLowerCase() !== 'yes' && val.toString().toLowerCase() !== 'no') {
+              landmarkName = val.toString();
+              break; // Use the first specific landmark
+            }
+          }
+          
+          let output = '';
+          if (neighborhoodName && landmarkName) {
+            output = `${neighborhoodName} (U dhow ${landmarkName})`;
+          } else if (neighborhoodName) {
+            output = neighborhoodName;
+          } else if (landmarkName) {
+            output = landmarkName;
+          } else {
+            output = data.display_name ? data.display_name.split(',')[0].trim() : '';
+          }
+          
           if (output) geoCache[k] = output;
           return output;
         }

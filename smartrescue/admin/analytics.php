@@ -187,10 +187,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
   display:flex;align-items:center;gap:14px;
   transition:transform 0.25s ease,box-shadow 0.25s ease;
   cursor:default;
-  border:none;
+  background:#ffffff;
+  border:1px solid rgba(0, 0, 0, 0.05);
   position:relative;
   overflow:hidden;
-  color:#ffffff;
+  color:#0f172a;
+  box-shadow:0 4px 24px rgba(0,0,0,0.04);
 }
 .kpi-card::after {
   content:'';
@@ -200,23 +202,42 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
   width:90px;
   height:90px;
   border-radius:50%;
-  background:rgba(255,255,255,0.08);
+  background:rgba(0,0,0,0.02);
   pointer-events:none;
 }
-.kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(0,0,0,0.15);}
+.kpi-card:hover{transform:translateY(-3px);box-shadow:0 12px 24px rgba(0,0,0,0.08);}
 
-.kpi-card.sos-card { background: linear-gradient(135deg, #e11d48, #be123c); box-shadow: 0 10px 20px rgba(225, 29, 72, 0.18); }
-.kpi-card.today-card { background: linear-gradient(135deg, #2563eb, #1d4ed8); box-shadow: 0 10px 20px rgba(37, 99, 235, 0.18); }
-.kpi-card.resp-card { background: linear-gradient(135deg, #f59e0b, #d97706); box-shadow: 0 10px 20px rgba(245, 158, 11, 0.18); }
-.kpi-card.success-card { background: linear-gradient(135deg, #10b981, #047857); box-shadow: 0 10px 20px rgba(16, 185, 129, 0.18); }
-.kpi-card.active-card { background: linear-gradient(135deg, #8b5cf6, #6d28d9); box-shadow: 0 10px 20px rgba(139, 92, 246, 0.18); }
+.kpi-card.sos-card { box-shadow:0 10px 25px rgba(239, 68, 68, 0.05); }
+.kpi-card.sos-card::after { background:rgba(239,68,68,0.06); }
+.kpi-card.sos-card .kpi-icon { background:rgba(239,68,68,0.1); color:#ef4444 !important; }
+.kpi-card.sos-card .kpi-trend { color:#ef4444; }
+
+.kpi-card.today-card { box-shadow:0 10px 25px rgba(59,130,246,0.05); }
+.kpi-card.today-card::after { background:rgba(59,130,246,0.06); }
+.kpi-card.today-card .kpi-icon { background:rgba(59,130,246,0.1); color:#3b82f6 !important; }
+.kpi-card.today-card .kpi-trend { color:#3b82f6; }
+
+.kpi-card.resp-card { box-shadow:0 10px 25px rgba(245,158,11,0.05); }
+.kpi-card.resp-card::after { background:rgba(245,158,11,0.06); }
+.kpi-card.resp-card .kpi-icon { background:rgba(245,158,11,0.1); color:#f59e0b !important; }
+.kpi-card.resp-card .kpi-trend { color:#f59e0b; }
+
+.kpi-card.success-card { box-shadow:0 10px 25px rgba(34,197,94,0.05); }
+.kpi-card.success-card::after { background:rgba(34,197,94,0.06); }
+.kpi-card.success-card .kpi-icon { background:rgba(34,197,94,0.1); color:#22c55e !important; }
+.kpi-card.success-card .kpi-trend { color:#22c55e; }
+
+.kpi-card.active-card { box-shadow:0 10px 25px rgba(139,92,246,0.05); }
+.kpi-card.active-card::after { background:rgba(139,92,246,0.06); }
+.kpi-card.active-card .kpi-icon { background:rgba(139,92,246,0.1); color:#8b5cf6 !important; }
+.kpi-card.active-card .kpi-trend { color:#8b5cf6; }
 
 .kpi-icon{
   width:44px;height:44px;border-radius:12px;
   display:flex;align-items:center;justify-content:center;
   font-size:1.1rem;flex-shrink:0;
-  background:rgba(255,255,255,0.2);
-  color:#ffffff !important;
+  background:rgba(0,0,0,0.05);
+  color:#0f172a;
 }
 .kpi-icon svg{
   display:block;
@@ -224,10 +245,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
   height:22px;
 }
 .kpi-info{}
-.kpi-num{font-size:2.1rem;font-weight:800;line-height:1.1;letter-spacing:-0.5px;color:#ffffff;}
-.kpi-lbl{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:rgba(255,255,255,0.82);margin-top:4px;}
+.kpi-num{font-size:2.1rem;font-weight:800;line-height:1.1;letter-spacing:-0.5px;color:#0f172a;}
+.kpi-lbl{font-size:0.7rem;font-weight:700;text-transform:uppercase;letter-spacing:0.5px;color:#64748b;margin-top:4px;}
 .kpi-trend {
-  font-size:0.66rem;font-weight:600;color:rgba(255,255,255,0.72);
+  font-size:0.66rem;font-weight:600;color:#64748b;
   display:flex;align-items:center;gap:4px;
   margin-top:4px;
 }
@@ -330,13 +351,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
 <div class="kpi-strip">
   <div class="kpi-card sos-card">
     <div class="kpi-icon">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-        <circle cx="12" cy="12" r="2.5" fill="#ffffff" />
-        <path d="M16.24 7.76a6 6 0 0 1 0 8.49" />
-        <path d="M7.76 16.24a6 6 0 0 1 0-8.49" />
-        <path d="M19.07 4.93a10 10 0 0 1 0 14.14" />
-        <path d="M4.93 19.07a10 10 0 0 1 0-14.14" />
-      </svg>
+      <i class="fa-solid fa-triangle-exclamation"></i>
     </div>
     <div class="kpi-info">
       <div class="kpi-num"><?= number_format($total_all) ?></div>

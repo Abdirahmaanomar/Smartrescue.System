@@ -6,7 +6,7 @@ class ApiConstants {
     if (kIsWeb) {
       return 'http://localhost/SmartRescueApp/smartrescue';
     } else if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://192.168.100.53/SmartRescueApp/smartrescue';
+      return 'http://172.20.10.3/SmartRescueApp/smartrescue';
     } else {
       return 'http://localhost/SmartRescueApp/smartrescue';
     }

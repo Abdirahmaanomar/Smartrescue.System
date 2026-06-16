@@ -24,6 +24,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     $type = clean_input($_POST['emergency_type'], $conn);
     $description = isset($_POST['description']) ? clean_input($_POST['description'], $conn) : "";
+    $neighborhood = isset($_POST['neighborhood']) ? clean_input($_POST['neighborhood'], $conn) : "";
     
     $image_paths = array();
     $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
@@ -74,8 +75,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     mysqli_query($conn, $update_user_sql);
 
     // 2. Insert SOS Request
-    $sql = "INSERT INTO rescue_requests (user_id, lat, lng, accuracy, emergency_type, description, evidence_image, status) 
-            VALUES ('$user_id', '$lat', '$lng', '$accuracy', '$type', '$description', '$image_path', 'pending')";
+    $sql = "INSERT INTO rescue_requests (user_id, lat, lng, accuracy, emergency_type, description, evidence_image, neighborhood, status) 
+            VALUES ('$user_id', '$lat', '$lng', '$accuracy', '$type', '$description', '$image_path', '$neighborhood', 'pending')";
 
     if (mysqli_query($conn, $sql)) {
         $response['status'] = "success";

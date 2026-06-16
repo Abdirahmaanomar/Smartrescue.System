@@ -4022,3 +4022,45 @@ SESSION: Array
 )
 
 
+2026-06-15 16:43:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-15 16:43:50
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-15 17:06:33
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+

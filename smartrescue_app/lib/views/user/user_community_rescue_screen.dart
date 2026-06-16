@@ -45,6 +45,17 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
         permission = await Geolocator.requestPermission();
       }
       if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+        // Step 1: Use last known position for instant update
+        final lastKnown = await Geolocator.getLastKnownPosition();
+        if (lastKnown != null && mounted) {
+          setState(() {
+            _userLat = lastKnown.latitude;
+            _userLng = lastKnown.longitude;
+          });
+          _fetchIncidents();
+        }
+
+        // Step 2: Get precise/updated current position
         final pos = await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(accuracy: LocationAccuracy.medium),
         ).timeout(const Duration(seconds: 4));
@@ -298,13 +309,21 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                           });
 
                           try {
+                            final double lat = _userLat ?? 2.0469;
+                            final double lng = _userLng ?? 45.3182;
+                            String neighborhood = '';
+                            try {
+                              neighborhood = await ApiService.reverseGeocode(lat, lng);
+                            } catch (_) {}
+
                             final res = await ApiService.sendSos(
                               userId: user.id.toString(),
-                              lat: _userLat ?? 2.0469,
-                              lng: _userLng ?? 45.3182,
+                              lat: lat,
+                              lng: lng,
                               accuracy: 10.0,
                               emergencyType: selectedType,
                               description: descController.text.trim(),
+                              neighborhood: neighborhood,
                             );
 
                             if (res['status'] == 'success') {
@@ -605,11 +624,11 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                               double.tryParse(incident['lat'].toString()) ?? 2.0469,
                               double.tryParse(incident['lng'].toString()) ?? 45.3182,
                             ),
-                            initialZoom: 15.0,
+                            initialZoom: 18.0,
                           ),
                           children: [
                             TileLayer(
-                              urlTemplate: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
+                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                               userAgentPackageName: 'com.smartrescue.app',
                             ),
                             MarkerLayer(

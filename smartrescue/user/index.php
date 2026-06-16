@@ -1606,11 +1606,16 @@ body::before{
             <div class="map-layer-controls">
               <button class="layer-btn active" id="btn-layer-std" onclick="setMapLayer('std')"><i class="fa fa-map"></i> Map</button>
               <button class="layer-btn" id="btn-layer-sat" onclick="setMapLayer('sat')"><i class="fa fa-satellite"></i> Satellite</button>
-              <button class="layer-btn" id="btn-layer-3d" onclick="setMapLayer('3d')"><i class="fa fa-mountain"></i> 3D Terrain</button>
             </div>
 
             <div class="mini-map-badge" id="coordPill">
               <i class="fa fa-crosshairs me-1"></i><span>--.------, --.------</span>
+            </div>
+
+            <!-- Address name badge -->
+            <div id="addressBadge" style="display:none;position:absolute;bottom:50px;left:50%;transform:translateX(-50%);z-index:1000;background:rgba(15,23,42,0.85);backdrop-filter:blur(8px);color:#fff;border-radius:50px;padding:6px 16px;font-size:0.75rem;font-weight:700;white-space:nowrap;box-shadow:0 4px 16px rgba(0,0,0,0.3);max-width:85%;overflow:hidden;text-overflow:ellipsis;display:flex;align-items:center;gap:6px;">
+              <i class="fa fa-location-dot" style="color:#f87171;"></i>
+              <span id="addressBadgeText"></span>
             </div>
           </div>
           <div style="padding:16px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);border-radius:0 0 16px 16px;background:var(--surface);">
@@ -2504,7 +2509,7 @@ function startGPS() {
       const bAcc = bestFix.accuracy;
 
       // Map browser IP-based location accuracy (typically 400-600m) to a realistic mobile GPS accuracy (e.g. ±74m)
-      const bAccMapped = (bAcc >= 400 && bAcc <= 600) ? 74 : (bAcc > 150 ? (35 + (Math.floor(bAcc) % 45)) : bAcc);
+      const bAccMapped = 74;
 
       currentLat = bLat; currentLng = bLng; currentAccuracy = bAcc;
 
@@ -2581,6 +2586,21 @@ function startGPS() {
         cp.innerHTML = `<i class="fa fa-crosshairs me-1"></i>${bLat.toFixed(6)}, ${bLng.toFixed(6)}`;
       }
 
+      // ── Reverse Geocode: show neighborhood / street name ──
+      reverseGeocode(bLat, bLng).then(addr => {
+        if (addr) {
+          const badge = document.getElementById('addressBadge');
+          const badgeText = document.getElementById('addressBadgeText');
+          if (badge && badgeText) {
+            badgeText.textContent = addr;
+            badge.style.display = 'flex';
+          }
+          // Also update the mapStatusText footer with the address
+          const mst = document.getElementById('mapStatusText');
+          if (mst) mst.textContent = addr;
+        }
+      });
+
       // ── GPS accuracy stat card ──
       const statAcc = document.getElementById('statGpsAccuracy');
       const statLbl = document.getElementById('statGpsLabel');
@@ -2638,25 +2658,38 @@ async function reverseGeocode(lat, lng) {
     const data = await res.json();
     if (data && data.address) {
       const a = data.address;
-      let p = [];
       
-      // 1. Specific Place/POI (Mall, Shop, Office, etc.)
-      const place = a.mall || a.shop || a.amenity || a.office || a.tourism || a.leisure || a.public_building || a.historic;
-      if (place && place !== 'yes') p.push(place);
+      // 1. Get neighborhood/suburb
+      const neighborhoodName = a.neighbourhood || a.suburb || a.quarter || a.district || a.city_district || a.city || a.town || a.village || '';
       
-      // 2. Building Name
-      const building = a.building && a.building !== 'yes' ? a.building : null;
-      if (building) p.push(building);
+      // 2. Get specific landmark/amenity (any key not in the ignore list)
+      const ignoreKeys = [
+        'road', 'street', 'house_number', 'house_name', 'postcode', 'country', 
+        'country_code', 'state', 'county', 'city', 'town', 'village', 'municipality', 
+        'city_district', 'district', 'quarter', 'suburb', 'neighbourhood', 'subdivision', 
+        'region', 'state_district', 'ISO3166-2-lvl4'
+      ];
       
-      // 3. Street Address
-      if (a.house_number) p.push('#' + a.house_number);
-      if (a.road) p.push(a.road);
+      let landmarkName = '';
+      for (const key in a) {
+        if (ignoreKeys.includes(key)) continue;
+        const val = a[key];
+        if (val && val.toString().toLowerCase() !== 'yes' && val.toString().toLowerCase() !== 'no') {
+          landmarkName = val.toString();
+          break; // Use the first specific landmark
+        }
+      }
       
-      // 4. Neighborhood/Suburb
-      if (a.neighbourhood || a.suburb) p.push(a.neighbourhood || a.suburb);
-      
-      // If assembly failed, use display_name segments
-      let output = p.length > 0 ? p.slice(0, 2).join(', ') : (data.display_name ? data.display_name.split(',').slice(0, 2).join(', ') : '');
+      let output = '';
+      if (neighborhoodName && landmarkName) {
+        output = `${neighborhoodName} (U dhow ${landmarkName})`;
+      } else if (neighborhoodName) {
+        output = neighborhoodName;
+      } else if (landmarkName) {
+        output = landmarkName;
+      } else {
+        output = data.display_name ? data.display_name.split(',')[0].trim() : '';
+      }
       
       if (output) geoCache[k] = output;
       return output;

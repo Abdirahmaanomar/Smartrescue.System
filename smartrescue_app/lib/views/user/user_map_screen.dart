@@ -108,22 +108,45 @@ class _UserMapScreenState extends State<UserMapScreen> {
 
     if (permission == LocationPermission.deniedForever) return;
 
-    Position pos = await Geolocator.getCurrentPosition();
-    if (mounted) {
-      setState(() {
-        _currentLocation = LatLng(pos.latitude, pos.longitude);
-        _gpsAccuracy = pos.accuracy;
-      });
-      _mapController.move(_currentLocation!, 15);
-      
-      final sos = Provider.of<SosProvider>(context, listen: false);
-      if (sos.hasActiveRequest &&
-          sos.activeRequest!.driverLat != null &&
-          sos.activeRequest!.driverLng != null) {
-        _lastFetchedDriverLocation = LatLng(sos.activeRequest!.driverLat!, sos.activeRequest!.driverLng!);
-        _fetchRoute(_currentLocation!, _lastFetchedDriverLocation!);
-        _fitDriverAndMe();
+    // ── Step 1: Show last known position IMMEDIATELY (cached, near-instant) ──
+    try {
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null && mounted) {
+        setState(() {
+          _currentLocation = LatLng(lastKnown.latitude, lastKnown.longitude);
+          _gpsAccuracy = lastKnown.accuracy;
+        });
+        _mapController.move(_currentLocation!, 17);
       }
+    } catch (_) {}
+
+    // ── Step 2: Get accurate current position (may take a few seconds) ──
+    try {
+      final pos = await Geolocator.getCurrentPosition(
+        locationSettings: const LocationSettings(
+          accuracy: LocationAccuracy.high,
+          timeLimit: Duration(seconds: 10),
+        ),
+      );
+      if (mounted) {
+        setState(() {
+          _currentLocation = LatLng(pos.latitude, pos.longitude);
+          _gpsAccuracy = pos.accuracy;
+        });
+        _mapController.move(_currentLocation!, 18);
+
+        final sos = Provider.of<SosProvider>(context, listen: false);
+        if (sos.hasActiveRequest &&
+            sos.activeRequest!.driverLat != null &&
+            sos.activeRequest!.driverLng != null) {
+          _lastFetchedDriverLocation = LatLng(
+              sos.activeRequest!.driverLat!, sos.activeRequest!.driverLng!);
+          _fetchRoute(_currentLocation!, _lastFetchedDriverLocation!);
+          _fitDriverAndMe();
+        }
+      }
+    } catch (_) {
+      // If high-accuracy fails, keep last-known position shown above
     }
   }
 
@@ -132,7 +155,7 @@ class _UserMapScreenState extends State<UserMapScreen> {
       final auth = Provider.of<AuthProvider>(context, listen: false);
       Position pos = await Geolocator.getCurrentPosition(
         locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      );
+      ).timeout(const Duration(seconds: 8));
       if (auth.user != null) {
         await ApiService.updateUserLocation(auth.user!.id.toString(), pos.latitude, pos.longitude);
       }
@@ -237,8 +260,6 @@ class _UserMapScreenState extends State<UserMapScreen> {
     switch (_mapType) {
       case 'sat':
         return 'https://mt1.google.com/vt/lyrs=y&x={x}&y={y}&z={z}';
-      case 'terrain':
-        return 'https://mt1.google.com/vt/lyrs=p&x={x}&y={y}&z={z}';
       case 'std':
       default:
         return 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}';
@@ -399,7 +420,7 @@ class _UserMapScreenState extends State<UserMapScreen> {
                       InkWell(
                         onTap: () {
                           if (_currentLocation != null) {
-                            _mapController.move(_currentLocation!, 16);
+                            _mapController.move(_currentLocation!, 15);
                           }
                         },
                         borderRadius: BorderRadius.circular(12),
@@ -535,7 +556,6 @@ class _UserMapScreenState extends State<UserMapScreen> {
                                 children: [
                                   _buildMapTypeBtn(context, "std", Icons.map, AppTranslator.t(context, 'Map')),
                                   _buildMapTypeBtn(context, "sat", Icons.layers, AppTranslator.t(context, 'Satellite')),
-                                  _buildMapTypeBtn(context, "terrain", Icons.terrain, AppTranslator.t(context, '3D Terrain')),
                                 ],
                               ),
                             ),

@@ -165,6 +165,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         return;
       }
 
+      // ── Step 1: Use last known position for instant update ──
+      final lastKnown = await Geolocator.getLastKnownPosition();
+      if (lastKnown != null && mounted) {
+        setState(() {
+          _gpsAccuracy = '±${lastKnown.accuracy.toStringAsFixed(0)}m';
+        });
+      }
+
+      // ── Step 2: Get precise current position in background ──
       Position pos = await Geolocator.getCurrentPosition(
         locationSettings:
             const LocationSettings(accuracy: LocationAccuracy.high),

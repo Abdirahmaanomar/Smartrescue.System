@@ -67,6 +67,15 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         try {
           LocationPermission permission = await Geolocator.checkPermission();
           if (permission == LocationPermission.always || permission == LocationPermission.whileInUse) {
+            // Step 1: Use last known position for instant update
+            final lastKnown = await Geolocator.getLastKnownPosition();
+            if (lastKnown != null && mounted) {
+              setState(() {
+                _gpsCoordinates = '${lastKnown.latitude.toStringAsFixed(6)}, ${lastKnown.longitude.toStringAsFixed(6)}';
+              });
+            }
+            
+            // Step 2: Get precise current position
             Position pos = await Geolocator.getCurrentPosition(
               locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
             ).timeout(const Duration(seconds: 5));

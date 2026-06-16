@@ -72,6 +72,7 @@ if (mysqli_num_rows($tables) == 0) {
         "evidence_image" => "VARCHAR(255)",
         "accuracy" => "FLOAT",
         "volunteer_id" => "INT NULL",
+        "neighborhood" => "VARCHAR(255) NULL",
         "updated_at" => "TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP"
     ];
     foreach ($cols as $col => $def) {

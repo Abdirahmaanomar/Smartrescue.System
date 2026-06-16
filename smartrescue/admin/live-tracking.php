@@ -184,7 +184,6 @@ body{font-family:'Outfit',sans-serif;background:#0a1628;color:#fff;overflow:hidd
     <div style="width:1px;height:20px;background:rgba(255,255,255,0.1);margin:0 4px;"></div>
     <div class="hud-btn" id="btn-layer-std" onclick="setLayer('std')" style="background:rgba(59,130,246,0.3);color:white;border-color:rgba(59,130,246,0.4);"><i class="fa fa-map"></i> Map</div>
     <div class="hud-btn" id="btn-layer-sat" onclick="setLayer('sat')"><i class="fa fa-satellite"></i> Satellite</div>
-    <div class="hud-btn" id="btn-layer-3d" onclick="setLayer('3d')"><i class="fa fa-mountain"></i> 3D</div>
 </div>
 
 <!-- Refresh indicator -->
@@ -235,12 +234,11 @@ body{font-family:'Outfit',sans-serif;background:#0a1628;color:#fff;overflow:hidd
 <script>
 // Map
 const mapLayers = {
-    std: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains: '0123', attribution:'© Google Maps', maxZoom:20}),
-    sat: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {subdomains: '0123', attribution:'© Google Maps', maxZoom:20}),
-    '3d': L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {subdomains: '0123', attribution:'© Google Maps', maxZoom:20})
+    std: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: '0123', attribution: '© Google Maps', maxZoom: 20 }),
+    sat: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {subdomains: '0123', attribution:'© Google Maps', maxZoom:20})
 };
 
-const map = L.map('live-map', {zoomControl:false, layers: [mapLayers.std]}).setView([2.0469, 45.3182], 14);
+const map = L.map('live-map', {zoomControl:false, layers: [mapLayers.std]}).setView([2.0469, 45.3182], 13);
 L.control.zoom({position:'bottomright'}).addTo(map);
 
 function setLayer(type) {
@@ -250,7 +248,6 @@ function setLayer(type) {
     // Reset buttons
     document.getElementById('btn-layer-std').style = "";
     document.getElementById('btn-layer-sat').style = "";
-    document.getElementById('btn-layer-3d').style = "";
     
     // Highlight active
     document.getElementById('btn-layer-' + type).style.background = "rgba(59,130,246,0.3)";

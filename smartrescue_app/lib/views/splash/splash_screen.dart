@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:geolocator/geolocator.dart';
 import '../../providers/auth_provider.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -35,9 +36,13 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
   Future<void> _checkAuth() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
-    await auth.checkSession();
 
-    await Future.delayed(const Duration(milliseconds: 2000)); // Minimum splash duration
+    // Run session check + location pre-warm in parallel during splash delay
+    await Future.wait([
+      auth.checkSession(),
+      _preWarmLocation(),
+      Future.delayed(const Duration(milliseconds: 2000)), // Minimum splash duration
+    ]);
 
     if (!mounted) return;
 
@@ -56,6 +61,38 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     } else {
       Navigator.of(context).pushReplacementNamed('/login');
     }
+  }
+
+  /// Requests location permission and triggers an initial GPS fix during splash.
+  /// This warms up the GPS cache so that getLastKnownPosition() works instantly
+  /// when the user opens the map screen.
+  Future<void> _preWarmLocation() async {
+    try {
+      final hasPermission = await _checkAndRequestLocationPermission();
+      if (hasPermission) {
+        // Trigger a low-accuracy warm-up fix to populate the OS location cache
+        await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(
+            accuracy: LocationAccuracy.low,
+            timeLimit: Duration(seconds: 8),
+          ),
+        );
+      }
+    } catch (_) {
+      // Silent fail – location pre-warm is best-effort only
+    }
+  }
+
+  Future<bool> _checkAndRequestLocationPermission() async {
+    final serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return false;
+
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    return permission != LocationPermission.denied &&
+        permission != LocationPermission.deniedForever;
   }
 
   @override

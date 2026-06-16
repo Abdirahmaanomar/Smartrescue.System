@@ -152,6 +152,56 @@ class ApiService {
   }
 
   // ─── User APIs ───────────────────────────────────────────────────────────────
+  static Future<String> reverseGeocode(double lat, double lng) async {
+    try {
+      final uri = Uri.parse(
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&zoom=18&addressdetails=1',
+      );
+      final res = await http.get(uri, headers: {
+        'Accept-Language': 'en',
+        'User-Agent': 'SmartRescueApp/1.0'
+      }).timeout(const Duration(seconds: 5));
+      if (res.statusCode == 200) {
+        final data = jsonDecode(res.body);
+        final a = data['address'] as Map<String, dynamic>? ?? {};
+
+        // 1. Get neighborhood/suburb
+        final area = a['neighbourhood'] ?? a['suburb'] ?? a['quarter'] ?? a['district'] ?? a['city_district'] ?? a['city'] ?? a['town'] ?? a['village'];
+        final String neighborhoodName = area != null ? area.toString() : '';
+
+        // 2. Get specific landmark/amenity (any key not in the ignore list)
+        const ignoreKeys = {
+          'road', 'street', 'house_number', 'house_name', 'postcode', 'country', 
+          'country_code', 'state', 'county', 'city', 'town', 'village', 'municipality', 
+          'city_district', 'district', 'quarter', 'suburb', 'neighbourhood', 'subdivision', 
+          'region', 'state_district', 'ISO3166-2-lvl4'
+        };
+
+        String landmarkName = '';
+        for (final entry in a.entries) {
+          if (ignoreKeys.contains(entry.key)) continue;
+          final val = entry.value;
+          if (val != null && val.toString().toLowerCase() != 'yes' && val.toString().toLowerCase() != 'no') {
+            landmarkName = val.toString();
+            break; // Use the first matching specific landmark
+          }
+        }
+
+        if (neighborhoodName.isNotEmpty && landmarkName.isNotEmpty) {
+          return '$neighborhoodName (U dhow $landmarkName)';
+        } else if (neighborhoodName.isNotEmpty) {
+          return neighborhoodName;
+        } else if (landmarkName.isNotEmpty) {
+          return landmarkName;
+        } else {
+          final display = data['display_name']?.toString() ?? '';
+          return display.isNotEmpty ? display.split(',').first.trim() : '';
+        }
+      }
+    } catch (_) {}
+    return '';
+  }
+
   static Future<Map<String, dynamic>> sendSos({
     required String userId,
     required double lat,
@@ -159,6 +209,7 @@ class ApiService {
     required double accuracy,
     required String emergencyType,
     String description = '',
+    String neighborhood = '',
     XFile? evidenceImage,
     List<XFile>? evidenceImages,
   }) async {
@@ -180,6 +231,7 @@ class ApiService {
       request.fields['accuracy'] = accuracy.toString();
       request.fields['emergency_type'] = emergencyType;
       request.fields['description'] = description;
+      request.fields['neighborhood'] = neighborhood;
 
       // Use evidenceImages list if provided, else fall back to single evidenceImage
       final List<XFile> imagesToUpload = evidenceImages != null && evidenceImages.isNotEmpty

@@ -127,37 +127,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
 .tl-time{font-size:0.7rem;font-weight:700;color:var(--text-muted);margin-bottom:2px;}
 .tl-label{font-size:0.85rem;font-weight:700;}
 
-/* MAP LAYER CONTROLS */
-.map-layer-controls {
-    position: absolute;
-    top: 16px;
-    right: 16px;
-    z-index: 800;
-    display: flex;
-    background: var(--card-bg);
-    backdrop-filter: blur(12px);
-    -webkit-backdrop-filter: blur(12px);
-    border-radius: 12px;
-    box-shadow: var(--shadow);
-    overflow: hidden;
-    border: 1px solid rgba(0, 0, 0, 0.08);
-}
-.layer-btn {
-    background: transparent;
-    border: none;
-    padding: 8px 12px;
-    font-size: 0.72rem;
-    font-weight: 700;
-    color: var(--text-muted);
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 6px;
-}
-.layer-btn:not(:last-child) { border-right: 1px solid rgba(0, 0, 0, 0.08); }
-.layer-btn:hover { background: rgba(59, 130, 246, 0.05); color: var(--text); }
-.layer-btn.active { background: var(--accent); color: #fff; }
+
 
 /* Modal */
 .assign-modal-backdrop{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:9000;align-items:center;justify-content:center;}
@@ -227,6 +197,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
                 <div class="info-row">
                     <span class="info-row-label">GPS Coordinates</span>
                     <span class="info-row-value"><?= !empty($inc['lat']) ? round($inc['lat'],5).', '.round($inc['lng'],5) : 'Unknown' ?></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-row-label">📍 Xaafadda / Neighborhood</span>
+                    <span class="info-row-value" style="color:<?= !empty($inc['neighborhood']) ? '#10b981' : '#94a3b8' ?>;font-weight:800;">
+                        <?= !empty($inc['neighborhood']) ? htmlspecialchars($inc['neighborhood']) : '<span style="color:#94a3b8;font-weight:500;">Not recorded</span>' ?>
+                    </span>
                 </div>
             </div>
         </div>
@@ -307,11 +283,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
             <div class="panel-head"><h5><i class="fa fa-map-location-dot text-primary"></i> Exact Location</h5></div>
             <div class="panel-body" style="position:relative;">
                 <div id="incident-map"></div>
-                <div class="map-layer-controls">
-                    <button class="layer-btn active" id="btn-layer-std" onclick="setMapLayer('std')"><i class="fa fa-map"></i> Map</button>
-                    <button class="layer-btn" id="btn-layer-sat" onclick="setMapLayer('sat')"><i class="fa fa-satellite"></i> Satellite</button>
-                    <button class="layer-btn" id="btn-layer-3d" onclick="setMapLayer('3d')"><i class="fa fa-mountain"></i> 3D</button>
-                </div>
             </div>
         </div>
         <?php endif; ?>
@@ -450,21 +421,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
 <?php if ($inc['lat'] && $inc['lng']): ?>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map = L.map('incident-map').setView([<?= $inc['lat'] ?>, <?= $inc['lng'] ?>], 16);
-const mapLayers = {
-    std: L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {subdomains:'0123', attribution:'© Google Maps', maxZoom:20}),
-    sat: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {subdomains:'0123', attribution:'© Google Maps', maxZoom:20}),
-    '3d': L.tileLayer('https://mt{s}.google.com/vt/lyrs=p&x={x}&y={y}&z={z}', {subdomains:'0123', attribution:'© Google Maps', maxZoom:20})
-};
-
-mapLayers.std.addTo(map);
-
-function setMapLayer(type) {
-    Object.keys(mapLayers).forEach(k => map.removeLayer(mapLayers[k]));
-    map.addLayer(mapLayers[type]);
-    document.querySelectorAll('.layer-btn').forEach(btn => btn.classList.remove('active'));
-    document.getElementById('btn-layer-' + type).classList.add('active');
-}
+const map = L.map('incident-map').setView([<?= $inc['lat'] ?>, <?= $inc['lng'] ?>], 15);
+L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: '0123', attribution: '© Google Maps', maxZoom: 20 }).addTo(map);
 const icon = L.divIcon({
     className:'',
     html:`<div style="width:20px;height:20px;background:#ef4444;border-radius:50%;border:3px solid white;box-shadow:0 0 0 6px rgba(239,68,68,0.2),0 4px 12px rgba(239,68,68,0.4)"></div>`,
