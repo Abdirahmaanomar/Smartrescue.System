@@ -1,4 +1,5 @@
 <?php
+$start_time = microtime(true);
 session_start();
 require_once '../config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -9,7 +10,7 @@ require_once '../includes/functions.php';
 require_once '../includes/session_guard.php';
 require_once 'includes/lang.php';
 
-$refresh_rate = get_setting($conn, 'refresh_rate', '4');
+$refresh_rate = get_setting($conn, 'refresh_rate', '7');
 $sys_lang = get_setting($conn, 'language', 'en');
 $page_title = 'Dashboard';
 $page_subtitle = '';
@@ -850,7 +851,7 @@ $page_subtitle = '';
 
         const victimIcon = L.divIcon({
             className: '',
-            html: `<div style="background:#ef4444;color:#ffffff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(239,68,68,0.2), 0 4px 12px rgba(239,68,68,0.3);border:2px solid #ffffff;animation:map-pulse 2s infinite;"><i class="fa-solid fa-rss" style="font-size:12px"></i></div>`,
+            html: `<div style="background:#ef4444;color:#ffffff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 3px rgba(239,68,68,0.2), 0 4px 12px rgba(239,68,68,0.3);border:2px solid #ffffff;animation:map-pulse 2s infinite;"></div>`,
             iconSize: [28, 28], iconAnchor: [14, 14]
         });
 
@@ -1101,13 +1102,11 @@ $page_subtitle = '';
         }
 
         initMap();
-        pollData();
+        pollData(); // Initial load
 
-        // Dynamic Refresh Rate from Settings
+        // Configurable refresh rate (default 7s). Admin can change in Settings.
         const refreshSeconds = <?= (int) $refresh_rate ?>;
         setInterval(pollData, refreshSeconds * 1000);
-
-        pollData();
 
         // Removed local logic in favor of global assign_modal.php
 

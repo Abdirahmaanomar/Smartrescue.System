@@ -5,8 +5,8 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php"); exit();
 }
 
-// Fetch all regular users
-$q = "SELECT id, fullname, email, phone, profile_image, created_at, role
+// Fetch all regular users (include location_updated_at for online/offline status)
+$q = "SELECT id, fullname, email, phone, profile_image, created_at, role, location_updated_at
       FROM users
       WHERE role = 'user'
       ORDER BY created_at DESC";
@@ -456,7 +456,7 @@ body::after {
     color: #94a3b8;
 }
 
-/* Pulsing Status Badge */
+/* Pulsing Status Badge — Active (online) */
 .status-badge {
     display: inline-flex; 
     align-items: center; 
@@ -484,6 +484,28 @@ body::after {
     0% { transform: scale(0.9); opacity: 0.7; }
     50% { transform: scale(1.3); opacity: 1; box-shadow: 0 0 10px #10b981; }
     100% { transform: scale(0.9); opacity: 0.7; }
+}
+/* Static Offline Badge */
+.status-badge-offline {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    border-radius: 50px;
+    font-size: .75rem;
+    font-weight: 700;
+    text-transform: capitalize;
+    background: rgba(148, 163, 184, 0.08);
+    color: #64748b;
+    border: 1.5px solid rgba(148, 163, 184, 0.18);
+    box-shadow: var(--shadow-sm);
+}
+.status-dot-offline {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #94a3b8;
+    display: inline-block;
 }
 
 /* Modern Action Buttons */
@@ -692,10 +714,22 @@ body::after {
                 </div>
               </td>
               <td>
-                <span class="status-badge">
-                  <span class="status-dot"></span>
-                  Active
-                </span>
+                <?php
+                  // Consider a user Active if their location was updated in the last 10 minutes
+                  $last_seen = strtotime($u['location_updated_at']);
+                  $is_online = (time() - $last_seen) <= 600; // 600 seconds = 10 minutes
+                ?>
+                <?php if ($is_online): ?>
+                  <span class="status-badge">
+                    <span class="status-dot"></span>
+                    Active
+                  </span>
+                <?php else: ?>
+                  <span class="status-badge-offline">
+                    <span class="status-dot-offline"></span>
+                    Offline
+                  </span>
+                <?php endif; ?>
               </td>
               <td>
                 <div style="font-size:0.82rem;color:var(--muted);font-weight:600;">
@@ -757,7 +791,12 @@ body::after {
         </div>
         <div class="mb-4">
           <label class="form-label">Password</label>
-          <input type="password" name="password" class="form-control" placeholder="••••••••" required>
+          <div class="pwd-wrapper">
+            <input type="password" name="password" id="user-password" class="form-control" placeholder="••••••••" required>
+            <button type="button" class="pwd-toggle" onclick="togglePassword('user-password', this)" tabindex="-1" aria-label="Show/Hide password">
+              <i class="fa fa-eye-slash" id="pwd-icon-user-password"></i>
+            </button>
+          </div>
         </div>
         <div class="modal-actions mt-4 pt-2">
           <button type="button" class="modal-btn modal-cancel" onclick="closeAddModal()">Cancel</button>
@@ -915,6 +954,36 @@ body::after {
     color: #94a3b8;
     font-weight: 400;
 }
+
+/* Password visibility toggle */
+.pwd-wrapper {
+    position: relative;
+    width: 100%;
+}
+.pwd-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    z-index: 10;
+    transition: color 0.2s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pwd-toggle:hover {
+    color: var(--accent, #3b82f6);
+}
+.pwd-wrapper .form-control {
+    padding-right: 46px !important;
+}
 </style>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
@@ -976,6 +1045,20 @@ function closeAddModal() {
     const m = document.getElementById('addUserModal');
     m.classList.remove('show');
     setTimeout(() => { m.style.display = 'none'; }, 250);
+}
+
+function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    const icon  = document.getElementById('pwd-icon-' + fieldId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        btn.style.color = 'var(--accent, #3b82f6)';
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        btn.style.color = '';
+    }
 }
 </script>
 </body>

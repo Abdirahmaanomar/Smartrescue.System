@@ -10,13 +10,15 @@ if (!function_exists('t')) {
     require_once __DIR__ . '/lang.php';
 }
 
-// Always sync profile_image from DB into session so avatar stays current
-if (isset($conn) && isset($_SESSION['user_id'])) {
+// Sync profile image into session only if not already cached this session.
+// This prevents an extra DB round-trip on every admin page load.
+if (isset($conn) && isset($_SESSION['user_id']) && !isset($_SESSION['_profile_synced'])) {
     $_sb_uid = $_SESSION['user_id'];
     $_sb_res = mysqli_query($conn, "SELECT profile_image, fullname FROM users WHERE id='$_sb_uid' LIMIT 1");
     if ($_sb_res && $_sb_row = mysqli_fetch_assoc($_sb_res)) {
-        $_SESSION['profile_image'] = $_sb_row['profile_image'] ?? '';
-        $_SESSION['fullname']      = $_sb_row['fullname'] ?? $_SESSION['fullname'];
+        $_SESSION['profile_image']  = $_sb_row['profile_image'] ?? '';
+        $_SESSION['fullname']       = $_sb_row['fullname'] ?? ($_SESSION['fullname'] ?? 'Admin');
+        $_SESSION['_profile_synced'] = true;
     }
 }
 ?>
@@ -557,16 +559,18 @@ if (isset($conn) && isset($_SESSION['user_id'])) {
 })();
 
 // ── Sidebar Badge Polling ───────────────────────────────
+// Uses lightweight /get_badge_counts.php (single COUNT query, no JOINs)
+// instead of the full fleet data API. Polls every 15s (was 5s).
 function updateSidebarBadge() {
-    fetch('../api/admin_get_fleet_data.php')
+    fetch('../api/admin/get_badge_counts.php')
         .then(r => r.json())
         .then(d => {
             if (d.status === 'success') {
                 const badge = document.getElementById('sb-pending-badge');
                 const notifBadge = document.getElementById('sb-notif-badge');
-                if (d.stats.pending > 0) {
-                    if(badge) { badge.textContent = d.stats.pending; badge.style.display = 'inline'; }
-                    if(notifBadge) { notifBadge.textContent = d.stats.pending; notifBadge.style.display = 'inline'; }
+                if (d.pending > 0) {
+                    if(badge) { badge.textContent = d.pending; badge.style.display = 'inline'; }
+                    if(notifBadge) { notifBadge.textContent = d.pending; notifBadge.style.display = 'inline'; }
                 } else {
                     if(badge) badge.style.display = 'none';
                     if(notifBadge) notifBadge.style.display = 'none';
@@ -575,5 +579,5 @@ function updateSidebarBadge() {
         }).catch(() => {});
 }
 updateSidebarBadge();
-setInterval(updateSidebarBadge, 5000);
+setInterval(updateSidebarBadge, 15000);
 </script>

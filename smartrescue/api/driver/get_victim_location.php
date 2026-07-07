@@ -23,12 +23,12 @@ if (!$unit) {
 $unit_id = $unit['id'];
 
 // Get latest active rescue request assigned to this unit
-$sql = "SELECT r.id, r.lat, r.lng, r.emergency_type, r.status,
+$sql = "SELECT r.id, r.lat, r.lng, r.emergency_type, r.status, r.neighborhood,
                u.fullname AS patient_name, u.phone AS patient_phone
         FROM rescue_requests r
         JOIN users u ON r.user_id = u.id
         WHERE r.assigned_unit_id = '$unit_id'
-          AND r.status = 'accepted'
+          AND r.status IN ('pending', 'accepted', 'en_route', 'arrived')
         ORDER BY r.created_at DESC
         LIMIT 1";
 
@@ -43,6 +43,7 @@ if ($result && mysqli_num_rows($result) > 0) {
         "patient_name"  => $row['patient_name'],
         "patient_phone" => $row['patient_phone'],
         "emergency"     => $row['emergency_type'],
+        "neighborhood"  => $row['neighborhood'],
         "request_id"    => $row['id']
     ]);
 } else {

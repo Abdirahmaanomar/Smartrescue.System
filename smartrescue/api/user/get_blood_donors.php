@@ -3,20 +3,7 @@ header("Content-Type: application/json");
 session_start();
 require_once '../../config/db.php';
 
-// Hubi blood_donors table jirtaa, haddaan jirin samee
-$check = mysqli_query($conn, "SHOW TABLES LIKE 'blood_donors'");
-if (mysqli_num_rows($check) == 0) {
-    mysqli_query($conn, "CREATE TABLE blood_donors (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        name VARCHAR(100) NOT NULL,
-        blood_type VARCHAR(5) NOT NULL,
-        phone VARCHAR(20) NOT NULL,
-        lat DECIMAL(10,8) NULL,
-        lng DECIMAL(11,8) NULL,
-        is_available TINYINT(1) DEFAULT 1,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )");
-}
+// Fetch available blood donors
 
 $result = mysqli_query($conn, "
     SELECT id, name, blood_type, phone, lat, lng, is_available

@@ -38,6 +38,7 @@ class SosProvider extends ChangeNotifier {
   SosState _sosState = SosState.idle;
   String _selectedType = 'Medical';
   String? _description;
+  String? _customNeighborhood;
   XFile? _evidenceImage;
   List<XFile> _evidenceImages = [];
   RescueRequestModel? _activeRequest;
@@ -47,10 +48,15 @@ class SosProvider extends ChangeNotifier {
   // Grace period: number of consecutive no_active_request responses to ignore after sending SOS
   int _noRequestGraceTicks = 0;
   int? _dismissedCompletedRequestId;
+  // Fast-poll burst: poll every 1s for the first N ticks after SOS is sent
+  int _fastPollTicks = 0;
+  // Optional callback to notify the UI that notifications should be refreshed
+  VoidCallback? _onNotificationsChanged;
 
   SosState get sosState => _sosState;
   String get selectedType => _selectedType;
   String? get description => _description;
+  String? get customNeighborhood => _customNeighborhood;
   RescueRequestModel? get activeRequest => _activeRequest;
   String? get errorMessage => _errorMessage;
   bool get hasActiveRequest => _activeRequest != null;
@@ -65,6 +71,11 @@ class SosProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  /// Register a callback that fires when new notifications should be fetched.
+  void setNotificationsChangedCallback(VoidCallback cb) {
+    _onNotificationsChanged = cb;
+  }
+
   void init(String userId) {
     _userId = userId;
     _startPolling();
@@ -77,6 +88,11 @@ class SosProvider extends ChangeNotifier {
 
   void setDescription(String desc) {
     _description = desc;
+    notifyListeners();
+  }
+
+  void setCustomNeighborhood(String val) {
+    _customNeighborhood = val;
     notifyListeners();
   }
 
@@ -116,6 +132,14 @@ class SosProvider extends ChangeNotifier {
     _sosState = SosState.sending;
     _errorMessage = null;
     _dismissedCompletedRequestId = null;
+    // Set placeholder request immediately so UI shows tracker right away
+    _activeRequest = RescueRequestModel(
+      id: 0,
+      emergencyType: _selectedType,
+      status: 'pending',
+      lat: 0.0,
+      lng: 0.0,
+    );
     notifyListeners();
 
     if (_userId == null) {
@@ -133,6 +157,7 @@ class SosProvider extends ChangeNotifier {
       if (_userId == null) {
         _errorMessage = 'User session missing. Please restart the app.';
         _sosState = SosState.idle;
+        _activeRequest = null;
         notifyListeners();
         return false;
       }
@@ -143,9 +168,20 @@ class SosProvider extends ChangeNotifier {
       // Use specific error set by _determinePosition, or fallback generic message
       _errorMessage ??= 'Could not get your location. Please ensure GPS is enabled and permissions are granted.';
       _sosState = SosState.idle;
+      _activeRequest = null;
       notifyListeners();
       return false;
     }
+
+    // Update placeholder with actual location coordinates once obtained
+    _activeRequest = RescueRequestModel(
+      id: 0,
+      emergencyType: _selectedType,
+      status: 'pending',
+      lat: pos.latitude,
+      lng: pos.longitude,
+    );
+    notifyListeners();
 
     final isOffline = _offlineManager?.isOffline ?? false;
     if (isOffline) {
@@ -160,15 +196,20 @@ class SosProvider extends ChangeNotifier {
         );
         _errorMessage = 'Offline mode: SOS saved. It will be sent automatically when connection is restored.';
         _sosState = SosState.idle;
+        _activeRequest = null;
         notifyListeners();
         return true;
       } catch (e) {
         _errorMessage = 'Failed to queue SOS: $e';
         _sosState = SosState.idle;
+        _activeRequest = null;
         notifyListeners();
         return false;
       }
     }
+
+    // Use custom neighborhood if provided. The server will reverse geocode asynchronously in the background.
+    String neighborhood = _customNeighborhood ?? '';
 
     try {
       final result = await ApiService.sendSos(
@@ -178,6 +219,7 @@ class SosProvider extends ChangeNotifier {
         accuracy: pos.accuracy,
         emergencyType: _selectedType,
         description: _description ?? '',
+        neighborhood: neighborhood,
         evidenceImage: _evidenceImage,
         evidenceImages: _evidenceImages.isNotEmpty ? _evidenceImages : null,
       );
@@ -188,29 +230,39 @@ class SosProvider extends ChangeNotifier {
         _evidenceImages = [];
         _description = null;
         _popupMessage = 'SOS_SENT';
-        // Set a grace period so fetchStatus won't clear UI if API is slow
-        _noRequestGraceTicks = 5;
-        // Set placeholder request immediately so UI shows tracker right away
+        // Grace period: ignore no_active_request for a short while
+        _noRequestGraceTicks = 3;
+        // Fast-poll burst: poll every 1s for the next 8 ticks to pick up status fast
+        _fastPollTicks = 8;
+        
+        final insertedId = int.tryParse(result['id']?.toString() ?? '0') ?? 0;
+        // Update placeholder request with the real ID returned from server
         _activeRequest = RescueRequestModel(
-          id: 0,
+          id: insertedId,
           emergencyType: _selectedType,
           status: 'pending',
           lat: pos.latitude,
           lng: pos.longitude,
         );
         notifyListeners();
+        // Switch to 1s fast-poll immediately
+        _updatePollingInterval(1);
         // Immediate poll to get the real request from DB
-        await _fetchStatus();
+        _fetchStatus();
+        // Notify listeners to refresh notifications panel
+        _onNotificationsChanged?.call();
         return true;
       } else {
         _errorMessage = result['message'] ?? 'Failed to send SOS';
         _sosState = SosState.idle;
+        _activeRequest = null;
         notifyListeners();
         return false;
       }
     } catch (e) {
       _errorMessage = 'Connection Error: Unable to send SOS. Please check your network or server URL. (Error: $e)';
       _sosState = SosState.idle;
+      _activeRequest = null;
       notifyListeners();
       return false;
     }
@@ -225,6 +277,16 @@ class SosProvider extends ChangeNotifier {
     _pollTimer?.cancel();
     _pollTimer = Timer.periodic(Duration(seconds: seconds), (_) => _fetchStatus());
     print("SOS_POLLING_INTERVAL: Updated to $seconds seconds");
+  }
+
+  /// Called each tick during fast-poll burst to wind it down.
+  void _tickFastPoll() {
+    if (_fastPollTicks <= 0) return;
+    _fastPollTicks--;
+    if (_fastPollTicks == 0) {
+      // Burst finished — return to normal active polling speed
+      _updatePollingInterval(_activeRequest != null ? 3 : 8);
+    }
   }
 
   void _startPolling() {
@@ -252,6 +314,15 @@ class SosProvider extends ChangeNotifier {
     }
 
     if (_userId == null) return;
+
+    // If we are currently sending an SOS, DO NOT poll or update status from server.
+    if (_sosState == SosState.sending) {
+      print("SOS_POLLING: Currently sending SOS, skipping status fetch.");
+      return;
+    }
+
+    // Wind down fast-poll burst each tick
+    _tickFastPoll();
 
     final result = await ApiService.getRequestStatus(_userId);
     print("SOS_API_RESPONSE: $result");
@@ -328,6 +399,8 @@ class SosProvider extends ChangeNotifier {
       }
 
       // Continuously stream user location during active SOS if preference is enabled
+      // Uses getLastKnownPosition() (instant, non-blocking) instead of
+      // getCurrentPosition() which could block for up to 15 seconds.
       try {
         final prefs = await SharedPreferences.getInstance();
         final userDataStr = prefs.getString('user_data');
@@ -340,19 +413,22 @@ class SosProvider extends ChangeNotifier {
         }
 
         if (liveSosEnabled && gpsAccessEnabled) {
-          Position pos = await Geolocator.getCurrentPosition(
-            locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-          ).timeout(const Duration(seconds: 5));
-          
-          await ApiService.updateUserLocation(
-            _userId!,
-            pos.latitude,
-            pos.longitude,
-          );
-          print("SOS_LIVE_LOCATION_STREAM: Sent ${pos.latitude}, ${pos.longitude}");
+          // getLastKnownPosition is instant — no GPS hardware wait
+          Position? pos = await Geolocator.getLastKnownPosition();
+          if (pos != null) {
+            // Only update if the cached position is recent (within 60 seconds)
+            final age = DateTime.now().difference(pos.timestamp);
+            if (age.inSeconds < 60) {
+              await ApiService.updateUserLocation(
+                _userId!,
+                pos.latitude,
+                pos.longitude,
+              );
+            }
+          }
         }
       } catch (e) {
-        print("SOS_LIVE_LOCATION_STREAM_ERROR: $e");
+        // Silent — location update failure should never block SOS polling
       }
     } else if (result['status'] == 'no_active_request') {
       // If we just sent a SOS, give a grace period before clearing UI
@@ -409,6 +485,7 @@ class SosProvider extends ChangeNotifier {
     _activeRequest = null;
     _evidenceImage = null;
     _description = null;
+    _customNeighborhood = null;
     _sosState = SosState.idle;
     _errorMessage = null;
     _popupMessage = null;
@@ -486,18 +563,17 @@ class SosProvider extends ChangeNotifier {
       if (!kIsWeb) {
         Position? position = await Geolocator.getLastKnownPosition();
         if (position != null) {
-          // If last known position is recent (within 60 seconds), use it
+          // If last known position is recent (within 1 hour), use it
           final age = DateTime.now().difference(position.timestamp);
-          if (age.inSeconds < 60) {
+          if (age.inSeconds < 3600) {
             print("SOS_LOCATION: Using last known location (age: ${age.inSeconds}s)");
             return position;
           }
         }
       }
 
-      // 3. Try high accuracy with shorter timeout if offline (8 seconds), otherwise 15 seconds
-      final isOffline = _offlineManager?.isOffline ?? false;
-      final timeoutDuration = isOffline ? const Duration(seconds: 8) : const Duration(seconds: 15);
+      // 3. Try high accuracy with shorter timeout (4 seconds) to ensure zero perceptible delay
+      const timeoutDuration = Duration(seconds: 4);
 
       try {
         print("SOS_LOCATION: Requesting high accuracy position...");
@@ -508,13 +584,13 @@ class SosProvider extends ChangeNotifier {
         ).timeout(timeoutDuration);
       } catch (e) {
         print("SOS_LOCATION: High accuracy failed or timed out: $e. Falling back to medium...");
-        // 4. Fallback to medium accuracy (faster, works better indoors)
+        // 4. Fallback to medium accuracy (faster, works better indoors) with 3 seconds timeout
         try {
           return await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
               accuracy: LocationAccuracy.medium,
             ),
-          ).timeout(isOffline ? const Duration(seconds: 5) : const Duration(seconds: 10));
+          ).timeout(const Duration(seconds: 3));
         } catch (e2) {
           print("SOS_LOCATION: Medium accuracy also failed: $e2. Using fallback...");
           return await _getFallbackPosition();

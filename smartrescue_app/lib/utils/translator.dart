@@ -144,6 +144,7 @@ class AppTranslator {
     'CANCEL EMERGENCY': 'JOOJI GURMADKA',
     'TRACK DRIVER ON MAP': 'KU LA SOCO DARAWALKA KHARIIDADDA',
     'EMERGENCY COMMAND CENTER': 'XARUNTA GURMADKA DEGDEGGA AH',
+    'WELCOME': 'Soo Dhawoow',
 
     // Notifications Screen
     'Alert Notifications': 'Ogeysiisyada Digniinta',
@@ -626,6 +627,7 @@ class AppTranslator {
     'CANCEL EMERGENCY': 'إلغاء الطوارئ',
     'TRACK DRIVER ON MAP': 'تتبع السائق على الخريطة',
     'EMERGENCY COMMAND CENTER': 'مركز قيادة الطوارئ',
+    'WELCOME': 'مرحباً',
 
     // Notifications Screen
     'Alert Notifications': 'إشعارات التنبيه',

@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/sos_provider.dart';
 import '../../services/api_service.dart';
@@ -231,7 +233,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
 
 
-  Future<void> _deleteNotification(String notifId, void Function(void Function()) setModalState) async {
+  Future<void> _deleteNotification(String notifId, void Function(void Function()) setModalState, {VoidCallback? onDeleted}) async {
     if (notifId.isEmpty) return;
 
     final bool? confirm = await showDialog<bool>(
@@ -370,7 +372,11 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
           );
-          setModalState(() {}); // Force reload of notifications in the bottom sheet
+          if (onDeleted != null) {
+            onDeleted();
+          } else {
+            setModalState(() {}); // Force reload of notifications in the bottom sheet
+          }
         }
       } else {
         if (mounted) {
@@ -400,6 +406,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
   Future<void> _showNotificationsDialog() async {
     final isDark = Theme.of(context).brightness == Brightness.dark;
+    
+    List<dynamic>? notificationsList;
+
     showModalBottomSheet(
       context: context,
       backgroundColor: Colors.transparent,
@@ -407,6 +416,37 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
       builder: (context) {
         return StatefulBuilder(
           builder: (context, setModalState) {
+            void fetchFresh() async {
+              try {
+                final fresh = await ApiService.getNotifications();
+                if (context.mounted) {
+                  setModalState(() {
+                    notificationsList = fresh;
+                  });
+                  SharedPreferences.getInstance().then((prefs) {
+                    prefs.setString('cached_notifications', jsonEncode(fresh));
+                  });
+                }
+              } catch (_) {}
+            }
+
+            if (notificationsList == null) {
+              SharedPreferences.getInstance().then((prefs) {
+                final cached = prefs.getString('cached_notifications');
+                if (cached != null && notificationsList == null) {
+                  final parsed = jsonDecode(cached) as List<dynamic>;
+                  if (context.mounted) {
+                    setModalState(() {
+                      notificationsList = parsed;
+                    });
+                  }
+                }
+                fetchFresh();
+              }).catchError((_) {
+                fetchFresh();
+              });
+            }
+
             return Container(
               height: MediaQuery.of(context).size.height * 0.7,
               decoration: BoxDecoration(
@@ -489,11 +529,9 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
 
                   // Notifications list
                   Expanded(
-                    child: FutureBuilder<List<dynamic>>(
-                      future: ApiService.getNotifications(),
-                      builder: (context, snapshot) {
-                        if (snapshot.connectionState ==
-                            ConnectionState.waiting) {
+                    child: Builder(
+                      builder: (context) {
+                        if (notificationsList == null) {
                           return const Center(
                             child: CircularProgressIndicator(
                               valueColor: AlwaysStoppedAnimation<Color>(
@@ -501,9 +539,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                             ),
                           );
                         }
-                        if (snapshot.hasError ||
-                            snapshot.data == null ||
-                            snapshot.data!.isEmpty) {
+                        if (notificationsList!.isEmpty) {
                           return Center(
                             child: Column(
                               mainAxisAlignment: MainAxisAlignment.center,
@@ -535,7 +571,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                           );
                         }
 
-                        final list = snapshot.data!;
+                        final list = notificationsList!;
                         return ListView.separated(
                           padding: const EdgeInsets.symmetric(
                               horizontal: 24, vertical: 10),
@@ -681,7 +717,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                                       size: 18,
                                     ),
                                     tooltip: AppTranslator.t(context, 'Delete'),
-                                    onPressed: () => _deleteNotification(item['id']?.toString() ?? '', setModalState),
+                                    onPressed: () => _deleteNotification(
+                                      item['id']?.toString() ?? '',
+                                      setModalState,
+                                      onDeleted: () {
+                                        setModalState(() {
+                                          notificationsList?.removeWhere((n) => n['id']?.toString() == item['id']?.toString());
+                                        });
+                                      },
+                                    ),
                                     constraints: const BoxConstraints(),
                                     padding: EdgeInsets.zero,
                                     splashRadius: 18,
@@ -894,7 +938,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               children: [
                 const SizedBox(height: 8),
                 Text(
-                  AppTranslator.t(context, 'EMERGENCY COMMAND CENTER'),
+                  AppTranslator.t(context, 'WELCOME'),
                   style: TextStyle(
                     fontSize: 10,
                     fontWeight: FontWeight.w900,
@@ -1314,8 +1358,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     required bool isLast,
     required bool isDark,
   }) {
-    final activeColor = const Color(0xFF2563EB); // Deep premium blue
-    final currentColor = const Color(0xFFEF4444); // Urgent red
+    const activeColor = Color(0xFF2563EB); // Deep premium blue
+    const currentColor = Color(0xFFEF4444); // Urgent red
 
     Widget circleWidget;
     if (state == TimelineStepState.current) {

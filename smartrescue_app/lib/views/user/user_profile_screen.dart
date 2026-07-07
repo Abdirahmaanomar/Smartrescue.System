@@ -192,6 +192,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final passwordController = TextEditingController();
     final isDark = Theme.of(context).brightness == Brightness.dark;
     bool isDeleting = false;
+    bool obscureDeletePwd = true;
 
     await showDialog(
       context: context,
@@ -217,12 +218,22 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                     const SizedBox(height: 16),
                     TextField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: obscureDeletePwd,
                       style: TextStyle(color: isDark ? Colors.white : Colors.black87),
                       decoration: InputDecoration(
                         labelText: AppTranslator.t(ctx, 'Confirm Password'),
                         labelStyle: const TextStyle(color: Colors.grey),
                         prefixIcon: const Icon(Icons.lock_rounded, color: Colors.grey),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            obscureDeletePwd
+                                ? Icons.visibility_off_rounded
+                                : Icons.visibility_rounded,
+                            color: Colors.grey,
+                            size: 20,
+                          ),
+                          onPressed: () => setStateDialog(() => obscureDeletePwd = !obscureDeletePwd),
+                        ),
                         enabledBorder: UnderlineInputBorder(
                           borderSide: BorderSide(color: isDark ? const Color(0xFF334155) : Colors.grey.shade300),
                         ),

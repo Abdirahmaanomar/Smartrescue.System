@@ -35,14 +35,8 @@ $units_query = "SELECT e.*,
 $units_res = mysqli_query($conn, $units_query);
 $units = mysqli_fetch_all($units_res, MYSQLI_ASSOC);
 
-// 3. All active users with a known current location (for green civilian markers on the map)
-$all_users_query = "SELECT id, fullname, current_lat, current_lng 
-                    FROM users 
-                    WHERE role = 'user' 
-                      AND current_lat IS NOT NULL 
-                      AND current_lng IS NOT NULL";
-$all_users_res = mysqli_query($conn, $all_users_query);
-$all_users = mysqli_fetch_all($all_users_res, MYSQLI_ASSOC);
+// 3. All active users with a known current location (removed: not used by map to save database roundtrips)
+$all_users = [];
 
 // 4. Stats
 $stats = [

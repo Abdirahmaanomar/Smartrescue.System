@@ -185,18 +185,6 @@ elseif ($action === 'update_safety_info') {
                 $lat = $u['current_lat'] ? $u['current_lat'] : 'NULL';
                 $lng = $u['current_lng'] ? $u['current_lng'] : 'NULL';
                 
-                // Ensure table exists (optional fallback, but get_blood_donors.php creates it)
-                mysqli_query($conn, "CREATE TABLE IF NOT EXISTS blood_donors (
-                    id INT AUTO_INCREMENT PRIMARY KEY,
-                    name VARCHAR(100) NOT NULL,
-                    blood_type VARCHAR(5) NOT NULL,
-                    phone VARCHAR(20) NOT NULL,
-                    lat DECIMAL(10,8) NULL,
-                    lng DECIMAL(11,8) NULL,
-                    is_available TINYINT(1) DEFAULT 1,
-                    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                )");
-
                 $check = mysqli_query($conn, "SELECT id FROM blood_donors WHERE phone = '$phone'");
                 if (mysqli_num_rows($check) > 0) {
                     mysqli_query($conn, "UPDATE blood_donors SET name='$name', blood_type='$blood_group', is_available=1, lat=$lat, lng=$lng WHERE phone='$phone'");

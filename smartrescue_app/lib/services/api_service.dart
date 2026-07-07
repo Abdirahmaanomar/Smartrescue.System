@@ -284,7 +284,6 @@ class ApiService {
           .timeout(const Duration(seconds: 10));
       return json.decode(response.body);
     } catch (e) {
-      OfflineManager.instance?.setOffline();
       return {'status': 'error'};
     }
   }
@@ -562,7 +561,6 @@ class ApiService {
       }
       return [];
     } catch (e) {
-      OfflineManager.instance?.setOffline();
       try {
         final prefs = await SharedPreferences.getInstance();
         final cached = prefs.getString('cached_notifications');
@@ -628,7 +626,6 @@ class ApiService {
       }
       return [];
     } catch (e) {
-      OfflineManager.instance?.setOffline();
       try {
         final prefs = await SharedPreferences.getInstance();
         final cached = prefs.getString('cached_online_responders');
@@ -659,7 +656,6 @@ class ApiService {
       }
       return [];
     } catch (e) {
-      OfflineManager.instance?.setOffline();
       try {
         final prefs = await SharedPreferences.getInstance();
         final cached = prefs.getString('cached_community_incidents');

@@ -22,8 +22,10 @@ class UserMapScreen extends StatefulWidget {
 
 class _UserMapScreenState extends State<UserMapScreen> {
   final MapController _mapController = MapController();
+  bool _isMapReady = false;
   LatLng? _currentLocation;
-  Timer? _locationTimer;
+  StreamSubscription<Position>? _positionSubscription;
+  bool _hasInitialMove = false;
   String _mapType = 'std'; // std, sat, terrain
   double _gpsAccuracy = 74.0;
   bool _hasFittedBounds = false;
@@ -37,7 +39,6 @@ class _UserMapScreenState extends State<UserMapScreen> {
   void initState() {
     super.initState();
     _initLocation();
-    _locationTimer = Timer.periodic(const Duration(seconds: 10), (_) => _updateLocation());
   }
 
   @override
@@ -54,7 +55,7 @@ class _UserMapScreenState extends State<UserMapScreen> {
   @override
   void dispose() {
     _sosProvider?.removeListener(_onSosProviderChanged);
-    _locationTimer?.cancel();
+    _positionSubscription?.cancel();
     _mapController.dispose();
     super.dispose();
   }
@@ -116,61 +117,57 @@ class _UserMapScreenState extends State<UserMapScreen> {
           _currentLocation = LatLng(lastKnown.latitude, lastKnown.longitude);
           _gpsAccuracy = lastKnown.accuracy;
         });
-        _mapController.move(_currentLocation!, 17);
+        if (_isMapReady) {
+          _mapController.move(_currentLocation!, 17);
+        }
       }
     } catch (_) {}
 
-    // ── Step 2: Get accurate current position (may take a few seconds) ──
+    // ── Step 2: Subscribe to live position stream with 10m distance filter (eliminates jitter/drift) ──
     try {
-      final pos = await Geolocator.getCurrentPosition(
+      final positionStream = Geolocator.getPositionStream(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
-          timeLimit: Duration(seconds: 10),
+          distanceFilter: 10, // Only emit update if device moves 10 meters
         ),
       );
-      if (mounted) {
-        setState(() {
-          _currentLocation = LatLng(pos.latitude, pos.longitude);
-          _gpsAccuracy = pos.accuracy;
-        });
-        _mapController.move(_currentLocation!, 18);
 
-        final sos = Provider.of<SosProvider>(context, listen: false);
-        if (sos.hasActiveRequest &&
-            sos.activeRequest!.driverLat != null &&
-            sos.activeRequest!.driverLng != null) {
-          _lastFetchedDriverLocation = LatLng(
-              sos.activeRequest!.driverLat!, sos.activeRequest!.driverLng!);
-          _fetchRoute(_currentLocation!, _lastFetchedDriverLocation!);
-          _fitDriverAndMe();
+      _positionSubscription = positionStream.listen((Position pos) async {
+        final auth = Provider.of<AuthProvider>(context, listen: false);
+        if (auth.user != null) {
+          try {
+            await ApiService.updateUserLocation(
+              auth.user!.id.toString(),
+              pos.latitude,
+              pos.longitude,
+            );
+          } catch (_) {}
         }
-      }
-    } catch (_) {
-      // If high-accuracy fails, keep last-known position shown above
-    }
-  }
 
-  Future<void> _updateLocation() async {
-    try {
-      final auth = Provider.of<AuthProvider>(context, listen: false);
-      Position pos = await Geolocator.getCurrentPosition(
-        locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
-      ).timeout(const Duration(seconds: 8));
-      if (auth.user != null) {
-        await ApiService.updateUserLocation(auth.user!.id.toString(), pos.latitude, pos.longitude);
-      }
-      if (mounted) {
-        setState(() {
-          _currentLocation = LatLng(pos.latitude, pos.longitude);
-          _gpsAccuracy = pos.accuracy;
-        });
-        if (_lastFetchedDriverLocation != null) {
-          _fetchRoute(_currentLocation!, _lastFetchedDriverLocation!);
+        if (mounted) {
+          setState(() {
+            _currentLocation = LatLng(pos.latitude, pos.longitude);
+            _gpsAccuracy = pos.accuracy;
+          });
+
+          if (_lastFetchedDriverLocation != null) {
+            _fetchRoute(_currentLocation!, _lastFetchedDriverLocation!);
+          }
+
+          if (_isMapReady) {
+            if (_autoTrackEnabled) {
+              if (_lastFetchedDriverLocation != null) {
+                _fitDriverAndMe();
+              } else {
+                _mapController.move(_currentLocation!, _mapController.camera.zoom);
+              }
+            } else if (!_hasInitialMove) {
+              _hasInitialMove = true;
+              _mapController.move(_currentLocation!, 18);
+            }
+          }
         }
-        if (_autoTrackEnabled && _lastFetchedDriverLocation != null) {
-          _fitDriverAndMe();
-        }
-      }
+      });
     } catch (_) {}
   }
 
@@ -267,16 +264,19 @@ class _UserMapScreenState extends State<UserMapScreen> {
   }
 
   void _zoomIn() {
+    if (!_isMapReady) return;
     final currentZoom = _mapController.camera.zoom;
     _mapController.move(_mapController.camera.center, currentZoom + 1);
   }
 
   void _zoomOut() {
+    if (!_isMapReady) return;
     final currentZoom = _mapController.camera.zoom;
     _mapController.move(_mapController.camera.center, currentZoom - 1);
   }
 
   void _fitDriverAndMe() {
+    if (!_isMapReady) return;
     final sos = Provider.of<SosProvider>(context, listen: false);
     if (_currentLocation != null &&
         sos.hasActiveRequest &&
@@ -419,7 +419,10 @@ class _UserMapScreenState extends State<UserMapScreen> {
                       // Fix Location Button
                       InkWell(
                         onTap: () {
-                          if (_currentLocation != null) {
+                          if (_currentLocation != null && _isMapReady) {
+                            setState(() {
+                              _autoTrackEnabled = true;
+                            });
                             _mapController.move(_currentLocation!, 15);
                           }
                         },
@@ -510,6 +513,23 @@ class _UserMapScreenState extends State<UserMapScreen> {
                             initialZoom: 15,
                             minZoom: 3,
                             maxZoom: 20,
+                            onMapReady: () {
+                              if (mounted) {
+                                setState(() {
+                                  _isMapReady = true;
+                                });
+                                if (_currentLocation != null) {
+                                  _mapController.move(_currentLocation!, 15);
+                                }
+                              }
+                            },
+                            onPositionChanged: (position, hasGesture) {
+                              if (hasGesture && _autoTrackEnabled) {
+                                setState(() {
+                                  _autoTrackEnabled = false;
+                                });
+                              }
+                            },
                           ),
                           children: [
                             TileLayer(

@@ -1,7 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
-import '../utils/helpers.dart';
+import 'package:url_launcher/url_launcher.dart';
 import 'package:url_launcher/link.dart';
+import '../utils/helpers.dart';
 
 class CallScreen extends StatefulWidget {
   final String calleeName;
@@ -13,32 +14,31 @@ class CallScreen extends StatefulWidget {
     required this.calleePhone,
   });
 
-  /// Show the call screen as a full-screen route
+  /// Show the call screen by launching native dialer
   static Future<void> show(
     BuildContext context, {
     required String name,
     required String phone,
-  }) {
-    return Navigator.of(context).push(
-      PageRouteBuilder(
-        opaque: true,
-        barrierColor: Colors.black,
-        pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
-          calleeName: name,
-          calleePhone: phone,
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          return SlideTransition(
-            position: Tween<Offset>(
-              begin: const Offset(0, 1),
-              end: Offset.zero,
-            ).animate(CurvedAnimation(parent: animation, curve: Curves.easeOutCubic)),
-            child: child,
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 350),
-      ),
-    );
+  }) async {
+    final cleanPhone = phone.replaceAll(RegExp(r'\s+|-|\(|\)'), '');
+    if (cleanPhone.isEmpty) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Phone number is empty')),
+        );
+      }
+      return;
+    }
+    final uri = Uri.parse('tel:$cleanPhone');
+    try {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    } catch (e) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Could not open phone dialer: $e')),
+        );
+      }
+    }
   }
 
   @override

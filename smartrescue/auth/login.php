@@ -135,6 +135,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
             .back-btn-mobile { display: inline-flex; align-items: center; color: var(--secondary); font-weight: 600; text-decoration: none; margin-bottom: 30px; transition: 0.3s; }
             .back-btn-mobile:hover { color: var(--primary); }
         }
+        /* Password toggle button */
+        .pwd-wrapper { position: relative; }
+        .pwd-toggle {
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            padding: 0;
+            cursor: pointer;
+            color: #94a3b8;
+            font-size: 1rem;
+            z-index: 10;
+            transition: color 0.2s ease;
+            line-height: 1;
+        }
+        .pwd-toggle:hover { color: var(--primary); }
+        .pwd-wrapper .form-floating .form-control { padding-right: 3rem; }
     </style>
 </head>
 <body>
@@ -173,9 +192,14 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
                     <label for="phone_or_email"><i class="fa-solid fa-user me-2 text-muted"></i> Phone or Email</label>
                 </div>
                 
-                <div class="form-floating mb-4">
-                    <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
-                    <label for="password"><i class="fa-solid fa-lock me-2 text-muted"></i> Password</label>
+                <div class="pwd-wrapper mb-4">
+                    <div class="form-floating">
+                        <input type="password" name="password" class="form-control" id="password" placeholder="Password" required>
+                        <label for="password"><i class="fa-solid fa-lock me-2 text-muted"></i> Password</label>
+                    </div>
+                    <button type="button" class="pwd-toggle" onclick="togglePassword('password', this)" tabindex="-1" aria-label="Show/Hide password">
+                        <i class="fa-solid fa-eye-slash" id="pwd-icon-password"></i>
+                    </button>
                 </div>
                 
                 <button type="submit" name="login_btn" class="btn-custom">Login <i class="fa-solid fa-arrow-right ms-2 mt-1"></i></button>
@@ -189,5 +213,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    const icon  = document.getElementById('pwd-icon-' + fieldId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        btn.style.color = 'var(--primary)';
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        btn.style.color = '';
+    }
+}
+</script>
 </body>
 </html>

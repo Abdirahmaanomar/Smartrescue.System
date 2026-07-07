@@ -4,17 +4,17 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/sos_provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
 import '../../services/sound_service.dart';
+import '../../components/app_drawer.dart';
+import '../../components/notification_banner.dart';
+import '../../utils/translator.dart';
 import 'user_home_screen.dart';
 import 'user_map_screen.dart';
 import 'user_proof_screen.dart';
 import 'user_community_rescue_screen.dart';
 import 'user_online_responders_screen.dart';
-import '../../providers/auth_provider.dart';
-import '../../components/app_drawer.dart';
-import '../../components/notification_banner.dart';
-import '../../utils/translator.dart';
 
 class UserShell extends StatefulWidget {
   static final GlobalKey<ScaffoldState> scaffoldKey = GlobalKey<ScaffoldState>();
@@ -71,13 +71,17 @@ class _UserShellState extends State<UserShell> with WidgetsBindingObserver {
         _sosProvider = Provider.of<SosProvider>(context, listen: false);
         _sosProvider!.init(auth.user!.id.toString());
         _sosProvider!.addListener(_sosListener);
+        // Hook: when SOS is sent, immediately refresh notifications cache
+        _sosProvider!.setNotificationsChangedCallback(() {
+          if (mounted) _pollNotifications();
+        });
       }
     });
     
-    // Start notification polling IMMEDIATELY in initState — independent of auth state.
-    // This guarantees trusted contact SOS alerts always appear, even after Hot Restart.
+    // Start notification polling — polls every 15s to reduce Railway DB load.
+    // Fires once immediately on first frame, then every 15s thereafter.
     _notificationPollTimer?.cancel();
-    _notificationPollTimer = Timer.periodic(const Duration(seconds: 3), (_) {
+    _notificationPollTimer = Timer.periodic(const Duration(seconds: 15), (_) {
       if (mounted) _pollNotifications();
     });
     // Also fire once immediately after first frame
@@ -118,6 +122,9 @@ class _UserShellState extends State<UserShell> with WidgetsBindingObserver {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         // Show WhatsApp-style notification banner
         _showNotificationBanner(msgType, driverName, unitName, plateNumber);
+        
+        // Poll notifications immediately to get the latest database notification
+        _pollNotifications();
         
         // Show completion popup when responder finishes the job
         if (msgType == 'INCIDENT_COMPLETED' && !_isCompletionPopupShowing) {

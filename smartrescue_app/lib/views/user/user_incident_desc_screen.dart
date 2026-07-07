@@ -15,17 +15,20 @@ class UserIncidentDescScreen extends StatefulWidget {
 
 class _UserIncidentDescScreenState extends State<UserIncidentDescScreen> {
   late final TextEditingController _controller;
+  late final TextEditingController _neighborhoodController;
 
   @override
   void initState() {
     super.initState();
     final sos = Provider.of<SosProvider>(context, listen: false);
     _controller = TextEditingController(text: sos.description ?? '');
+    _neighborhoodController = TextEditingController(text: sos.customNeighborhood ?? '');
   }
 
   @override
   void dispose() {
     _controller.dispose();
+    _neighborhoodController.dispose();
     super.dispose();
   }
 
@@ -37,6 +40,9 @@ class _UserIncidentDescScreenState extends State<UserIncidentDescScreen> {
     // Keep controller updated if provider gets cleared from outside (user-side removal rule)
     if (sos.description == null && _controller.text.isNotEmpty) {
       _controller.clear();
+    }
+    if (sos.customNeighborhood == null && _neighborhoodController.text.isNotEmpty) {
+      _neighborhoodController.clear();
     }
 
     return Scaffold(
@@ -57,15 +63,59 @@ class _UserIncidentDescScreenState extends State<UserIncidentDescScreen> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(
-                AppTranslator.t(context, 'Describe the Incident'),
-                style: const TextStyle(fontSize: 22, fontWeight: FontWeight.w900, letterSpacing: -0.5),
+                AppTranslator.t(context, 'Nearest Landmark / Neighborhood'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: -0.3),
               ),
-              const SizedBox(height: 8),
+              const SizedBox(height: 6),
               Text(
-                AppTranslator.t(context, 'Please provide clear, concise details about the current emergency. This information will be sent directly to the rescue team.'),
-                style: TextStyle(color: Colors.grey.shade600, fontSize: 14, fontWeight: FontWeight.w500),
+                AppTranslator.t(context, 'Enter a custom neighborhood name or landmark (e.g. Fooriloow, Delish Restaurant) to help the driver find you easily.'),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 13, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
+              Container(
+                decoration: BoxDecoration(
+                  color: Theme.of(context).cardTheme.color,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.03),
+                      blurRadius: 15,
+                      offset: const Offset(0, 5),
+                    )
+                  ],
+                ),
+                child: TextField(
+                  controller: _neighborhoodController,
+                  maxLines: 1,
+                  onChanged: (val) => sos.setCustomNeighborhood(val),
+                  decoration: InputDecoration(
+                    hintText: AppTranslator.t(context, 'e.g. Fooriloow, Delish Restaurant...'),
+                    hintStyle: TextStyle(color: Colors.grey.shade400, fontWeight: FontWeight.w500),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 18),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: Colors.grey.withValues(alpha: 0.2)),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                      borderSide: BorderSide(color: scheme.primary, width: 2),
+                    ),
+                    filled: true,
+                    fillColor: Theme.of(context).cardTheme.color,
+                  ),
+                ),
               ),
               const SizedBox(height: 24),
+              Text(
+                AppTranslator.t(context, 'Describe the Incident'),
+                style: const TextStyle(fontSize: 18, fontWeight: FontWeight.w900, letterSpacing: -0.3),
+              ),
+              const SizedBox(height: 6),
+              Text(
+                AppTranslator.t(context, 'Please provide clear, concise details about the current emergency. This information will be sent directly to the rescue team.'),
+                style: TextStyle(color: Colors.grey.shade600, fontSize: 13, fontWeight: FontWeight.w500),
+              ),
+              const SizedBox(height: 16),
               Container(
                 decoration: BoxDecoration(
                   color: Theme.of(context).cardTheme.color,
@@ -107,8 +157,9 @@ class _UserIncidentDescScreenState extends State<UserIncidentDescScreen> {
                 child: ElevatedButton.icon(
                   onPressed: () {
                     sos.setDescription(_controller.text);
+                    sos.setCustomNeighborhood(_neighborhoodController.text);
                     UserShell.tabNotifier.value = 0;
-                    AppHelpers.showSnack(context, AppTranslator.t(context, 'Incident Description Saved!'));
+                    AppHelpers.showSnack(context, AppTranslator.t(context, 'Incident Details Saved!'));
                   },
                   icon: const Icon(Icons.check_circle_rounded, color: Colors.white),
                   label: Text(

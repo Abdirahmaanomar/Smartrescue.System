@@ -11,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
 $host = "localhost";
 $user = "maanka"; // XAMPP default user
 $pass = "1234"; // XAMPP default password
-$dbname = "smartrescue";
+$dbname = "smartrescuesystem";
 
 // Samaynta xiriirka
 $conn = mysqli_connect($host, $user, $pass, $dbname);
@@ -157,6 +157,17 @@ foreach ($default_settings as $key => $default_val) {
     if (mysqli_num_rows($check_setting) == 0) {
         mysqli_query($conn, "INSERT INTO system_settings (setting_key, setting_value) VALUES ('$key', '$default_val')");
     }
+}
+
+// 7. Ensure database indexes exist for performance (user_id on rescue_requests and notifications)
+$check_index = mysqli_query($conn, "SHOW INDEX FROM rescue_requests WHERE Key_name = 'user_id'");
+if ($check_index && mysqli_num_rows($check_index) == 0) {
+    mysqli_query($conn, "ALTER TABLE rescue_requests ADD INDEX (user_id)");
+}
+
+$check_index = mysqli_query($conn, "SHOW INDEX FROM notifications WHERE Key_name = 'user_id'");
+if ($check_index && mysqli_num_rows($check_index) == 0) {
+    mysqli_query($conn, "ALTER TABLE notifications ADD INDEX (user_id)");
 }
 
 // --- GLOBAL AUTH & SESSION ENFORCEMENT ---

@@ -5,6 +5,7 @@ import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../constants/api_constants.dart';
 
 /// OfflineManager — handles connectivity detection, data caching,
 /// and queuing pending SOS requests when offline.
@@ -53,7 +54,7 @@ class OfflineManager extends ChangeNotifier {
 
     // Start periodic heartbeat checking to catch drops/restores that don't trigger events
     _heartbeatTimer?.cancel();
-    _heartbeatTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
+    _heartbeatTimer = Timer.periodic(const Duration(seconds: 5), (_) async {
       final results = await Connectivity().checkConnectivity();
       await _handleResults(results);
     });
@@ -84,12 +85,27 @@ class OfflineManager extends ChangeNotifier {
     if (kIsWeb) return true; // Can't use InternetAddress.lookup on web
 
     try {
-      // Direct DNS lookup check for true internet access
-      final lookup = await InternetAddress.lookup('google.com')
+      final uri = Uri.parse(ApiConstants.baseUrl);
+      final host = uri.host;
+      if (host.isEmpty) return true;
+
+      // Local development or private network: assume online if interface is present
+      if (host == 'localhost' ||
+          host == '127.0.0.1' ||
+          host.startsWith('192.168.') ||
+          host.startsWith('10.') ||
+          host.startsWith('172.')) {
+        return true;
+      }
+
+      // Public hostname: attempt to resolve host to verify network path
+      final lookup = await InternetAddress.lookup(host)
           .timeout(const Duration(seconds: 3));
-      return lookup.isNotEmpty && lookup[0].rawAddress.isNotEmpty;
+      return lookup.isNotEmpty;
     } catch (_) {
-      return false;
+      // Fallback: if resolving the host fails, assume online as long as interface exists
+      // to avoid false-offline locks on transient DNS/network glitches.
+      return true;
     }
   }
 

@@ -1,4 +1,5 @@
 <?php
+$start_time = microtime(true);
 session_start();
 require_once '../config/db.php';
 require_once '../includes/functions.php';
@@ -55,6 +56,27 @@ $last_emergency = $last_row ? date('M d, H:i', strtotime($last_row['created_at']
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
 /* ===== DESIGN TOKENS ===== */
+/* Block Quillbot and LanguageTool browser extension overlays on inputs */
+quillbot-extension-portal,
+lt-mirror,
+lt-span,
+lt-toolbar,
+lt-div,
+lt-highlighter,
+.lt-toolbar,
+.lt-mirror,
+[class*="quillbot"],
+[id*="quillbot"],
+[class*="languagetool"],
+[id*="languagetool"] {
+  display: none !important;
+  visibility: hidden !important;
+  opacity: 0 !important;
+  height: 0 !important;
+  width: 0 !important;
+  pointer-events: none !important;
+}
+
 :root {
   --primary:       #2563eb;
   --primary-glow:  rgba(37,99,235,0.35);
@@ -1304,7 +1326,7 @@ body::before{
     <div class="topbar">
       <div class="topbar-left">
         <div>
-          <div style="font-size:0.7rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">Emergency Command Center</div>
+          <div style="font-size:0.7rem;font-weight:700;color:var(--muted);letter-spacing:2px;text-transform:uppercase;">Welcome</div>
           <div style="font-size:1.6rem;font-weight:900;letter-spacing:-0.5px;">Hello, <span style="color:var(--danger);"><?php echo htmlspecialchars(explode(' ',$fullname)[0]); ?></span> 👋</div>
         </div>
       </div>
@@ -1428,8 +1450,27 @@ body::before{
           </div>
         </div>
 
-        <!-- ACTION ROW: DESC & UPLOAD -->
-        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(300px, 1fr));gap:16px;margin-bottom:24px;">
+        <!-- ACTION ROW: DESC, NEIGHBORHOOD & UPLOAD -->
+        <div style="display:grid;grid-template-columns:repeat(auto-fit, minmax(280px, 1fr));gap:16px;margin-bottom:24px;">
+          <!-- NEAREST LANDMARK / NEIGHBORHOOD -->
+          <div class="glass-card no-hover" style="display:none !important;">
+            <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;">
+              <div style="width:36px;height:36px;border-radius:10px;background:rgba(245,158,11,0.1);color:var(--warning);display:flex;align-items:center;justify-content:center;font-size:0.9rem;flex-shrink:0;">
+                <i class="fa fa-location-crosshairs"></i>
+              </div>
+              <div>
+                <div style="font-weight:800;font-size:0.88rem;">Nearest Landmark / Neighborhood</div>
+                <div style="font-size:0.68rem;color:var(--muted);font-weight:600;margin-top:1px;">e.g. Fooriloow, Delish Restaurant</div>
+              </div>
+            </div>
+            <div style="position:relative;flex:1;display:flex;flex-direction:column;justify-content:center;">
+              <input type="text" id="sos_neighborhood" class="glass-input"
+                placeholder="Type here (e.g. Fooriloow, near Delish)…"
+                maxlength="150"
+                style="margin:0;width:100%;">
+            </div>
+          </div>
+
           <!-- DESCRIPTION TEXTAREA -->
           <div class="glass-card no-hover" style="padding:22px 24px;display:flex;flex-direction:column;height:100%;">
             <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;">
@@ -1448,6 +1489,10 @@ body::before{
               <textarea id="sos_description" class="glass-input custom-textarea" rows="4"
                 placeholder="Exact location, visible injuries, hazards…"
                 maxlength="500"
+                spellcheck="false"
+                data-lt-active="false"
+                data-gramm="false"
+                data-enable-grammarly="false"
                 oninput="document.getElementById('descCharCount').textContent=this.value.length+' / 500';this.style.borderColor=this.value.length>0?'var(--danger)':''"
                 style="flex:1;min-height:100px;resize:none;padding-bottom:34px;margin:0;"></textarea>
               <i class="fa fa-comment-medical" style="position:absolute;bottom:10px;right:14px;color:var(--danger);opacity:0.18;font-size:1.1rem;pointer-events:none;"></i>
@@ -2838,13 +2883,21 @@ function triggerSOS() {
   }
 }
 
-function sendSOS() {
+async function sendSOS() {
   if (!currentLat || !hasRealFix) { 
     showPanel('error','📡 GPS location not verified. Please wait for a signal fix before sending SOS.'); 
     resetSOSBtn(); 
     return; 
   }
   showPanel('info','📡 Transmitting SOS signal to dispatch…');
+
+  let customNeigh = document.getElementById('sos_neighborhood').value || '';
+  if (customNeigh.trim() === '') {
+    try {
+      const resolved = await reverseGeocode(currentLat, currentLng);
+      if (resolved) customNeigh = resolved;
+    } catch (e) {}
+  }
 
   const fd = new FormData();
   fd.append('lat', currentLat); fd.append('lng', currentLng);
@@ -2853,6 +2906,7 @@ function sendSOS() {
   fd.append('description',
     'MEDICAL ID: ' + (document.getElementById('medical_info').value || '') +
     '\n\nMSG: ' + (document.getElementById('sos_description').value || ''));
+  fd.append('neighborhood', customNeigh);
   const imgFile = document.getElementById('sos_image').files[0];
   if (imgFile) fd.append('evidence_image', imgFile);
 
@@ -2898,31 +2952,14 @@ function resetSOSBtn() {
 }
 
 function clearSOSInputs() {
-  // Clear description textarea
-  const desc = document.getElementById('sos_description');
-  if (desc) {
-    desc.value = '';
-    desc.style.borderColor = '';
+  // Clear neighborhood input
+  const neigh = document.getElementById('sos_neighborhood');
+  if (neigh) {
+    neigh.value = '';
   }
-  const charCnt = document.getElementById('descCharCount');
-  if (charCnt) charCnt.textContent = '0 / 500';
 
-  // Reset upload zone to original HTML markup
-  const zone = document.getElementById('uploadZone');
-  if (zone) {
-    zone.classList.remove('has-image');
-    zone.innerHTML = `
-      <div class="upload-content">
-        <div class="upload-icon-wrapper" style="width:40px;height:40px;margin-bottom:8px;"><i class="fa-solid fa-cloud-arrow-up fa-lg"></i></div>
-        <div class="upload-text-main" style="font-size:0.85rem;">Drag &amp; Drop or <span style="color:var(--primary);text-decoration:underline;">Browse</span></div>
-        <div class="upload-text-sub" style="margin-top:6px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
-          <span style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);border-radius:4px;font-weight:700;">JPG & PNG</span>
-          <span style="color:var(--muted);margin-left:4px;">Max 10MB</span>
-        </div>
-      </div>
-      <input type="file" id="sos_image" accept="image/*" class="d-none" onchange="previewImage(this)">
-    `;
-  }
+  // Do not clear the description textarea or character counter here
+  // so that the typed text persists until the user manually changes/clears it.
 }
 
 function showPanel(type, msg) {
@@ -3040,17 +3077,26 @@ function pollDispatch() {
         if (hasActiveEmergency === false) {
           setTimeline(-1);
           resetSOSBtn();
-          clearSOSInputs();
           toggleSOSCancelState(false);
         }
       }
 
       lastPollData = data;
+      // Re-schedule polling interval if active state changed
+      scheduleDispatchPoll();
     })
     .catch(() => {});
 }
-setInterval(pollDispatch, 3000);
+// ── Adaptive Polling: 3s when active emergency, 15s when idle ──
+// This reduces Railway DB queries by ~80% for normal users.
+let _dispatchIntervalId = null;
+function scheduleDispatchPoll() {
+  if (_dispatchIntervalId) clearInterval(_dispatchIntervalId);
+  const interval = hasActiveEmergency ? 3000 : 15000;
+  _dispatchIntervalId = setInterval(pollDispatch, interval);
+}
 pollDispatch();
+scheduleDispatchPoll();
 
 function toggleSOSCancelState(active) {
   const cancelBtn = document.getElementById('cancelSOSContainer');
@@ -3641,7 +3687,9 @@ function fetchHistory() {
     })
     .catch(() => { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--danger);">Failed to load.</td></tr>'; });
 }
-fetchHistory();
+// History is fetched lazily — only when the user opens the history tab
+// (see showTab() which calls fetchHistory() for id==='history')
+// We do NOT pre-load it on page load to save a DB round-trip.
 
 // =====================================================================
 // CLOCK
@@ -3712,11 +3760,12 @@ if (document.cookie.indexOf('googtrans=') !== -1) {
 </script>
 <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
-<style>
-/* Hide the top translation banner and avoid pushing body down */
-body { top: 0 !important; }
-.skiptranslate { display: none !important; }
 </style>
+
+<!-- Debug Page Load Time -->
+<div style="text-align:center; padding:12px; font-size:0.75rem; color:var(--muted); opacity:0.75; margin-top:20px; font-family:monospace;">
+    Page generated in <?= round(microtime(true) - $start_time, 4) ?> seconds (Railway Database connection).
+</div>
 
 </body>
 </html>

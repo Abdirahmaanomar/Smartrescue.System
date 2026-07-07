@@ -257,7 +257,7 @@ function setLayer(type) {
 
 const victimIcon = L.divIcon({
     className:'',
-    html:`<div style="background:#ef4444;color:#ffffff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(239,68,68,0.2),0 0 20px rgba(239,68,68,0.5);border:2px solid rgba(255,255,255,0.9);animation:live-dot 1.5s infinite;"><i class="fa-solid fa-rss" style="font-size:12px"></i></div>`,
+    html:`<div style="background:#ef4444;color:#ffffff;width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(239,68,68,0.2),0 0 20px rgba(239,68,68,0.5);border:2px solid rgba(255,255,255,0.9);animation:live-dot 1.5s infinite;"></div>`,
     iconSize:[28,28],iconAnchor:[14,14]
 });
 const unitIcon = L.divIcon({
@@ -395,7 +395,7 @@ function updateMapMarkers(incidents, units) {
 function esc(s){ return s ? String(s).replace(/</g,'&lt;') : ''; }
 
 pollTracking();
-setInterval(pollTracking, 3000);
+setInterval(pollTracking, 5000); // 5s is fast enough for live map; was 3s
 </script>
 </body>
 </html>

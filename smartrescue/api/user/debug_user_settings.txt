@@ -4064,3 +4064,319 @@ SESSION: Array
 )
 
 
+2026-06-17 13:21:57
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-17 13:22:00
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-22 08:39:40
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => mzvbxscnmdbcjeh: 767832r787: Friend
+ana fisaaaa: 0000000000000000000: Guardian
+ani waaye: 980890: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-22 09:25:16
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => ana fisaaaa: 0000000000000000000: Guardian
+ani waaye: 980890: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-22 09:25:18
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => ani waaye: 980890: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-06-29 11:14:13
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:14:33
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => 
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:14:56
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:15:11
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:15:12
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:15:17
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:15:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-29 11:29:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-30 18:34:06
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-30 18:49:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-30 18:49:54
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-06-30 19:03:57
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-05 11:13:46
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-05 11:13:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+)
+
+

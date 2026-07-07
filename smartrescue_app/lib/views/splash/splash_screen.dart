@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../providers/auth_provider.dart';
+import '../../utils/translator.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -153,9 +154,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         ),
                       ),
                       const SizedBox(height: 10),
-                      const Text(
-                        'Emergency Command Center',
-                        style: TextStyle(
+                      Text(
+                        AppTranslator.t(context, 'WELCOME'),
+                        style: const TextStyle(
                           color: Colors.white70,
                           fontSize: 16,
                           fontWeight: FontWeight.w600,

@@ -38,8 +38,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         echo json_encode(["status" => "success"]);
     } else {
         echo json_encode(["status" => "error", "message" => $stmt->error]);
+        $stmt->close();
     }
-    $stmt->close();
 } else {
     echo json_encode(["status" => "error", "message" => "Invalid Request"]);
 }

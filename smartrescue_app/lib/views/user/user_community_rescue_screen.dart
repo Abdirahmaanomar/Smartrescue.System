@@ -10,6 +10,7 @@ import '../../services/api_service.dart';
 import '../../constants/api_constants.dart';
 import 'user_shell.dart';
 import '../../utils/translator.dart';
+import '../../components/call_screen.dart';
 import '../../utils/responsive.dart';
 class UserCommunityRescueScreen extends StatefulWidget {
   const UserCommunityRescueScreen({super.key});
@@ -249,7 +250,7 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                           value: selectedType,
                           isExpanded: true,
                           dropdownColor: isDark ? const Color(0xFF1E293B) : Colors.white,
-                          items: <String>['Medical', 'Fire', 'Accident', 'Police', 'Missing Person']
+                          items: <String>['Medical', 'Fire', 'Accident', 'Police']
                               .map((String value) {
                             return DropdownMenuItem<String>(
                               value: value,
@@ -379,9 +380,13 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
             ? DateFormat('yyyy-MM-dd HH:mm').format(DateTime.parse(incident['created_at']))
             : AppTranslator.t(context, 'Unknown time');
 
-        String distanceStr = AppTranslator.t(context, 'Unknown');
+        String distanceStr = AppTranslator.t(context, 'Distance unknown');
         if (distanceMeters != null) {
-          distanceStr = '${(distanceMeters / 1000).toStringAsFixed(2)} ${AppTranslator.t(context, 'km away')}';
+          if (distanceMeters < 1000) {
+            distanceStr = '${distanceMeters.toStringAsFixed(0)} ${AppTranslator.t(context, 'm away')}';
+          } else {
+            distanceStr = '${(distanceMeters / 1000).toStringAsFixed(1)} ${AppTranslator.t(context, 'km away')}';
+          }
         }
 
         final hasEvidenceImage = incident['evidence_image'] != null && incident['evidence_image'].toString().isNotEmpty;
@@ -448,12 +453,11 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                         IconButton(
                           icon: const Icon(Icons.phone_in_talk_rounded, color: Colors.green),
                           style: IconButton.styleFrom(backgroundColor: Colors.green.withValues(alpha: 0.1)),
-                          onPressed: () async {
-                            final uri = Uri.parse('tel:${incident['victim_phone']}');
-                            if (await canLaunchUrl(uri)) {
-                              await launchUrl(uri);
-                            }
-                          },
+                          onPressed: () => CallScreen.show(
+                            context,
+                            name: incident['victim_name'] ?? '',
+                            phone: incident['victim_phone'].toString(),
+                          ),
                         ),
                     ],
                   ),
@@ -628,7 +632,7 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                           ),
                           children: [
                             TileLayer(
-                              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+                              urlTemplate: 'https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}',
                               userAgentPackageName: 'com.smartrescue.app',
                             ),
                             MarkerLayer(
@@ -646,6 +650,31 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                                     size: 40,
                                   ),
                                 ),
+                                if (_userLat != null && _userLng != null)
+                                  Marker(
+                                    point: LatLng(_userLat!, _userLng!),
+                                    width: 30,
+                                    height: 30,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF2563EB),
+                                        shape: BoxShape.circle,
+                                        border: Border.all(color: Colors.white, width: 3),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+                                            blurRadius: 8,
+                                            spreadRadius: 2,
+                                          )
+                                        ],
+                                      ),
+                                      child: const Icon(
+                                        Icons.person,
+                                        color: Colors.white,
+                                        size: 16,
+                                      ),
+                                    ),
+                                  ),
                               ],
                             ),
                           ],
@@ -659,9 +688,19 @@ class _UserCommunityRescueScreenState extends State<UserCommunityRescueScreen> {
                         onPressed: () async {
                           final lat = incident['lat'];
                           final lng = incident['lng'];
+                          if (lat == null || lng == null) return;
                           final uri = Uri.parse('https://www.google.com/maps/dir/?api=1&destination=$lat,$lng');
-                          if (await canLaunchUrl(uri)) {
-                            await launchUrl(uri);
+                          try {
+                            final launched = await launchUrl(
+                              uri,
+                              mode: LaunchMode.externalApplication,
+                            );
+                            if (!launched) {
+                              final geoUri = Uri.parse('geo:$lat,$lng?q=$lat,$lng');
+                              await launchUrl(geoUri, mode: LaunchMode.externalApplication);
+                            }
+                          } catch (e) {
+                            debugPrint('Error launching navigation: $e');
                           }
                         },
                         icon: const Icon(Icons.directions_rounded, color: Colors.white, size: 18),

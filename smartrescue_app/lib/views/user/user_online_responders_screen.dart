@@ -65,13 +65,12 @@ class _UserOnlineRespondersScreenState extends State<UserOnlineRespondersScreen>
   }
 
   Future<void> _callPhone(String phone) async {
-    final Uri launchUri = Uri(
-      scheme: 'tel',
-      path: phone,
-    );
-    if (await canLaunchUrl(launchUri)) {
-      await launchUrl(launchUri);
-    }
+    final cleanPhone = phone.replaceAll(RegExp(r'\s+|-|\(|\)'), '');
+    if (cleanPhone.isEmpty) return;
+    final Uri launchUri = Uri.parse('tel:$cleanPhone');
+    try {
+      await launchUrl(launchUri, mode: LaunchMode.externalApplication);
+    } catch (_) {}
   }
 
   Color _getUnitTypeColor(String type) {

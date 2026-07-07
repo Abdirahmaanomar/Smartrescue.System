@@ -79,155 +79,129 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             VALUES ('$user_id', '$lat', '$lng', '$accuracy', '$type', '$description', '$image_path', '$neighborhood', 'pending')";
 
     if (mysqli_query($conn, $sql)) {
+        $inserted_id = mysqli_insert_id($conn);
         $response['status'] = "success";
+        $response['id'] = $inserted_id;
         
-        // 3. Notify Emergency Contacts (Simulated SMS & In-app Notification)
+        // Fetch user data needed for response messages and subsequent processing
         $user_query = mysqli_query($conn, "SELECT fullname, phone, emergency_contacts, language FROM users WHERE id = '$user_id'");
         $sender_lang = 'en';
+        $fullname = 'User';
+        $sender_phone = '';
+        $emergency_contacts = '';
         if ($user_query && mysqli_num_rows($user_query) > 0) {
             $user_row = mysqli_fetch_assoc($user_query);
             $fullname = $user_row['fullname'] ?? 'User';
             $sender_phone = $user_row['phone'] ?? '';
             $emergency_contacts = $user_row['emergency_contacts'] ?? '';
             $sender_lang = $user_row['language'] ?? 'en';
-            
-            if ($sender_lang === 'so') {
-                $response['message'] = "Gurmadka waa laguu soo diray. Ha ka bixin halka aad joogto!";
-            } else {
-                $response['message'] = "Emergency dispatch initiated. Please stay calm and remain where you are!";
-            }
-            
-            if (!empty($emergency_contacts)) {
-                $lines = explode("\n", $emergency_contacts);
-                $alerted_contacts = [];
-                $mutual_contacts_names = []; // Track mutual trusted contacts
-                
-                foreach ($lines as $line) {
-                    $line = trim($line);
-                    if (empty($line)) continue;
-                    
-                    $parts = explode(":", $line);
-                    $c_name = isset($parts[0]) ? trim($parts[0]) : 'Contact';
-                    $c_phone = isset($parts[1]) ? trim($parts[1]) : '';
-                    $c_relation = isset($parts[2]) ? trim($parts[2]) : 'Family';
-                    
-                    if (!empty($c_phone)) {
-                        // Construct emergency message with maps location link
-                        $alert_msg = "SmartRescue SOS Alert: " . $fullname . " has sent an emergency SOS request (" . $type . "). Please check on them immediately. Location: https://maps.google.com/?q=" . $lat . "," . $lng;
-                        
-                        // Send SMS via Hormuud Gateway helper (will fall back to simulation logs if credentials aren't set)
-                        send_hormuud_sms($conn, $c_phone, $alert_msg, $user_id);
-                        
-                        // In-App Alert: Check if this emergency contact is a registered user in our app
-                        $clean_contact_phone = preg_replace('/[^0-9]/', '', $c_phone);
-                        // Match either exact phone or last 9 digits (to ignore country code variations)
-                        $last9 = substr($clean_contact_phone, -9);
-                        $contact_user_q = mysqli_query($conn, 
-                            "SELECT id, fullname, language FROM users WHERE 
-                            REPLACE(REPLACE(REPLACE(phone, '+', ''), '-', ''), ' ', '') = '$clean_contact_phone'
-                            OR RIGHT(REPLACE(REPLACE(REPLACE(phone, '+', ''), '-', ''), ' ', ''), 9) = '$last9'
-                            LIMIT 1"
-                        );
-                        
-                        if ($contact_user_q && mysqli_num_rows($contact_user_q) > 0) {
-                            $contact_user = mysqli_fetch_assoc($contact_user_q);
-                            $contact_user_id = $contact_user['id'];
-                            $contact_lang = $contact_user['language'] ?? 'en';
-                            
-                            // Only notify if it's not the same user sending the SOS
-                            if ($contact_user_id != $user_id) {
-                                // Find if this contact has ALSO added the current user to their emergency contacts (mutual trust)
-                                $is_mutual = false;
-                                if (!empty($sender_phone)) {
-                                    $contact_detail_q = mysqli_query($conn, "SELECT emergency_contacts FROM users WHERE id = '$contact_user_id' LIMIT 1");
-                                    if ($contact_detail_q && mysqli_num_rows($contact_detail_q) > 0) {
-                                        $contact_detail = mysqli_fetch_assoc($contact_detail_q);
-                                        $contact_ecs = $contact_detail['emergency_contacts'] ?? '';
-                                        
-                                        if (!empty($contact_ecs)) {
-                                            $clean_sender = preg_replace('/[^0-9]/', '', $sender_phone);
-                                            $sender_last9 = substr($clean_sender, -9);
-                                            
-                                            $contact_lines = explode("\n", $contact_ecs);
-                                            foreach ($contact_lines as $c_line) {
-                                                $c_line = trim($c_line);
-                                                if (empty($c_line)) continue;
-                                                $c_parts = explode(":", $c_line);
-                                                if (isset($c_parts[1])) {
-                                                    $clean_c_part = preg_replace('/[^0-9]/', '', $c_parts[1]);
-                                                    $c_part_last9 = substr($clean_c_part, -9);
-                                                    if ($sender_last9 === $c_part_last9 && !empty($sender_last9)) {
-                                                        $is_mutual = true;
-                                                        break;
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-
-                                if ($contact_lang === 'so') {
-                                    if ($is_mutual) {
-                                        $in_app_title = "🚨 Gurmadka Ehelka!";
-                                        $in_app_msg = "Ehelkaaga aad aamintay $fullname ayaa dalbaday SOS degdeg ah ($type)! Fadlan caawi hadda. Goobta: https://maps.google.com/?q=$lat,$lng";
-                                    } else {
-                                        $in_app_title = "🚨 Ogeysiis SOS Ehelka!";
-                                        $in_app_msg = "$fullname ($c_relation) waxay ku jiraan xaalad degdeg ah ($type)! Fadlan caawi ama hubi hadda. Goobta: https://maps.google.com/?q=$lat,$lng";
-                                    }
-                                } else {
-                                    if ($is_mutual) {
-                                        $in_app_title = "🚨 Trusted Contact SOS Alert!";
-                                        $in_app_msg = "Your trusted contact $fullname has triggered an emergency SOS ($type)! Please help now. Location: https://maps.google.com/?q=$lat,$lng";
-                                    } else {
-                                        $in_app_title = "🚨 Emergency SOS Alert!";
-                                        $in_app_msg = "$fullname ($c_relation) is in an emergency situation ($type)! Please help or check on them now. Location: https://maps.google.com/?q=$lat,$lng";
-                                    }
-                                }
-                                
-                                $safe_in_app_title = mysqli_real_escape_string($conn, $in_app_title);
-                                $safe_in_app_msg = mysqli_real_escape_string($conn, $in_app_msg);
-                                mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$contact_user_id', '$safe_in_app_title', '$safe_in_app_msg', 0)");
-                            }
-                        }
-                        
-                        $alerted_contacts[] = "$c_name ($c_phone)";
-                    }
+        }
+        
+        if ($sender_lang === 'so') {
+            $response['message'] = "Gurmadka waa laguu soo diray. Ha ka bixin halka aad joogto!";
+        } else {
+            $response['message'] = "Emergency dispatch initiated. Please stay calm and remain where you are!";
+        }
+        
+        $alerted_contacts = [];
+        if (!empty($emergency_contacts)) {
+            $lines = explode("\n", $emergency_contacts);
+            foreach ($lines as $line) {
+                $line = trim($line);
+                if (empty($line)) continue;
+                $parts = explode(":", $line);
+                $c_name = isset($parts[0]) ? trim($parts[0]) : 'Contact';
+                $c_phone = isset($parts[1]) ? trim($parts[1]) : '';
+                if (!empty($c_phone)) {
+                    $alerted_contacts[] = "$c_name ($c_phone)";
                 }
-                
-                if (!empty($alerted_contacts)) {
-                    // If we have mutual (trusted) contacts, give sender a Gurmadka Ehelka-style notification too
-                    if ($sender_lang === 'so') {
-                        if (!empty($mutual_contacts_names)) {
-                            $mutual_list = implode(", ", $mutual_contacts_names);
-                            $notif_title = "✅ Gurmadka Ehelkaaga La Ogaysiiyay!";
-                            $notif_msg = "Ehelkaada aaminsan $mutual_list ayaa ogeysiis degdeg ah ka helay SOS-kaaga ($type). Waxay kuu ogaayaan halka aad joogto. Goobta: https://maps.google.com/?q=$lat,$lng";
-                        } else {
-                            $notif_title = "🚨 Eheladaada Gurmadka waa la Wargeliyay!";
-                            $notif_msg = "Eheladaada gurmadka ee (" . implode(", ", $alerted_contacts) . ") waxaa loo diray SMS wargelin ah oo ku saabsan SOS-kaaga ($type).";
-                        }
-                    } else {
-                        if (!empty($mutual_contacts_names)) {
-                            $mutual_list = implode(", ", $mutual_contacts_names);
-                            $notif_title = "✅ Emergency Contacts Notified!";
-                            $notif_msg = "Your trusted contact $mutual_list has received an emergency alert for your SOS ($type). They know where you are. Location: https://maps.google.com/?q=$lat,$lng";
-                        } else {
-                            $notif_title = "🚨 Emergency Contacts Alerted!";
-                            $notif_msg = "Your emergency contacts (" . implode(", ", $alerted_contacts) . ") have been sent an SMS alert regarding your SOS ($type).";
-                        }
-                    }
-                    
-                    $safe_title = mysqli_real_escape_string($conn, $notif_title);
-                    $safe_msg = mysqli_real_escape_string($conn, $notif_msg);
-                    mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$user_id', '$safe_title', '$safe_msg', 0)");
-                    
-                    if ($sender_lang === 'so') {
-                        $response['message'] .= "\nEhelkaada (" . implode(", ", $alerted_contacts) . ") wargelin SMS ah ayaa loo diray!";
-                    } else {
-                        $response['message'] .= "\nYour emergency contacts (" . implode(", ", $alerted_contacts) . ") have been alerted via SMS!";
-                    }
+            }
+            if (!empty($alerted_contacts)) {
+                if ($sender_lang === 'so') {
+                    $response['message'] .= "\nEhelkaada (" . implode(", ", $alerted_contacts) . ") wargelin SMS ah ayaa loo diray!";
+                } else {
+                    $response['message'] .= "\nYour emergency contacts (" . implode(", ", $alerted_contacts) . ") have been alerted via SMS!";
                 }
             }
         }
+        
+        // ── INSERT SENDER'S NOTIFICATION IMMEDIATELY (synchronous – instant) ──
+        $loc_link_instant = "https://maps.google.com/?q=$lat,$lng";
+        if (!empty($neighborhood)) {
+            $loc_link_instant .= " ($neighborhood)";
+        }
+        if (!empty($alerted_contacts)) {
+            if ($sender_lang === 'so') {
+                $instant_title = "🚨 Codsiga SOS-ka waa la Baahiyay!";
+                $instant_msg = "Dalabkaaga gurmadka degdegga ah ee ($type) waa la diray. Eheladaada (" . implode(", ", $alerted_contacts) . ") waxaa loo diray SMS. Goobta: $loc_link_instant";
+            } else {
+                $instant_title = "🚨 SOS Signal Broadcasted!";
+                $instant_msg = "Your emergency SOS ($type) has been sent. Emergency contacts (" . implode(", ", $alerted_contacts) . ") are being alerted. Location: $loc_link_instant";
+            }
+        } else {
+            if ($sender_lang === 'so') {
+                $instant_title = "🚨 Codsiga SOS-ka waa la Baahiyay!";
+                $instant_msg = "Dalabkaaga gurmadka degdegga ah ee ($type) waa la diray. Kooxaha gurmadka ayaa la ogeysiiyay. Goobta: $loc_link_instant";
+            } else {
+                $instant_title = "🚨 SOS Signal Broadcasted!";
+                $instant_msg = "Your emergency SOS request ($type) has been broadcasted. Emergency response teams have been notified. Location: $loc_link_instant";
+            }
+        }
+        $safe_instant_title = mysqli_real_escape_string($conn, $instant_title);
+        $safe_instant_msg   = mysqli_real_escape_string($conn, $instant_msg);
+        mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$user_id', '$safe_instant_title', '$safe_instant_msg', 0)");
+
+        echo json_encode($response);
+
+        
+        // ── LAUNCH BACKGROUND PROCESS ASYNCHRONOUSLY ──
+        $php_path = 'php'; // default fallback
+        if (stristr(PHP_OS, 'WIN')) {
+            // Traverse up to find php/php.exe for XAMPP Windows
+            $dir = __DIR__;
+            for ($i = 0; $i < 8; $i++) {
+                $check = $dir . DIRECTORY_SEPARATOR . 'php' . DIRECTORY_SEPARATOR . 'php.exe';
+                if (file_exists($check)) {
+                    $php_path = $check;
+                    break;
+                }
+                $parent = dirname($dir);
+                if ($parent === $dir) {
+                    break;
+                }
+                $dir = $parent;
+            }
+            if ($php_path === 'php' && file_exists('C:\\xampp\\php\\php.exe')) {
+                $php_path = 'C:\\xampp\\php\\php.exe';
+            }
+            
+            $cmd = "start \"\" /B " . escapeshellarg($php_path) . " -f " . escapeshellarg(__DIR__ . "/send_sos_background.php") . " -- " . 
+                   escapeshellarg($inserted_id) . " " . 
+                   escapeshellarg($user_id) . " " . 
+                   escapeshellarg($lat) . " " . 
+                   escapeshellarg($lng) . " " . 
+                   escapeshellarg($type) . " " . 
+                   escapeshellarg($fullname) . " " . 
+                   escapeshellarg($sender_phone) . " " . 
+                   escapeshellarg($sender_lang) . " " . 
+                   escapeshellarg($neighborhood) . " " . 
+                   escapeshellarg(base64_encode($emergency_contacts)) . " > NUL 2>&1";
+            pclose(popen($cmd, "r"));
+        } else {
+            $cmd = "php -f " . escapeshellarg(__DIR__ . "/send_sos_background.php") . " -- " . 
+                   escapeshellarg($inserted_id) . " " . 
+                   escapeshellarg($user_id) . " " . 
+                   escapeshellarg($lat) . " " . 
+                   escapeshellarg($lng) . " " . 
+                   escapeshellarg($type) . " " . 
+                   escapeshellarg($fullname) . " " . 
+                   escapeshellarg($sender_phone) . " " . 
+                   escapeshellarg($sender_lang) . " " . 
+                   escapeshellarg($neighborhood) . " " . 
+                   escapeshellarg(base64_encode($emergency_contacts)) . " > /dev/null 2>&1 &";
+            shell_exec($cmd);
+        }
+        exit(); // Finish background thread
     } else {
         $response['status'] = "error";
         $response['message'] = "Cilad farsamo: " . mysqli_error($conn);

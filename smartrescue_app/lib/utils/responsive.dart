@@ -49,8 +49,9 @@ class Responsive {
   }
 
   /// Wrap screen contents to restrict max width and center it on large screens (tablets/laptops)
-  Widget wrapWidescreen(Widget child, {double maxWidth = 900}) {
-    return Center(
+  Widget wrapWidescreen(Widget child, {double maxWidth = 900, Alignment alignment = Alignment.topCenter}) {
+    return Align(
+      alignment: alignment,
       child: ConstrainedBox(
         constraints: BoxConstraints(maxWidth: maxWidth),
         child: child,

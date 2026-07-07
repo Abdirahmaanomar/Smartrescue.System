@@ -196,6 +196,36 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
     box-shadow: 0 8px 25px rgba(59,130,246,0.4);
     color: white;
 }
+
+/* Password visibility toggle */
+.pwd-wrapper {
+    position: relative;
+    width: 100%;
+}
+.pwd-toggle {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: #94a3b8;
+    cursor: pointer;
+    padding: 0;
+    font-size: 1rem;
+    z-index: 10;
+    transition: color 0.2s ease;
+    line-height: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.pwd-toggle:hover {
+    color: var(--accent, #3b82f6);
+}
+.pwd-wrapper .form-control {
+    padding-right: 46px !important;
+}
 </style>
 </head>
 <body>
@@ -246,7 +276,12 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
             </div>
             <div class="col-md-6">
                 <label class="form-label">New Password (optional)</label>
-                <input type="password" name="password" class="form-control" placeholder="Leave blank to keep current">
+                <div class="pwd-wrapper">
+                    <input type="password" name="password" id="profile-password" class="form-control" placeholder="Leave blank to keep current">
+                    <button type="button" class="pwd-toggle" onclick="togglePassword('profile-password', this)" tabindex="-1" aria-label="Show/Hide password">
+                        <i class="fa fa-eye-slash" id="pwd-icon-profile-password"></i>
+                    </button>
+                </div>
             </div>
         </div>
         
@@ -271,6 +306,20 @@ function previewImage(input) {
             preview.style.display = 'block';
         }
         reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function togglePassword(fieldId, btn) {
+    const input = document.getElementById(fieldId);
+    const icon  = document.getElementById('pwd-icon-' + fieldId);
+    if (input.type === 'password') {
+        input.type = 'text';
+        icon.classList.replace('fa-eye-slash', 'fa-eye');
+        btn.style.color = 'var(--accent, #3b82f6)';
+    } else {
+        input.type = 'password';
+        icon.classList.replace('fa-eye', 'fa-eye-slash');
+        btn.style.color = '';
     }
 }
 </script>

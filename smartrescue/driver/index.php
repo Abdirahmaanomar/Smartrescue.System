@@ -1355,6 +1355,9 @@ $app_language = $user['language'] ?? 'en';
               <div class="info-item">
                 <label>Priority</label><span><?= htmlspecialchars($job['priority'] ?? 'Standard') ?></span>
               </div>
+              <div class="info-item" id="dash-neighborhood-item" style="<?= empty($job['neighborhood']) ? 'display:none' : '' ?>">
+                <label>Neighborhood</label><span id="dash-neighborhood"><?= htmlspecialchars($job['neighborhood'] ?? '') ?></span>
+              </div>
               <?php if (!empty($job['description'])): ?>
                 <div class="info-item" style="grid-column:1/-1">
                   <label>Description</label><span><?= htmlspecialchars($job['description']) ?></span>
@@ -2385,6 +2388,12 @@ $app_language = $user['language'] ?? 'en';
           if (d.status === 'success' && d.victim_lat && d.victim_lng) {
             const vLat = parseFloat(d.victim_lat), vLng = parseFloat(d.victim_lng);
             if (victimMarker) victimMarker.setLatLng([vLat, vLng]);
+            if (d.neighborhood) {
+              const el = document.getElementById('dash-neighborhood');
+              const item = document.getElementById('dash-neighborhood-item');
+              if (el) el.textContent = d.neighborhood;
+              if (item) item.style.display = '';
+            }
             // Re-route if victim moved more than 30m
             const moved = haversine(lastVictimLat, lastVictimLng, vLat, vLng) * 1000;
             if (moved > 30 && driverLat) {
@@ -2402,7 +2411,7 @@ $app_language = $user['language'] ?? 'en';
             }
           }
         }).catch(() => { });
-      }, 4000);
+      }, 6000); // 6s: victim rarely moves; 30m threshold prevents unnecessary re-routing
     <?php endif; ?>
   </script>
 

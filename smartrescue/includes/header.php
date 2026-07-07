@@ -4,20 +4,27 @@ if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-// Get user preferences if DB connection exists and session is active
+// Get user preferences — ONE combined query instead of 3 separate ones
 $dark_mode = 0;
 if (isset($conn) && isset($_SESSION['user_id'])) {
-    $uid = $_SESSION['user_id'];
-    $u_res = mysqli_query($conn, "SELECT dark_mode FROM users WHERE id = '$uid'");
-    if ($u_res && mysqli_num_rows($u_res) > 0) {
-        $u_data = mysqli_fetch_assoc($u_res);
-        $dark_mode = $u_data['dark_mode'];
+    $uid = intval($_SESSION['user_id']);
+    // Fetch dark_mode + profile_image in a SINGLE query
+    $u_res = mysqli_query($conn, "SELECT dark_mode, profile_image FROM users WHERE id = $uid LIMIT 1");
+    if ($u_res && $u_data = mysqli_fetch_assoc($u_res)) {
+        $dark_mode = (int)($u_data['dark_mode'] ?? 0);
+        // Cache profile_image in session so header nav doesn't need a 2nd query
+        $_SESSION['profile_image'] = $u_data['profile_image'] ?? '';
     }
 }
 
 $theme = $dark_mode ? 'dark' : 'light';
 $page_title = $page_title ?? 'SmartRescue';
-$sys_lang = get_setting($conn, 'language', 'en');
+
+// Cache system language in session — avoids a DB query on every page load
+if (!isset($_SESSION['_sys_lang'])) {
+    $_SESSION['_sys_lang'] = get_setting($conn, 'language', 'en');
+}
+$sys_lang = $_SESSION['_sys_lang'];
 ?>
 <!DOCTYPE html>
 <html lang="<?= $sys_lang ?>" data-theme="<?= $theme; ?>" <?= $sys_lang == 'ar' ? 'dir="rtl"' : '' ?>>
@@ -44,14 +51,7 @@ $sys_lang = get_setting($conn, 'language', 'en');
 
 <!-- Standalone Top Navigation -->
 <?php
-// Sync profile_image from DB into session every page load
-if (isset($conn) && isset($_SESSION['user_id'])) {
-    $_h_uid = $_SESSION['user_id'];
-    $_h_res = mysqli_query($conn, "SELECT profile_image FROM users WHERE id='$_h_uid' LIMIT 1");
-    if ($_h_res && $_h_row = mysqli_fetch_assoc($_h_res)) {
-        $_SESSION['profile_image'] = $_h_row['profile_image'] ?? '';
-    }
-}
+// profile_image already fetched above in the combined query — no extra DB call needed
 $_nav_img  = $_SESSION['profile_image'] ?? '';
 $_nav_init = strtoupper(substr($_SESSION['fullname'] ?? 'U', 0, 1));
 ?>
