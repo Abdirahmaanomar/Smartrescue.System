@@ -1,4 +1,5 @@
 import 'package:audioplayers/audioplayers.dart';
+import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class SoundService {
@@ -11,7 +12,8 @@ class SoundService {
     try {
       final prefs = await SharedPreferences.getInstance();
       return prefs.getBool(_soundKey) ?? true;
-    } catch (_) {
+    } catch (e) {
+      debugPrint('[SoundService] Error checking sound preference: $e');
       return true;
     }
   }
@@ -23,7 +25,9 @@ class SoundService {
       if (!enabled) {
         stopAmbulanceSirenLoop();
       }
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[SoundService] Error saving sound preference: $e');
+    }
   }
 
   // ─── Notification Beep ───────────────────────────────────────────────────────
@@ -33,7 +37,9 @@ class SoundService {
     try {
       await _beepPlayer.stop();
       await _beepPlayer.play(AssetSource('sounds/beep.wav'));
-    } catch (_) {}
+    } catch (e, stack) {
+      debugPrint('[SoundService] Error playing beep: $e\n$stack');
+    }
   }
 
   static Future<void> playSosSiren() => playBeep();
@@ -41,15 +47,17 @@ class SoundService {
 
   // ─── Ambulance Siren Loop ────────────────────────────────────────────────────
   /// Plays a looping ambulance wail sweep [600Hz ↔ 1100Hz sawtooth sweep].
-  /// Disabled as per user request to only keep the SOS beep.
+  /// Disabled to only keep the single web beep.
   static Future<void> playAmbulanceSirenLoop() async {
-    return; // Disabled
+    return;
   }
 
   // ─── Stop Siren ──────────────────────────────────────────────────────────────
   static Future<void> stopAmbulanceSirenLoop() async {
     try {
       await _sirenPlayer.stop();
-    } catch (_) {}
+    } catch (e) {
+      debugPrint('[SoundService] Error stopping siren loop: $e');
+    }
   }
 }

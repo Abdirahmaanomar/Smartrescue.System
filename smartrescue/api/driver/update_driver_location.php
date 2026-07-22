@@ -4,13 +4,19 @@ session_start();
 require_once '../../config/db.php';
 require_once '../../includes/functions.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'driver') {
+$driver_id = null;
+if (isset($_REQUEST['driver_id'])) {
+    $driver_id = intval($_REQUEST['driver_id']);
+} elseif (isset($_SESSION['user_id']) && $_SESSION['role'] === 'driver') {
+    $driver_id = intval($_SESSION['user_id']);
+}
+
+if (!$driver_id) {
     echo json_encode(["status" => "error", "message" => "Unauthorized"]);
     exit();
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    $driver_id = intval($_SESSION['user_id']);
 
     // Cast to float and validate range — reject obviously wrong values
     $lat = isset($_POST['lat']) ? floatval($_POST['lat']) : null;

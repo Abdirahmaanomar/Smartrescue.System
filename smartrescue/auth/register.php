@@ -135,10 +135,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <!-- Left Promotional Side -->
     <div class="auth-image-side">
         <a href="../index.php" class="auth-brand" style="display: flex; align-items: center; gap: 10px;">
-            <div style="background: linear-gradient(135deg, var(--primary), #0a58ca); color: white; border-radius: 10px; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);">
-                <i class="fa-solid fa-truck-medical" style="font-size: 1.4rem; margin: 0;"></i>
+            <div style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 14px; width: 48px; height: 48px; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);">
+                <i class="fa-solid fa-suitcase-medical" style="font-size: 1.5rem; margin: 0;"></i>
             </div>
-            <span style="font-weight: 800; font-size: 1.6rem; letter-spacing: -0.5px; color: var(--secondary);">Smart<span style="color: var(--primary);">Rescue</span></span>
+            <span style="font-weight: 800; font-size: 1.6rem; letter-spacing: -0.5px; color: #0f172a;">Smart<span style="color: #2563eb;">Rescue</span></span>
         </a>
         <div class="promo-content">
             <h1>Join the Network<br>of Heroes</h1>
@@ -152,6 +152,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             <a href="../index.php" class="back-btn-mobile"><i class="fa-solid fa-arrow-left me-2"></i> Back to Home</a>
             
             <div class="form-header">
+                <div style="display: flex; align-items: center; gap: 14px; margin-bottom: 22px;">
+                    <div style="background: linear-gradient(135deg, #2563eb, #1d4ed8); color: white; border-radius: 16px; width: 54px; height: 54px; display: flex; align-items: center; justify-content: center; font-size: 24px; box-shadow: 0 8px 20px rgba(37, 99, 235, 0.3);">
+                        <i class="fa-solid fa-suitcase-medical"></i>
+                    </div>
+                    <div>
+                        <div style="font-weight: 900; font-size: 1.4rem; color: #0f172a; letter-spacing: -0.4px; line-height: 1.2;">Smart<span style="color: #2563eb;">Rescue</span></div>
+                        <div style="font-size: 0.85rem; color: #64748b; font-weight: 600;">Emergency Response System</div>
+                    </div>
+                </div>
                 <h2>Create Account</h2>
                 <p>Welcome to SmartRescue! Please fill in your details below.</p>
             </div>

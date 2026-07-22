@@ -391,7 +391,9 @@ if (isset($conn) && isset($_SESSION['user_id']) && !isset($_SESSION['_profile_sy
 
 <aside class="sidebar">
     <a href="index.php" class="sidebar-brand">
-        <div class="sidebar-brand-icon"><i class="fa fa-truck-medical"></i></div>
+        <div style="width: 42px; height: 42px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 20px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); flex-shrink: 0;">
+            <i class="fa-solid fa-suitcase-medical"></i>
+        </div>
         <div>
             <div class="sidebar-brand-text">Smart<span>Rescue</span></div>
             <div class="sidebar-brand-sub"><?= t('Admin Panel') ?></div>

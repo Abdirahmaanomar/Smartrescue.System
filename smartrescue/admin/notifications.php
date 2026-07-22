@@ -5,10 +5,11 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: ../auth/login.php"); exit();
 }
 
-// Mark all read action
+// Mark all read action — stores dismissed timestamp in session
 if (isset($_POST['mark_all_read'])) {
-    // In a real system you'd update a notifications table. 
-    // Here we just redirect back with a flash message.
+    // Record the current time as the "last read" timestamp in the session.
+    // Any request created BEFORE this timestamp is considered "read" for badge counting.
+    $_SESSION['notif_last_read'] = date('Y-m-d H:i:s');
     $_SESSION['notif_flash'] = 'All notifications marked as read.';
     header("Location: notifications.php"); exit();
 }
@@ -23,7 +24,13 @@ $res = mysqli_query($conn, $q);
 $alerts = [];
 while ($row = mysqli_fetch_assoc($res)) $alerts[] = $row;
 
-$new_count = count(array_filter($alerts, fn($a) => $a['status'] === 'pending'));
+// Only count pending requests created AFTER last_read timestamp as "new"
+$lastRead = $_SESSION['notif_last_read'] ?? null;
+$new_count = count(array_filter($alerts, function($a) use ($lastRead) {
+    if ($a['status'] !== 'pending') return false;
+    if ($lastRead && $a['created_at'] <= $lastRead) return false;
+    return true;
+}));
 ?>
 <!DOCTYPE html>
 <html lang="en">

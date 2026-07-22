@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import '../../providers/auth_provider.dart';
 import '../../utils/translator.dart';
+import '../../components/app_logo.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -11,7 +12,8 @@ class SplashScreen extends StatefulWidget {
   State<SplashScreen> createState() => _SplashScreenState();
 }
 
-class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderStateMixin {
+class _SplashScreenState extends State<SplashScreen>
+    with SingleTickerProviderStateMixin {
   late AnimationController _controller;
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
@@ -19,8 +21,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   @override
   void initState() {
     super.initState();
-    _controller = AnimationController(vsync: this, duration: const Duration(milliseconds: 1500));
-    _scaleAnimation = Tween<double>(begin: 0.5, end: 1.0).animate(CurvedAnimation(
+    _controller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 1500));
+    _scaleAnimation = Tween<double>(begin: 0.6, end: 1.0).animate(CurvedAnimation(
       parent: _controller,
       curve: Curves.easeOutBack,
     ));
@@ -38,11 +41,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   Future<void> _checkAuth() async {
     final auth = Provider.of<AuthProvider>(context, listen: false);
 
-    // Run session check + location pre-warm in parallel during splash delay
     await Future.wait([
       auth.checkSession(),
       _preWarmLocation(),
-      Future.delayed(const Duration(milliseconds: 2000)), // Minimum splash duration
+      Future.delayed(const Duration(milliseconds: 2000)),
     ]);
 
     if (!mounted) return;
@@ -50,12 +52,14 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     if (auth.isLoggedIn) {
       if (auth.user?.role == 'user') {
         Navigator.of(context).pushReplacementNamed('/user');
+      } else if (auth.user?.role == 'driver') {
+        Navigator.of(context).pushReplacementNamed('/driver');
       } else {
-        // We only care about the user dashboard in this app.
-        // If driver or admin log in, for now, just show a message or log them out.
         auth.logout();
         ScaffoldMessenger.of(context).showSnackBar(
-           const SnackBar(content: Text('This app is for citizens only. Drivers/Admins use the web portal.'))
+          const SnackBar(
+              content: Text(
+                  'Only Citizens and Drivers can use this app. Admins use the web portal.')),
         );
         Navigator.of(context).pushReplacementNamed('/login');
       }
@@ -64,14 +68,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     }
   }
 
-  /// Requests location permission and triggers an initial GPS fix during splash.
-  /// This warms up the GPS cache so that getLastKnownPosition() works instantly
-  /// when the user opens the map screen.
   Future<void> _preWarmLocation() async {
     try {
       final hasPermission = await _checkAndRequestLocationPermission();
       if (hasPermission) {
-        // Trigger a low-accuracy warm-up fix to populate the OS location cache
         await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.low,
@@ -79,9 +79,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           ),
         );
       }
-    } catch (_) {
-      // Silent fail – location pre-warm is best-effort only
-    }
+    } catch (_) {}
   }
 
   Future<bool> _checkAndRequestLocationPermission() async {
@@ -108,9 +106,9 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       body: Container(
         decoration: const BoxDecoration(
           gradient: LinearGradient(
-            colors: [Color(0xFF0A58CA), Color(0xFF0D6EFD)],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+            colors: [Color(0xFF1D4ED8), Color(0xFF2563EB), Color(0xFF3B82F6)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
           ),
         ),
         child: Center(
@@ -124,43 +122,33 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Container(
-                        padding: const EdgeInsets.all(20),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(24),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 30,
-                              offset: const Offset(0, 10),
-                            ),
-                          ],
-                        ),
-                        child: const Icon(
-                          Icons.medical_services_rounded,
-                          size: 70,
-                          color: Color(0xFF0D6EFD),
-                        ),
+                      // AppLogo Badge (Exact match to screenshot 1)
+                      const AppLogo(
+                        size: 120,
+                        borderRadius: 28,
+                        showBorder: true,
+                        showShadow: false,
                       ),
-                      const SizedBox(height: 30),
+
+                      const SizedBox(height: 32),
+
                       const Text(
                         'SmartRescue',
                         style: TextStyle(
                           color: Colors.white,
-                          fontSize: 36,
+                          fontSize: 38,
                           fontWeight: FontWeight.w900,
-                          letterSpacing: -1,
+                          letterSpacing: -1.2,
                         ),
                       ),
-                      const SizedBox(height: 10),
+                      const SizedBox(height: 8),
                       Text(
                         AppTranslator.t(context, 'WELCOME'),
                         style: const TextStyle(
                           color: Colors.white70,
-                          fontSize: 16,
-                          fontWeight: FontWeight.w600,
-                          letterSpacing: 1.5,
+                          fontSize: 15,
+                          fontWeight: FontWeight.w700,
+                          letterSpacing: 2.0,
                         ),
                       ),
                     ],

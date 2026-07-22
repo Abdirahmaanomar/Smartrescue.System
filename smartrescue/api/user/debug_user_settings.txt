@@ -4380,3 +4380,1318 @@ SESSION: Array
 )
 
 
+2026-07-07 13:15:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 0
+    [user_id] => 1049
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-07 14:30:12
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar 
+    [role] => driver
+    [profile_image] => 
+    [_sg_checked_1047] => 1783427382
+)
+
+
+2026-07-07 14:35:26
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+    [gender] => Female
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar 
+    [role] => driver
+    [profile_image] => 
+    [_sg_checked_1047] => 1783427682
+)
+
+
+2026-07-07 14:36:58
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1783427802
+)
+
+
+2026-07-07 14:37:04
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1783427802
+)
+
+
+2026-07-07 14:37:36
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1783427802
+)
+
+
+2026-07-09 12:05:39
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-09 12:06:08
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-09 12:06:13
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-09 12:06:20
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-09 12:06:25
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-09 12:06:32
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => ar
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-09 12:06:44
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:06:26
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783778778
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:10:30
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783779025
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:10:33
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783779025
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:10:42
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+    [user_id] => 1045
+    [is_blood_donor] => 1
+    [blood_group] => B+
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783779025
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:11:13
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783779025
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:11:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783779085
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:30:06
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783780165
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:30:26
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783780225
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:30:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783780225
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-11 16:49:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783781355
+)
+
+
+2026-07-11 16:49:19
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1783781355
+)
+
+
+2026-07-16 15:55:11
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784210096
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-16 15:55:15
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784210096
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 11:02:37
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538108
+)
+
+
+2026-07-20 11:02:39
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538108
+)
+
+
+2026-07-20 11:14:54
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538876
+)
+
+
+2026-07-20 11:14:56
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538876
+)
+
+
+2026-07-20 11:15:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538876
+)
+
+
+2026-07-20 11:15:03
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538876
+)
+
+
+2026-07-20 11:15:07
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538876
+)
+
+
+2026-07-20 11:15:15
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => so
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784538876
+)
+
+
+2026-07-20 13:20:13
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784546409
+)
+
+
+2026-07-20 15:53:04
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1783427726.jpg
+    [_sg_checked_1047] => 1784555527
+)
+
+
+2026-07-20 15:54:49
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784555584.jpg
+    [_sg_checked_1047] => 1784555647
+)
+
+
+2026-07-20 16:09:01
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784555584.jpg
+    [_sg_checked_1047] => 1784556487
+)
+
+
+2026-07-20 16:16:28
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784556541.jpg
+    [_sg_checked_1047] => 1784556980
+)
+
+
+2026-07-20 16:17:48
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557039
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:29:18
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557713
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:29:21
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557713
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:29:23
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557713
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:31:12
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784556541.jpg
+    [_sg_checked_1047] => 1784557866
+)
+
+
+2026-07-20 16:31:13
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784557872.jpg
+    [_sg_checked_1047] => 1784557866
+)
+
+
+2026-07-20 16:32:25
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557893
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:32:27
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557893
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:32:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784557893
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-20 16:43:35
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784558609
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-21 12:33:12
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784557872.jpg
+    [_sg_checked_1047] => 1784629940
+)
+
+
+2026-07-21 12:33:40
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784557872.jpg
+    [_sg_checked_1047] => 1784630000
+)
+
+
+2026-07-21 12:33:47
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784557872.jpg
+    [_sg_checked_1047] => 1784630000
+)
+
+
+2026-07-21 14:25:36
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-21 14:25:39
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-21 14:27:57
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-21 14:28:31
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-21 14:29:31
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [fullname] => Maxamed Qadar muqtaar
+    [profile_image] => uploads/avatars/avatar_1047_1784636911.jpg
+)
+
+
+2026-07-21 14:33:44
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1048
+    [fullname] => Maxamed Saciid
+    [phone] => 613065946
+    [email] => maxamedsaciid@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-21 15:02:11
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-21 15:02:15
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => is_volunteer
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-21 17:13:50
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784636911.jpg
+    [_sg_checked_1047] => 1784646789
+)
+
+
+2026-07-21 17:14:00
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646830.jpg
+    [_sg_checked_1047] => 1784646789
+)
+
+
+2026-07-21 17:16:20
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1048
+    [fullname] => Maxamed Saciid
+    [phone] => 613065946
+    [email] => maxamedsaciid@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1048
+    [fullname] => Maxamed Saciid
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1048_1784637224.jpg
+    [_sg_checked_1048] => 1784646945
+)
+
+
+2026-07-21 17:53:55
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB
+    [phone] => 611226645
+    [email] => CARAB@GMAIL.COM
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB 
+    [role] => driver
+    [profile_image] => 
+    [_sg_checked_1049] => 1784649200
+)
+
+
+2026-07-21 17:54:00
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB
+    [phone] => 611226645
+    [email] => CARAB@GMAIL.COM
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1049
+    [fullname] => CABDIRAXMAAN CARAB
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1049_1784649235.jpeg
+    [_sg_checked_1049] => 1784649200
+)
+
+
+2026-07-21 17:56:52
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1050
+    [fullname] => Libaan Axmed
+    [phone] => 619796563
+    [email] => Libban@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1050
+    [fullname] => Libaan Axmed
+    [role] => driver
+    [profile_image] => 
+    [_sg_checked_1050] => 1784649407
+)
+
+
+2026-07-22 13:19:08
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1784719142
+)
+
+
+2026-07-22 14:00:02
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784721553
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-22 14:00:35
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784721613
+    [_notif_seeded_1045] => 1
+)
+
+

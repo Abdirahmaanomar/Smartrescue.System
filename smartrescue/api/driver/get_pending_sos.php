@@ -3,13 +3,17 @@ header("Content-Type: application/json");
 session_start();
 require_once '../../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'driver') {
+$driver_id = null;
+if (isset($_REQUEST['driver_id'])) {
+    $driver_id = intval($_REQUEST['driver_id']);
+} elseif (isset($_SESSION['user_id']) && $_SESSION['role'] === 'driver') {
+    $driver_id = intval($_SESSION['user_id']);
+}
+
+if (!$driver_id) {
     echo json_encode(["status" => "error", "message" => "Unauthorized"]);
     exit();
 }
-
-// Fetch the unit_id for the logged-in driver
-$driver_id = $_SESSION['user_id'];
 $unit_res  = mysqli_query($conn, "SELECT id FROM emergency_units WHERE driver_id='$driver_id' LIMIT 1");
 $unit      = mysqli_fetch_assoc($unit_res);
 $unit_id   = $unit ? $unit['id'] : 0;
@@ -19,13 +23,13 @@ if (!$unit_id) {
     exit();
 }
 
-// Fetch pending requests that are specifically assigned to THIS unit
+// Fetch requests assigned to THIS unit that driver hasn't responded to yet
 $sql = "SELECT r.id, r.lat, r.lng, r.emergency_type, r.description,
                r.created_at, r.status,
                u.fullname, u.phone
         FROM rescue_requests r
         JOIN users u ON r.user_id = u.id
-        WHERE r.status = 'pending'
+        WHERE r.status IN ('pending', 'accepted')
           AND r.assigned_unit_id = '$unit_id'
         ORDER BY r.created_at DESC
         LIMIT 5";

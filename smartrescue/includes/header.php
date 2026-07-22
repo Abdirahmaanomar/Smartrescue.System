@@ -56,8 +56,10 @@ $_nav_img  = $_SESSION['profile_image'] ?? '';
 $_nav_init = strtoupper(substr($_SESSION['fullname'] ?? 'U', 0, 1));
 ?>
 <nav class="topnav">
-    <a href="../user/index.php" class="topnav-brand" style="text-decoration:none;">
-        <div class="brand-icon"><i class="fa-solid fa-truck-medical"></i></div>
+    <a href="../user/index.php" class="topnav-brand" style="text-decoration:none; display: flex; align-items: center; gap: 10px;">
+        <div style="width: 38px; height: 38px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 11px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px; box-shadow: 0 4px 10px rgba(37,99,235,0.3); flex-shrink: 0;">
+            <i class="fa-solid fa-suitcase-medical"></i>
+        </div>
         <span>SmartRescue</span>
     </a>
     <div style="display:flex; gap:12px; align-items:center;">

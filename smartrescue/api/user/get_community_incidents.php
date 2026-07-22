@@ -8,10 +8,6 @@ $user_id = $_GET['user_id'] ?? $_POST['user_id'] ?? $_SESSION['user_id'] ?? null
 
 // Query active, non-completed, non-cancelled rescue requests
 $where = "r.status != 'completed' AND r.status != 'cancelled'";
-if ($user_id) {
-    $user_id_clean = mysqli_real_escape_string($conn, $user_id);
-    $where .= " AND r.user_id != '$user_id_clean'";
-}
 
 $sql = "
     SELECT 

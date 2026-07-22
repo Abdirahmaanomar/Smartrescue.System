@@ -3,12 +3,17 @@ header("Content-Type: application/json");
 session_start();
 require_once '../../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'driver') {
+$driver_id = null;
+if (isset($_REQUEST['driver_id'])) {
+    $driver_id = intval($_REQUEST['driver_id']);
+} elseif (isset($_SESSION['user_id']) && $_SESSION['role'] === 'driver') {
+    $driver_id = intval($_SESSION['user_id']);
+}
+
+if (!$driver_id) {
     echo json_encode(["status" => "error", "message" => "Unauthorized"]);
     exit();
 }
-
-$driver_id = $_SESSION['user_id'];
 
 // Find the unit assigned to this driver
 $unit_q = "SELECT id FROM emergency_units WHERE driver_id = '$driver_id' LIMIT 1";

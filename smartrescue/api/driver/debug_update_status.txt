@@ -1,0 +1,810 @@
+2026-07-21 08:24:57 - REQUEST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => reject
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => reject
+    [driver_id] => 1047
+)
+
+2026-07-21 08:26:57 - REQUEST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 08:27:03 - REQUEST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 08:27:09 - REQUEST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 394
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 08:29:40 - REQUEST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => reject
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => reject
+    [driver_id] => 1047
+)
+
+2026-07-21 08:29:59 - REQUEST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 08:30:10 - REQUEST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 08:30:21 - REQUEST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 08:30:27 - REQUEST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 395
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 08:33:39 - REQUEST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 08:33:45 - REQUEST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 08:34:14 - REQUEST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 08:34:44 - REQUEST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 396
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 08:43:38 - REQUEST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 08:43:53 - REQUEST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 08:44:06 - REQUEST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 08:44:12 - REQUEST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 397
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 10:58:27 - REQUEST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 10:59:04 - REQUEST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 10:59:19 - REQUEST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 10:59:33 - REQUEST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 398
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 11:14:00 - REQUEST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:23:18 - REQUEST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:23:35 - REQUEST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 11:24:36 - REQUEST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 11:24:44 - REQUEST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 399
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 11:28:13 - REQUEST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:28:15 - REQUEST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 11:28:25 - REQUEST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 11:28:34 - REQUEST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 400
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 11:32:15 - REQUEST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:32:17 - REQUEST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 11:32:19 - REQUEST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 11:32:30 - REQUEST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 401
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 11:39:02 - REQUEST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:39:18 - REQUEST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 11:39:23 - REQUEST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 11:39:38 - REQUEST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 404
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 11:44:42 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:57:16 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 11:59:47 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 12:11:24 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 12:11:38 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 12:11:41 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 12:11:46 - REQUEST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 407
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 13:04:46 - REQUEST: Array
+(
+    [request_id] => 409
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 409
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 14:26:15 - REQUEST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-21 14:26:24 - REQUEST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-21 14:26:43 - REQUEST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-21 14:26:50 - REQUEST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 410
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-21 14:35:36 - REQUEST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => accept
+    [driver_id] => 1048
+)
+ - POST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => accept
+    [driver_id] => 1048
+)
+
+2026-07-21 14:36:13 - REQUEST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => en_route
+    [driver_id] => 1048
+)
+ - POST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => en_route
+    [driver_id] => 1048
+)
+
+2026-07-21 14:36:22 - REQUEST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => arrived
+    [driver_id] => 1048
+)
+ - POST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => arrived
+    [driver_id] => 1048
+)
+
+2026-07-21 14:36:27 - REQUEST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => complete
+    [driver_id] => 1048
+)
+ - POST: Array
+(
+    [request_id] => 411
+    [unit_id] => 9
+    [action] => complete
+    [driver_id] => 1048
+)
+

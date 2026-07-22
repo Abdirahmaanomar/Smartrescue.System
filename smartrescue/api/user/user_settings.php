@@ -72,9 +72,12 @@ if ($action === 'update_profile') {
         if (!is_dir($upload_dir)) mkdir($upload_dir, 0755, true);
         
         // Validate file type
-        $allowed = ['image/jpeg','image/jpg','image/png','image/gif','image/webp'];
+        $allowed = ['image/jpeg','image/jpg','image/png','image/gif','image/webp','application/octet-stream'];
         $ftype = mime_content_type($_FILES['avatar']['tmp_name']);
-        if (!in_array($ftype, $allowed)) {
+        $ext = strtolower(pathinfo($_FILES['avatar']['name'], PATHINFO_EXTENSION));
+        $allowed_exts = ['jpg', 'jpeg', 'png', 'gif', 'webp'];
+        
+        if (!in_array($ftype, $allowed) && !in_array($ext, $allowed_exts)) {
             echo json_encode(['status' => 'error', 'message' => 'Invalid file type. Use JPG, PNG or GIF.']);
             exit();
         }

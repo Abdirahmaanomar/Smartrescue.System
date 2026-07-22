@@ -326,6 +326,7 @@ class _UserShellState extends State<UserShell> with WidgetsBindingObserver {
 
   @override
   Widget build(BuildContext context) {
+    final isDark = Theme.of(context).brightness == Brightness.dark;
     return Scaffold(
       key: UserShell.scaffoldKey,
       drawer: AppDrawer(
@@ -342,15 +343,22 @@ class _UserShellState extends State<UserShell> with WidgetsBindingObserver {
       ),
       bottomNavigationBar: Container(
         decoration: BoxDecoration(
+          border: Border(
+            top: BorderSide(
+              color: isDark ? const Color(0xFF1E293B) : Colors.grey.shade100,
+              width: 1.0,
+            ),
+          ),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 20,
-              offset: const Offset(0, -5),
+              color: Colors.black.withValues(alpha: isDark ? 0.1 : 0.03),
+              blurRadius: 16,
+              offset: const Offset(0, -4),
             )
           ],
         ),
         child: BottomNavigationBar(
+          elevation: 0,
           currentIndex: _currentIndex,
           onTap: (index) => setState(() => _currentIndex = index),
           type: BottomNavigationBarType.fixed,
@@ -359,27 +367,27 @@ class _UserShellState extends State<UserShell> with WidgetsBindingObserver {
           unselectedItemColor: Colors.grey.shade400,
           showSelectedLabels: true,
           showUnselectedLabels: true,
-          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 12),
-          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w500, fontSize: 12),
+          selectedLabelStyle: const TextStyle(fontWeight: FontWeight.w800, fontSize: 11, height: 1.6),
+          unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.w600, fontSize: 11, height: 1.6),
           items: [
             BottomNavigationBarItem(
-              icon: const Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.home_rounded)),
+              icon: const Padding(padding: EdgeInsets.only(bottom: 2), child: Icon(Icons.home_rounded, size: 22)),
               label: AppTranslator.t(context, 'SOS'),
             ),
             BottomNavigationBarItem(
-              icon: const Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.map_rounded)),
+              icon: const Padding(padding: EdgeInsets.only(bottom: 2), child: Icon(Icons.map_rounded, size: 22)),
               label: AppTranslator.t(context, 'Map'),
             ),
             BottomNavigationBarItem(
-              icon: const Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.shield_rounded)),
+              icon: const Padding(padding: EdgeInsets.only(bottom: 2), child: Icon(Icons.shield_rounded, size: 22)),
               label: AppTranslator.t(context, 'Proof'),
             ),
             BottomNavigationBarItem(
-              icon: const Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.volunteer_activism_rounded)),
+              icon: const Padding(padding: EdgeInsets.only(bottom: 2), child: Icon(Icons.volunteer_activism_rounded, size: 22)),
               label: AppTranslator.t(context, 'Community'),
             ),
             BottomNavigationBarItem(
-              icon: const Padding(padding: EdgeInsets.only(bottom: 4), child: Icon(Icons.more_horiz_rounded)),
+              icon: const Padding(padding: EdgeInsets.only(bottom: 2), child: Icon(Icons.more_horiz_rounded, size: 22)),
               label: AppTranslator.t(context, 'More'),
             ),
           ],

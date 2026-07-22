@@ -26,6 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $description = isset($_POST['description']) ? clean_input($_POST['description'], $conn) : "";
     $neighborhood = isset($_POST['neighborhood']) ? clean_input($_POST['neighborhood'], $conn) : "";
     
+
     $image_paths = array();
     $allowed_ext = array('jpg', 'jpeg', 'png', 'gif');
     $upload_dir = '../../uploads/';

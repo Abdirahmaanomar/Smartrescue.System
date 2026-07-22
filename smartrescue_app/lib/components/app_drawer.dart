@@ -9,6 +9,7 @@ import '../views/user/user_settings_screen.dart';
 import '../views/user/user_history_screen.dart';
 import '../views/user/user_profile_screen.dart';
 import '../utils/translator.dart';
+import './app_logo.dart';
 
 class AppDrawer extends StatelessWidget {
   final int currentIndex;
@@ -47,25 +48,11 @@ class AppDrawer extends StatelessWidget {
               padding: const EdgeInsets.fromLTRB(24, 60, 24, 30),
               child: Row(
                 children: [
-                  Container(
-                    width: 44,
-                    height: 44,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFF1D4ED8), // Vibrant Accent Blue
-                      borderRadius: BorderRadius.circular(12),
-                      boxShadow: [
-                        BoxShadow(
-                          color: const Color(0xFF1D4ED8).withValues(alpha: 0.35),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4),
-                        ),
-                      ],
-                    ),
-                    child: const Icon(
-                      Icons.airport_shuttle_rounded,
-                      color: Colors.white,
-                      size: 24,
-                    ),
+                  const AppLogo(
+                    size: 44,
+                    borderRadius: 12,
+                    showBorder: false,
+                    showShadow: true,
                   ),
                   const SizedBox(width: 14),
                   RichText(

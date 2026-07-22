@@ -1,23 +1,24 @@
 import 'package:flutter/foundation.dart';
 
 class ApiConstants {
-  // ─── Base URL ────────────────────────────────────────────────────────────────
+  // Base URL 
   static String get baseUrl {
     if (kIsWeb) {
       return 'http://localhost/SmartRescueApp/smartrescue';
-    } else if (defaultTargetPlatform == TargetPlatform.android) {
-      return 'http://10.116.228.243/SmartRescueApp/smartrescue';
+    } else if (defaultTargetPlatform == TargetPlatform.android || defaultTargetPlatform == TargetPlatform.iOS) {
+      return 'http://172.20.10.2/SmartRescueApp/smartrescue';
     } else {
       return 'http://localhost/SmartRescueApp/smartrescue';
     }
   }
 
-  // ─── Auth ────────────────────────────────────────────────────────────────────
+  //  Auth 
   static String get login    => '$baseUrl/auth/login.php';
   static String get register => '$baseUrl/auth/register.php';
-  static String get logout   => '$baseUrl/auth/logout.php';
+  static String get logout          => '$baseUrl/auth/logout.php';
+  static String get forgotPassword  => '$baseUrl/auth/forgot_password.php';
 
-  // ─── User APIs ───────────────────────────────────────────────────────────────
+  // User APIs 
   static String get sendSos           => '$baseUrl/api/user/send_sos.php';
   static String get getRequestStatus  => '$baseUrl/api/user/get_request_status.php';
   static String get getHistory        => '$baseUrl/api/user/get_history.php';
@@ -34,10 +35,19 @@ class ApiConstants {
   static String get getBloodDonors        => '$baseUrl/api/user/get_blood_donors.php';
   static String get getProfile            => '$baseUrl/api/user/get_profile.php';
 
-  // ─── Uploads base ────────────────────────────────────────────────────────────
+  // ─── Driver APIs ─────────────────────────────────────────────────────────────
+  static String get getDriverHistory    => '$baseUrl/api/driver/get_history.php';
+  static String get getPendingSos       => '$baseUrl/api/driver/get_pending_sos.php';
+  static String get getVictimLocation   => '$baseUrl/api/driver/get_victim_location.php';
+  static String get getActiveJob        => '$baseUrl/api/driver/get_active_job.php';
+  static String get updateDriverLocation=> '$baseUrl/api/driver/update_driver_location.php';
+  static String get updateStatus        => '$baseUrl/api/driver/update_status.php';
+  static String get updateUnitStatus    => '$baseUrl/api/driver/update_unit_status.php';
+
+  //  Uploads base 
   static String get uploadsBase => '$baseUrl/uploads';
 
-  // ─── Avatar image URL via proxy (bypasses CORS for Flutter Web) ──────────────
+  // Avatar image URL via proxy (bypasses CORS for Flutter Web) 
   static String avatarUrl(String profileImagePath) {
     if (profileImagePath.isEmpty) return '';
     // Use PHP proxy to serve image with proper CORS headers

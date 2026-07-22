@@ -149,74 +149,99 @@ function send_hormuud_sms($conn, $recipient, $message, $user_id = null) {
 /**
  * Reverse geocodes coordinates (lat, lng) to a friendly neighborhood name.
  * Calls OpenStreetMap Nominatim API in a non-blocking/timed out request.
+ * Falls back to a Mogadishu district coordinate lookup if Nominatim fails or gives generic results.
  */
 function php_reverse_geocode($lat, $lng) {
-    $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" . urlencode($lat) . "&lon=" . urlencode($lng) . "&zoom=18&addressdetails=1";
-    
+
+    // ── Helper: check if a name is too generic to be useful ──
+    $genericNames = [
+        'somalia', 'muqdisho', 'mogadishu', 'xamar', 'banaadir', 'benadir',
+        'somali national university', 'mogadishu university',
+    ];
+
+    $isGeneric = function($name) use ($genericNames) {
+        return in_array(strtolower(trim($name)), $genericNames);
+    };
+
+    // ── Helper: coordinate-based Mogadishu district mapping ──
+    $mogadishuDistrict = function($lat, $lng) {
+        $districts = [
+            ['latMin' => 2.037, 'latMax' => 2.048, 'lngMin' => 45.290, 'lngMax' => 45.320, 'name' => 'Hodan'],
+            ['latMin' => 2.025, 'latMax' => 2.040, 'lngMin' => 45.335, 'lngMax' => 45.360, 'name' => 'Hamar Weyne'],
+            ['latMin' => 2.035, 'latMax' => 2.050, 'lngMin' => 45.320, 'lngMax' => 45.345, 'name' => 'Hamar Jajab'],
+            ['latMin' => 2.025, 'latMax' => 2.040, 'lngMin' => 45.315, 'lngMax' => 45.340, 'name' => 'Waaberi'],
+            ['latMin' => 2.025, 'latMax' => 2.040, 'lngMin' => 45.295, 'lngMax' => 45.320, 'name' => 'Howlwadaag'],
+            ['latMin' => 2.008, 'latMax' => 2.030, 'lngMin' => 45.280, 'lngMax' => 45.320, 'name' => 'Wadajir'],
+            ['latMin' => 1.985, 'latMax' => 2.015, 'lngMin' => 45.230, 'lngMax' => 45.285, 'name' => 'Dharkenley'],
+            ['latMin' => 2.040, 'latMax' => 2.070, 'lngMin' => 45.295, 'lngMax' => 45.340, 'name' => 'Karan'],
+            ['latMin' => 2.055, 'latMax' => 2.080, 'lngMin' => 45.315, 'lngMax' => 45.355, 'name' => 'Yaqshid'],
+            ['latMin' => 2.040, 'latMax' => 2.060, 'lngMin' => 45.335, 'lngMax' => 45.360, 'name' => 'Bondhere'],
+            ['latMin' => 2.015, 'latMax' => 2.035, 'lngMin' => 45.270, 'lngMax' => 45.300, 'name' => 'Wardhigley'],
+            ['latMin' => 2.048, 'latMax' => 2.090, 'lngMin' => 45.225, 'lngMax' => 45.290, 'name' => 'Daynile'],
+            ['latMin' => 2.045, 'latMax' => 2.060, 'lngMin' => 45.335, 'lngMax' => 45.360, 'name' => 'Shangani'],
+        ];
+        foreach ($districts as $d) {
+            if ($lat >= $d['latMin'] && $lat <= $d['latMax'] && $lng >= $d['lngMin'] && $lng <= $d['lngMax']) {
+                return $d['name'];
+            }
+        }
+        return '';
+    };
+
+    // ── Try Nominatim first ──
+    $nominatimResult = '';
+    $url = "https://nominatim.openstreetmap.org/reverse?format=json&lat=" . urlencode($lat) . "&lon=" . urlencode($lng) . "&zoom=16&addressdetails=1&namedetails=1";
+
     $ch = curl_init($url);
     curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    curl_setopt($ch, CURLOPT_TIMEOUT,        5);
-    curl_setopt($ch, CURLOPT_USERAGENT,      "SmartRescueApp/1.0");
-    curl_setopt($ch, CURLOPT_HTTPHEADER, [
-        'Accept-Language: en'
-    ]);
-    
+    curl_setopt($ch, CURLOPT_TIMEOUT,        6);
+    curl_setopt($ch, CURLOPT_USERAGENT,      "SmartRescueApp/1.0 (emergency dispatch)");
+    curl_setopt($ch, CURLOPT_HTTPHEADER, ['Accept-Language: en']);
+
     $response   = curl_exec($ch);
     $http_code  = curl_getinfo($ch, CURLINFO_HTTP_CODE);
     curl_close($ch);
-    
-    if ($http_code !== 200 || !$response) {
-        return '';
-    }
-    
-    $data = json_decode($response, true);
-    if (!$data || !isset($data['address'])) {
-        return '';
-    }
-    
-    $a = $data['address'];
-    
-    // 1. Get neighborhood/suburb
-    $area = null;
-    $keys = ['neighbourhood', 'suburb', 'quarter', 'district', 'city_district', 'city', 'town', 'village'];
-    foreach ($keys as $k) {
-        if (isset($a[$k])) {
-            $area = $a[$k];
-            break;
+
+    if ($http_code === 200 && $response) {
+        $data = json_decode($response, true);
+        if ($data && isset($data['address'])) {
+            $a = $data['address'];
+
+            // 1. Best POI name (top-level name / namedetails)
+            $poiName = isset($data['name']) ? trim(strval($data['name'])) : '';
+            $nameDetailsName = '';
+            if (isset($data['namedetails']) && is_array($data['namedetails'])) {
+                $nd = $data['namedetails'];
+                $nameDetailsName = isset($nd['name']) ? trim(strval($nd['name'])) : (isset($nd['name:en']) ? trim(strval($nd['name:en'])) : '');
+            }
+            $bestPoiName = (!empty($poiName) && !$isGeneric($poiName)) ? $poiName
+                : ((!empty($nameDetailsName) && !$isGeneric($nameDetailsName)) ? $nameDetailsName : '');
+
+            // 2. Neighbourhood — prefer fine-grained keys only
+            $neighbourhood = trim(strval($a['neighbourhood'] ?? $a['suburb'] ?? $a['quarter'] ?? ''));
+            $district      = trim(strval($a['district'] ?? $a['city_district'] ?? ''));
+            $areaName      = !empty($neighbourhood) ? $neighbourhood : (!empty($district) ? $district : '');
+            if ($isGeneric($areaName)) $areaName = '';
+
+            // 3. Build label
+            if (!empty($bestPoiName) && !empty($areaName)) {
+                $nominatimResult = (strtolower($bestPoiName) === strtolower($areaName))
+                    ? $areaName
+                    : "$bestPoiName, $areaName";
+            } elseif (!empty($areaName)) {
+                $nominatimResult = $areaName;
+            } elseif (!empty($bestPoiName)) {
+                $nominatimResult = $bestPoiName;
+            }
         }
     }
-    $neighborhoodName = $area ? strval($area) : '';
-    
-    // 2. Get specific landmark/amenity (any key not in the ignore list)
-    $ignoreKeys = [
-        'road', 'street', 'house_number', 'house_name', 'postcode', 'country', 
-        'country_code', 'state', 'county', 'city', 'town', 'village', 'municipality', 
-        'city_district', 'district', 'quarter', 'suburb', 'neighbourhood', 'subdivision', 
-        'region', 'state_district', 'ISO3166-2-lvl4'
-    ];
-    
-    $landmarkName = '';
-    foreach ($a as $key => $val) {
-        if (in_array($key, $ignoreKeys)) continue;
-        if ($val !== null && strtolower(strval($val)) !== 'yes' && strtolower(strval($val)) !== 'no') {
-            $landmarkName = strval($val);
-            break;
-        }
+
+    // Use Nominatim result if good
+    if (!empty($nominatimResult) && !$isGeneric($nominatimResult)) {
+        return $nominatimResult;
     }
-    
-    if (!empty($neighborhoodName) && !empty($landmarkName)) {
-        return "$neighborhoodName (U dhow $landmarkName)";
-    } elseif (!empty($neighborhoodName)) {
-        return $neighborhoodName;
-    } elseif (!empty($landmarkName)) {
-        return $landmarkName;
-    } else {
-        $display = isset($data['display_name']) ? strval($data['display_name']) : '';
-        if (!empty($display)) {
-            $parts = explode(',', $display);
-            return trim($parts[0]);
-        }
-        return '';
-    }
+
+    // Fallback: coordinate-based district mapping for Mogadishu
+    return $mogadishuDistrict((float)$lat, (float)$lng);
 }
-?>
+?>

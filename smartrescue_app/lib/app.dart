@@ -2,10 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'providers/auth_provider.dart';
 import 'providers/sos_provider.dart';
+import 'providers/driver_provider.dart';
 import 'views/splash/splash_screen.dart';
 import 'views/auth/login_screen.dart';
 import 'views/auth/register_screen.dart';
+import 'views/auth/forgot_password_screen.dart';
 import 'views/user/user_shell.dart';
+import 'views/driver/driver_shell.dart';
 
 import 'services/offline_manager.dart';
 import 'components/offline_banner.dart';
@@ -19,6 +22,7 @@ class SmartRescueApp extends StatelessWidget {
       providers: [
         ChangeNotifierProvider(create: (_) => OfflineManager()),
         ChangeNotifierProvider(create: (_) => AuthProvider()),
+        ChangeNotifierProvider(create: (_) => DriverProvider()),
         ChangeNotifierProxyProvider<OfflineManager, SosProvider>(
           create: (_) => SosProvider(),
           update: (_, offline, sos) {
@@ -43,7 +47,9 @@ class SmartRescueApp extends StatelessWidget {
               '/': (_) => const SplashScreen(),
               '/login': (_) => const LoginScreen(),
               '/register': (_) => const RegisterScreen(),
+              '/forgot-password': (_) => const ForgotPasswordScreen(),
               '/user': (_) => const UserShell(),
+              '/driver': (_) => const DriverShell(),
             },
           );
         },
@@ -73,21 +79,21 @@ class SmartRescueApp extends StatelessWidget {
       cardTheme: CardThemeData(
         color: Colors.white,
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: const Color(0xFFF8FAFC),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Color(0xFFE2E8F0)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Color(0xFF2563EB), width: 2),
         ),
         contentPadding:
@@ -99,7 +105,7 @@ class SmartRescueApp extends StatelessWidget {
           foregroundColor: Colors.white,
           elevation: 0,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           padding: const EdgeInsets.symmetric(vertical: 16),
           textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),
@@ -129,21 +135,21 @@ class SmartRescueApp extends StatelessWidget {
       cardTheme: CardThemeData(
         color: const Color(0xFF0F1937),
         elevation: 0,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(24)),
       ),
       inputDecorationTheme: InputDecorationTheme(
         filled: true,
         fillColor: const Color(0xFF1A2540),
         border: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Color(0xFF1E3A5F)),
         ),
         enabledBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Color(0xFF1E3A5F)),
         ),
         focusedBorder: OutlineInputBorder(
-          borderRadius: BorderRadius.circular(14),
+          borderRadius: BorderRadius.circular(16),
           borderSide: const BorderSide(color: Color(0xFF3B82F6), width: 2),
         ),
         contentPadding:
@@ -156,7 +162,7 @@ class SmartRescueApp extends StatelessWidget {
           foregroundColor: Colors.white,
           elevation: 0,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
           padding: const EdgeInsets.symmetric(vertical: 16),
           textStyle: const TextStyle(fontWeight: FontWeight.w700, fontSize: 16),
         ),

@@ -463,6 +463,10 @@ body::before{
   background:var(--primary);border-color:var(--primary);
   color:#fff;box-shadow:0 0 12px var(--primary-glow);
 }
+.vtl-item.completed .vtl-dot{
+  background:var(--success);border-color:var(--success);
+  color:#fff;box-shadow:0 0 12px rgba(16,185,129,0.4);
+}
 .vtl-item.active .vtl-dot{
   border-color:var(--danger);color:var(--danger);
   animation:vtl-pulse 1.5s infinite;
@@ -472,10 +476,12 @@ body::before{
   50%{box-shadow:0 0 0 8px rgba(239,68,68,0);}
 }
 .vtl-item:not(:last-child).done::after{background:var(--primary);}
+.vtl-item:not(:last-child).completed::after{background:var(--success);}
 .vtl-content{flex:1;}
 .vtl-label{font-weight:700;font-size:0.82rem;}
 .vtl-desc{font-size:0.7rem;color:var(--muted);margin-top:2px;}
 .vtl-item.done .vtl-label{color:var(--primary);}
+.vtl-item.completed .vtl-label{color:var(--success);}
 .vtl-item.active .vtl-label{color:var(--danger);}
 
 /* Mini status pills in right panel */
@@ -1261,8 +1267,10 @@ body::before{
 <button class="hamburger" id="hamburgerBtn" aria-label="Menu" onclick="toggleSidebar()"><i class="fa fa-bars"></i></button>
 <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
 <aside class="sidebar" id="sidebar">
-  <a href="#" class="sidebar-brand">
-    <div class="brand-icon"><i class="fa-solid fa-truck-medical"></i></div>
+  <a href="#" class="sidebar-brand" style="display: flex; align-items: center; gap: 10px;">
+    <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #2563eb, #1d4ed8); border-radius: 12px; display: flex; align-items: center; justify-content: center; color: #fff; font-size: 19px; box-shadow: 0 4px 12px rgba(37,99,235,0.3); flex-shrink: 0;">
+        <i class="fa-solid fa-suitcase-medical"></i>
+    </div>
     <span class="brand-text">Smart<span>Rescue</span></span>
   </a>
   <span class="nav-section-label">Main</span>
@@ -1625,6 +1633,13 @@ body::before{
                 <div class="vtl-content">
                   <div class="vtl-label">Arrived</div>
                   <div class="vtl-desc">Team on scene</div>
+                </div>
+              </div>
+              <div class="vtl-item" id="tl-5">
+                <div class="vtl-dot"><i class="fa fa-circle-check"></i></div>
+                <div class="vtl-content">
+                  <div class="vtl-label">Completed</div>
+                  <div class="vtl-desc">Emergency successfully resolved</div>
                 </div>
               </div>
             </div>
@@ -2376,7 +2391,12 @@ const GUIDES = {
 // =====================================================================
 // MAP
 // =====================================================================
-const userIcon   = L.icon({ iconUrl:'https://cdn-icons-png.flaticon.com/512/684/684908.png',   iconSize:[42,42], iconAnchor:[21,42] });
+const userIcon = L.divIcon({
+  className: '',
+  html: `<div style="background:#ef4444;width:24px;height:24px;border-radius:50%;border:3.5px solid #ffffff;box-shadow:0 0 0 4px rgba(239,68,68,0.35),0 4px 12px rgba(239,68,68,0.5);animation:vtl-pulse 2s infinite;"></div>`,
+  iconSize: [24,24],
+  iconAnchor: [12,12]
+});
 const driverIcon = L.divIcon({
     className:'',
     html:`<div style="background:#2563eb;color:#ffffff;width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 0 0 4px rgba(37,99,235,0.2), 0 4px 12px rgba(37,99,235,0.4);border:2.5px solid #ffffff;animation:map-pulse 2s infinite;"><i class="fa fa-truck-medical" style="font-size:14px"></i></div>`,
@@ -2929,7 +2949,7 @@ async function sendSOS() {
         toggleSOSCancelState(true);
         showPanel('success','✅ SOS RECEIVED BY DISPATCH — Stay still, help is on the way.');
         showToast('SOS Sent!', 'Your emergency request has been received by dispatch.', 'success');
-        setTimeline(1); // dispatching
+        setTimeline(0); // SOS Sent (step 0) until dispatch occurs
         clearSOSInputs(); // Remove SOS data (inputs and preview) from user's side
       } else {
         showPanel('error', '⚠️ ' + (data.message || 'Failed to send SOS. Try again.'));
@@ -2972,12 +2992,16 @@ function showPanel(type, msg) {
 // TIMELINE  (vertical vtl-item variant)
 // =====================================================================
 function setTimeline(activeStep) {
-  for (let i = 0; i <= 4; i++) {
+  for (let i = 0; i <= 5; i++) {
     const el = document.getElementById('tl-' + i);
     if (!el) continue;
-    el.classList.remove('done', 'active');
-    if (i < activeStep)   el.classList.add('done');
-    if (i === activeStep) el.classList.add('active');
+    el.classList.remove('done', 'active', 'completed');
+    if (activeStep >= 5) {
+      el.classList.add('completed');
+    } else {
+      if (i < activeStep)   el.classList.add('done');
+      if (i === activeStep) el.classList.add('active');
+    }
   }
 }
 
@@ -2989,10 +3013,21 @@ function pollDispatch() {
     .then(r => r.json())
     .then(data => {
       const card = document.getElementById('driverCard');
-      hasActiveEmergency = data.status === 'success';
+      const rs = data.request_status || '';
+      const isCompleted = rs === 'completed' || rs === 'finished';
+      const isCancelled = rs === 'cancelled';
+
+      hasActiveEmergency = data.status === 'success' && !isCompleted && !isCancelled;
       toggleSOSCancelState(hasActiveEmergency);
 
-      if (data.status === 'success' && data.driver_assigned) {
+      if (isCompleted) {
+        setTimeline(5);
+        showPanel('success', '🎉 MISSION COMPLETED — Emergency request successfully resolved.');
+        resetSOSBtn();
+        if (card) card.classList.remove('show');
+        if (driverMarker) { map.removeLayer(driverMarker); driverMarker = null; }
+        if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
+      } else if (data.status === 'success' && data.driver_assigned) {
         // Show driver card
         const name  = data.driver_name || 'Driver';
         document.getElementById('driverName').textContent    = name;
@@ -3007,11 +3042,12 @@ function pollDispatch() {
         card.classList.add('show');
 
         // Timeline
-        const rs = data.request_status || '';
-        if (rs === 'accepted' || rs === 'assigned') setTimeline(2);
-        else if (rs === 'on_the_way')               setTimeline(3);
-        else if (rs === 'arrived')                  setTimeline(4);
-        else                                        setTimeline(1);
+        if (rs === 'dispatched')                         setTimeline(1);
+        else if (rs === 'accepted' || rs === 'assigned') setTimeline(2);
+        else if (rs === 'on_the_way' || rs === 'en_route') setTimeline(3);
+        else if (rs === 'arrived')                       setTimeline(4);
+        else if (rs === 'pending' || !rs)                setTimeline(0);
+        else                                             setTimeline(0);
 
         // Driver marker + ETA
         if (data.driver_lat && data.driver_lng) {

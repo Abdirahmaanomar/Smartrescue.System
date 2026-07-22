@@ -273,17 +273,6 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
         onTabSelected: (index) {},
         isSubScreen: true,
       ),
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        automaticallyImplyLeading: false,
-        leading: Builder(
-          builder: (context) => IconButton(
-            icon: Icon(Icons.menu_rounded, color: isDark ? Colors.white : Colors.black87),
-            onPressed: () => Scaffold.of(context).openDrawer(),
-          ),
-        ),
-      ),
       body: SafeArea(
         child: Responsive(context).wrapWidescreen(
           SingleChildScrollView(
@@ -291,6 +280,21 @@ class _UserContactsScreenState extends State<UserContactsScreen> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
+              // Menu Button Row
+              Row(
+                children: [
+                  Builder(
+                    builder: (ctx) => IconButton(
+                      icon: Icon(Icons.menu_rounded,
+                          color: isDark ? Colors.white : Colors.black87),
+                      padding: EdgeInsets.zero,
+                      visualDensity: VisualDensity.compact,
+                      onPressed: () => Scaffold.of(ctx).openDrawer(),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 4),
               // Title & Add Row
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,

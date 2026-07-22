@@ -76,9 +76,15 @@ class AppHelpers {
   }
 
   static void showSnack(BuildContext context, String message, {bool isError = false}) {
+    String cleanMessage = message;
+    if (cleanMessage.contains('TimeoutException') || cleanMessage.contains('Future not completed')) {
+      cleanMessage = 'Server response timed out. Please check your network connection or server status.';
+    } else if (cleanMessage.contains('SocketException') || cleanMessage.contains('Failed host lookup')) {
+      cleanMessage = 'Unable to connect to server. Please check your internet connection.';
+    }
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        content: Text(message, style: const TextStyle(fontWeight: FontWeight.w600)),
+        content: Text(cleanMessage, style: const TextStyle(fontWeight: FontWeight.w600)),
         backgroundColor: isError ? const Color(0xFFEF4444) : const Color(0xFF10B981),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),

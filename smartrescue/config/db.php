@@ -1,9 +1,17 @@
 <?php
 // Add CORS Headers globally for API access
-header("Access-Control-Allow-Origin: *");
+if (isset($_SERVER['HTTP_ORIGIN'])) {
+    header("Access-Control-Allow-Origin: " . $_SERVER['HTTP_ORIGIN']);
+    header("Access-Control-Allow-Credentials: true");
+} else {
+    header("Access-Control-Allow-Origin: *");
+}
 header("Access-Control-Allow-Methods: GET, POST, OPTIONS");
-header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With");
-if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-With, Cookie, X-Session-ID");
+error_reporting(0);
+ini_set('display_errors', 0);
+
+if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
 

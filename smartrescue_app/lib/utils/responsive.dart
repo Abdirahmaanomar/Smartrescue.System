@@ -43,9 +43,9 @@ class Responsive {
 
   /// Aspect ratio for type-card grid cells
   double get typeCardAspectRatio {
-    if (screenWidth >= 800) return 2.2;
-    if (screenWidth < 360) return 1.15;
-    return 1.3;
+    if (screenWidth >= 800) return 1.1;
+    if (screenWidth < 360) return 0.95;
+    return 1.0;
   }
 
   /// Wrap screen contents to restrict max width and center it on large screens (tablets/laptops)

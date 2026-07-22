@@ -224,6 +224,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
                                   : RefreshIndicator(
                                       onRefresh: _fetchHistory,
                                       child: ListView.builder(
+                                        padding: const EdgeInsets.symmetric(vertical: 8),
                                         itemCount: _history.length,
                                         itemBuilder: (context, index) {
                                           final item = _history[index];
@@ -250,10 +251,21 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
     final rowBorderColor = isDark ? const Color(0xFF334155) : Colors.grey.shade100;
 
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: Responsive(context).hPad, vertical: 16),
+      margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 16),
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: rowBorderColor, width: 1.5),
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(16),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.02),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
+        border: Border.all(
+          color: rowBorderColor,
+          width: 1.0,
         ),
       ),
       child: Row(
@@ -264,7 +276,7 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
             child: Text(
               AppHelpers.formatDate(item.createdAt),
               style: TextStyle(
-                fontSize: 13,
+                fontSize: 12,
                 fontWeight: FontWeight.w600,
                 color: isDark ? Colors.white70 : Colors.black87,
               ),
@@ -303,10 +315,10 @@ class _UserHistoryScreenState extends State<UserHistoryScreen> {
             child: Align(
               alignment: Alignment.centerLeft,
               child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                 decoration: BoxDecoration(
                   color: AppHelpers.statusColor(item.status).withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(12),
                 ),
                 child: Text(
                   AppTranslator.t(context, item.statusLabel),

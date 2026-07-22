@@ -19,6 +19,8 @@ class UserModel {
   final String medicalInfo;
   final String emergencyContacts;
   final bool isVolunteer;
+  final String birthDate;
+  final String gender;
 
   const UserModel({
     required this.id,
@@ -41,6 +43,8 @@ class UserModel {
     this.medicalInfo = '',
     this.emergencyContacts = '',
     this.isVolunteer = false,
+    this.birthDate = '',
+    this.gender = '',
   });
 
   factory UserModel.fromJson(Map<String, dynamic> json) {
@@ -65,6 +69,8 @@ class UserModel {
       medicalInfo: json['medical_info'] ?? '',
       emergencyContacts: json['emergency_contacts'] ?? '',
       isVolunteer: _parseBool(json['is_volunteer'], false),
+      birthDate: json['birth_date'] ?? json['birthdate'] ?? '',
+      gender: json['gender'] ?? '',
     );
   }
 
@@ -91,6 +97,8 @@ class UserModel {
     String? medicalInfo,
     String? emergencyContacts,
     bool? isVolunteer,
+    String? birthDate,
+    String? gender,
   }) {
     return UserModel(
       id: id,
@@ -113,6 +121,8 @@ class UserModel {
       medicalInfo: medicalInfo ?? this.medicalInfo,
       emergencyContacts: emergencyContacts ?? this.emergencyContacts,
       isVolunteer: isVolunteer ?? this.isVolunteer,
+      birthDate: birthDate ?? this.birthDate,
+      gender: gender ?? this.gender,
     );
   }
 }

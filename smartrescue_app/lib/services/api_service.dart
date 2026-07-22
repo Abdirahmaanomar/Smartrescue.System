@@ -1,7 +1,7 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:flutter/foundation.dart' show kIsWeb, debugPrint;
 import 'package:image_picker/image_picker.dart';
 import 'package:http_parser/http_parser.dart';
 import '../constants/api_constants.dart';
@@ -16,12 +16,28 @@ class ApiService {
     return prefs.getString(_cookieKey);
   }
 
+  static Future<String?> _getUserId() async {
+    final prefs = await SharedPreferences.getInstance();
+    return prefs.getString('user_id');
+  }
+
   static Future<void> _saveCookie(http.Response response) async {
     final rawCookie = response.headers['set-cookie'];
+    final prefs = await SharedPreferences.getInstance();
+    debugPrint('[ApiService] _saveCookie headers: ${response.headers}');
+    debugPrint('[ApiService] _saveCookie body: ${response.body}');
     if (rawCookie != null) {
       final sessionCookie = rawCookie.split(';').first;
-      final prefs = await SharedPreferences.getInstance();
       await prefs.setString(_cookieKey, sessionCookie);
+    } else {
+      // Fallback for Flutter Web where raw set-cookie header is hidden by browser
+      try {
+        final data = json.decode(response.body);
+        if (data['session_id'] != null) {
+          final String sid = data['session_id'].toString();
+          await prefs.setString(_cookieKey, 'PHPSESSID=$sid');
+        }
+      } catch (_) {}
     }
   }
 
@@ -47,6 +63,17 @@ class ApiService {
     return headers;
   }
 
+  static String _formatException(dynamic e) {
+    final str = e.toString();
+    if (str.contains('TimeoutException') || str.contains('Future not completed')) {
+      return 'Server response timed out. Please check your network connection or server IP.';
+    }
+    if (str.contains('SocketException') || str.contains('Failed host lookup') || str.contains('Connection refused')) {
+      return 'Unable to reach server. Please check your internet connection or server IP.';
+    }
+    return 'Connection failed. Please check your network connection and retry.';
+  }
+
   // ─── Auth ────────────────────────────────────────────────────────────────────
   static Future<Map<String, dynamic>> login(
       String phoneOrEmail, String password) async {
@@ -61,7 +88,7 @@ class ApiService {
           'login_btn': '1',
           'flutter': '1',
         },
-      ).timeout(const Duration(seconds: 15));
+      ).timeout(const Duration(seconds: 45));
 
       await _saveCookie(response);
 
@@ -92,7 +119,7 @@ class ApiService {
       OfflineManager.instance?.setOffline();
       return {
         'status': 'error',
-        'message': 'Connection failed: ${e.toString()}'
+        'message': _formatException(e)
       };
     }
   }
@@ -120,7 +147,7 @@ class ApiService {
           'birth_date': birthDate,
           'flutter': '1',
         },
-      ).timeout(const Duration(seconds: 15));
+      ).timeout(const Duration(seconds: 45));
 
       await _saveCookie(response);
 
@@ -136,7 +163,7 @@ class ApiService {
       OfflineManager.instance?.setOffline();
       return {
         'status': 'error',
-        'message': 'Connection failed: ${e.toString()}'
+        'message': _formatException(e)
       };
     }
   }
@@ -151,55 +178,176 @@ class ApiService {
     await clearCookie();
   }
 
+  // ─── Forgot Password ─────────────────────────────────────────────────────────
+  /// Step 1: verify account exists by email or phone
+  static Future<Map<String, dynamic>> forgotPasswordVerify(
+      String identifier) async {
+    try {
+      final response = await http.post(
+        Uri.parse(ApiConstants.forgotPassword),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'action': 'verify',
+          'identifier': identifier,
+        },
+      ).timeout(const Duration(seconds: 20));
+      return json.decode(response.body);
+    } catch (e) {
+      return {'status': 'error', 'message': _formatException(e)};
+    }
+  }
+
+  /// Step 2: reset password for verified account
+  static Future<Map<String, dynamic>> forgotPasswordReset({
+    required String identifier,
+    required String newPassword,
+  }) async {
+    try {
+      final response = await http.post(
+        Uri.parse(ApiConstants.forgotPassword),
+        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+        body: {
+          'action': 'reset',
+          'identifier': identifier,
+          'new_password': newPassword,
+        },
+      ).timeout(const Duration(seconds: 20));
+      return json.decode(response.body);
+    } catch (e) {
+      return {'status': 'error', 'message': _formatException(e)};
+    }
+  }
+
   // ─── User APIs ───────────────────────────────────────────────────────────────
+
+  /// Returns the Mogadishu district name for a given coordinate.
+  /// Used as a precise fallback when Nominatim gives wrong/generic results.
+  static String _mogadishuDistrictFromCoords(double lat, double lng) {
+    // Bounding boxes for each major Mogadishu district
+    // Format: [latMin, latMax, lngMin, lngMax, districtName]
+    const districts = [
+      // Hodan
+      [2.037, 2.048, 45.290, 45.320, 'Hodan'],
+      // Hamar Weyne  
+      [2.025, 2.040, 45.335, 45.360, 'Hamar Weyne'],
+      // Hamar Jajab
+      [2.035, 2.050, 45.320, 45.345, 'Hamar Jajab'],
+      // Waaberi
+      [2.025, 2.040, 45.315, 45.340, 'Waaberi'],
+      // Howlwadaag
+      [2.025, 2.040, 45.295, 45.320, 'Howlwadaag'],
+      // Wadajir
+      [2.008, 2.030, 45.280, 45.320, 'Wadajir'],
+      // Dharkenley
+      [1.985, 2.015, 45.230, 45.285, 'Dharkenley'],
+      // Karan
+      [2.040, 2.070, 45.295, 45.340, 'Karan'],
+      // Yaqshid
+      [2.055, 2.080, 45.315, 45.355, 'Yaqshid'],
+      // Bondhere
+      [2.040, 2.060, 45.335, 45.360, 'Bondhere'],
+      // Wardhigley
+      [2.015, 2.035, 45.270, 45.300, 'Wardhigley'],
+      // Daynile
+      [2.048, 2.090, 45.225, 45.290, 'Daynile'],
+      // Waberi (alt spelling)
+      [2.020, 2.035, 45.340, 45.365, 'Waaberi'],
+      // Shangani
+      [2.045, 2.060, 45.335, 45.360, 'Shangani'],
+    ];
+
+    for (final d in districts) {
+      final latMin = d[0] as double;
+      final latMax = d[1] as double;
+      final lngMin = d[2] as double;
+      final lngMax = d[3] as double;
+      final name   = d[4] as String;
+      if (lat >= latMin && lat <= latMax && lng >= lngMin && lng <= lngMax) {
+        return name;
+      }
+    }
+    return ''; // outside mapped area
+  }
+
+  /// Cleans a Nominatim result — removes generic values like country/city names
+  /// that are not useful as neighborhood labels.
+  static bool _isGenericPlaceName(String name) {
+    const genericNames = {
+      'somalia', 'muqdisho', 'mogadishu', 'xamar', 'banaadir',
+      'benadir', 'somali national university', 'mogadishu university',
+    };
+    return genericNames.contains(name.toLowerCase());
+  }
+
   static Future<String> reverseGeocode(double lat, double lng) async {
+    // Guard: validate coordinates are in Mogadishu area
+    if (lat < 1.5 || lat > 2.5 || lng < 44.5 || lng > 46.0) {
+      return _mogadishuDistrictFromCoords(lat, lng);
+    }
+
+    String nominatimResult = '';
     try {
       final uri = Uri.parse(
-        'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&zoom=18&addressdetails=1',
+        'https://nominatim.openstreetmap.org/reverse?format=json&lat=$lat&lon=$lng&zoom=16&addressdetails=1&namedetails=1',
       );
       final res = await http.get(uri, headers: {
         'Accept-Language': 'en',
-        'User-Agent': 'SmartRescueApp/1.0'
-      }).timeout(const Duration(seconds: 5));
+        'User-Agent': 'SmartRescueApp/1.0 (emergency dispatch)'
+      }).timeout(const Duration(seconds: 6));
+
       if (res.statusCode == 200) {
         final data = jsonDecode(res.body);
         final a = data['address'] as Map<String, dynamic>? ?? {};
 
-        // 1. Get neighborhood/suburb
-        final area = a['neighbourhood'] ?? a['suburb'] ?? a['quarter'] ?? a['district'] ?? a['city_district'] ?? a['city'] ?? a['town'] ?? a['village'];
-        final String neighborhoodName = area != null ? area.toString() : '';
+        // 1. POI name (top-level Nominatim name field)
+        final String poiName = data['name']?.toString().trim() ?? '';
 
-        // 2. Get specific landmark/amenity (any key not in the ignore list)
-        const ignoreKeys = {
-          'road', 'street', 'house_number', 'house_name', 'postcode', 'country', 
-          'country_code', 'state', 'county', 'city', 'town', 'village', 'municipality', 
-          'city_district', 'district', 'quarter', 'suburb', 'neighbourhood', 'subdivision', 
-          'region', 'state_district', 'ISO3166-2-lvl4'
-        };
-
-        String landmarkName = '';
-        for (final entry in a.entries) {
-          if (ignoreKeys.contains(entry.key)) continue;
-          final val = entry.value;
-          if (val != null && val.toString().toLowerCase() != 'yes' && val.toString().toLowerCase() != 'no') {
-            landmarkName = val.toString();
-            break; // Use the first matching specific landmark
-          }
+        // 2. namedetails fallback
+        String nameDetailsName = '';
+        final nameDetails = data['namedetails'] as Map<String, dynamic>?;
+        if (nameDetails != null) {
+          nameDetailsName = (nameDetails['name'] ?? nameDetails['name:en'] ?? '').toString().trim();
         }
+        final String bestPoiName = poiName.isNotEmpty && !_isGenericPlaceName(poiName)
+            ? poiName
+            : (nameDetailsName.isNotEmpty && !_isGenericPlaceName(nameDetailsName)
+                ? nameDetailsName
+                : '');
 
-        if (neighborhoodName.isNotEmpty && landmarkName.isNotEmpty) {
-          return '$neighborhoodName (U dhow $landmarkName)';
-        } else if (neighborhoodName.isNotEmpty) {
-          return neighborhoodName;
-        } else if (landmarkName.isNotEmpty) {
-          return landmarkName;
-        } else {
-          final display = data['display_name']?.toString() ?? '';
-          return display.isNotEmpty ? display.split(',').first.trim() : '';
+        // 3. Neighbourhood/suburb — prefer fine-grained keys first
+        final String neighbourhood = (a['neighbourhood'] ?? a['suburb'] ?? a['quarter'] ?? '').toString().trim();
+        final String district = (a['district'] ?? a['city_district'] ?? '').toString().trim();
+
+        // Use the finest-grained area name we can find
+        String areaName = neighbourhood.isNotEmpty ? neighbourhood
+            : (district.isNotEmpty ? district : '');
+
+        // Filter out generic/unhelpful area names
+        if (_isGenericPlaceName(areaName)) areaName = '';
+
+        // 4. Build label — POI + area, or just area, or just POI
+        if (bestPoiName.isNotEmpty && areaName.isNotEmpty) {
+          if (bestPoiName.toLowerCase() == areaName.toLowerCase()) {
+            nominatimResult = areaName;
+          } else {
+            nominatimResult = '$bestPoiName, $areaName';
+          }
+        } else if (areaName.isNotEmpty) {
+          nominatimResult = areaName;
+        } else if (bestPoiName.isNotEmpty) {
+          nominatimResult = bestPoiName;
         }
       }
     } catch (_) {}
-    return '';
+
+    // If Nominatim gave a good result, use it
+    if (nominatimResult.isNotEmpty && !_isGenericPlaceName(nominatimResult)) {
+      return nominatimResult;
+    }
+
+    // Fallback: use precise coordinate-to-district mapping for Mogadishu
+    final String districtFallback = _mogadishuDistrictFromCoords(lat, lng);
+    return districtFallback;
   }
 
   static Future<Map<String, dynamic>> sendSos({
@@ -767,6 +915,175 @@ class ApiService {
           return json.decode(cached) as Map<String, dynamic>;
         }
       } catch (_) {}
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  // ─── Driver APIs ─────────────────────────────────────────────────────────────
+  static Future<Map<String, dynamic>> getDriverHistory() async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final String url = userId != null
+          ? '${ApiConstants.getDriverHistory}?driver_id=$userId'
+          : ApiConstants.getDriverHistory;
+
+      final response = await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getPendingSos() async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final String url = userId != null
+          ? '${ApiConstants.getPendingSos}?driver_id=$userId'
+          : ApiConstants.getPendingSos;
+
+      final response = await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getActiveJob() async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final String url = userId != null
+          ? '${ApiConstants.getActiveJob}?driver_id=$userId'
+          : ApiConstants.getActiveJob;
+
+      final response = await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> getVictimLocation() async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final String url = userId != null
+          ? '${ApiConstants.getVictimLocation}?driver_id=$userId'
+          : ApiConstants.getVictimLocation;
+
+      final response = await http
+          .get(Uri.parse(url), headers: headers)
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateDriverLocation(double lat, double lng) async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final response = await http
+          .post(
+            Uri.parse(ApiConstants.updateDriverLocation),
+            headers: {
+              ...headers,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: {
+              'lat': lat.toString(),
+              'lng': lng.toString(),
+              if (userId != null) 'driver_id': userId,
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateStatus(int requestId, int unitId, String action) async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final response = await http
+          .post(
+            Uri.parse(ApiConstants.updateStatus),
+            headers: {
+              ...headers,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: {
+              'request_id': requestId.toString(),
+              'unit_id': unitId.toString(),
+              'action': action,
+              if (userId != null) 'driver_id': userId,
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
+      return {'status': 'error', 'message': e.toString()};
+    }
+  }
+
+  static Future<Map<String, dynamic>> updateUnitStatus(String status) async {
+    try {
+      final headers = await _headers();
+      final userId = await _getUserId();
+      final response = await http
+          .post(
+            Uri.parse(ApiConstants.updateUnitStatus),
+            headers: {
+              ...headers,
+              'Content-Type': 'application/x-www-form-urlencoded',
+            },
+            body: {
+              'status': status,
+              if (userId != null) 'driver_id': userId,
+            },
+          )
+          .timeout(const Duration(seconds: 10));
+      if (response.statusCode == 200) {
+        return json.decode(response.body);
+      }
+      return {'status': 'error', 'message': 'HTTP ${response.statusCode}'};
+    } catch (e) {
+      OfflineManager.instance?.setOffline();
       return {'status': 'error', 'message': e.toString()};
     }
   }

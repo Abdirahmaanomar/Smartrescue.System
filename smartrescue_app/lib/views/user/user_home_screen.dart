@@ -14,6 +14,7 @@ import 'user_shell.dart';
 import 'user_response_timeline_screen.dart';
 import '../../components/whatsapp_banner_widget.dart';
 import '../../components/call_screen.dart';
+import '../../components/app_logo.dart';
 import '../../utils/translator.dart';
 
 class DashedBorderPainter extends CustomPainter {
@@ -799,14 +800,26 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             onPressed: () => UserShell.scaffoldKey.currentState?.openDrawer(),
           ),
         ),
-        title: Text(
-          'SmartRescue',
-          style: TextStyle(
-            fontWeight: FontWeight.w900,
-            fontSize: 22,
-            color: isDark ? Colors.white : const Color(0xFF0F172A),
-            letterSpacing: -0.5,
-          ),
+        title: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const AppLogo(
+              size: 32,
+              borderRadius: 9,
+              showBorder: false,
+              showShadow: true,
+            ),
+            const SizedBox(width: 9),
+            Text(
+              'SmartRescue',
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 20,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+                letterSpacing: -0.5,
+              ),
+            ),
+          ],
         ),
         centerTitle: false,
         actions: [
@@ -1229,15 +1242,15 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             padding: const EdgeInsets.all(4),
             decoration: BoxDecoration(
               color: isDark ? const Color(0xFF1E293B) : Colors.white,
-              borderRadius: BorderRadius.circular(30),
+              borderRadius: BorderRadius.circular(32),
               border: Border.all(
                 color: isDark ? const Color(0xFF334155) : Colors.grey.shade100,
                 width: 1.5,
               ),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withValues(alpha: 0.05),
-                  blurRadius: 10,
+                  color: Colors.black.withValues(alpha: 0.03),
+                  blurRadius: 12,
                   offset: const Offset(0, 4),
                 ),
               ],
@@ -1311,7 +1324,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             _sendSos(sos);
           },
         ),
-        const SizedBox(height: 14),
+        const SizedBox(height: 16),
 
         // Caption
         Center(
@@ -1558,21 +1571,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         duration: const Duration(milliseconds: 200),
         decoration: BoxDecoration(
           color: cardBgColor,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           border: Border.all(
             color: isSelected
                 ? primaryColor
                 : (isDark
                     ? const Color(0xFF334155)
                     : Colors.grey.withValues(alpha: 0.15)),
-            width: isSelected ? 2.5 : 1,
+            width: isSelected ? 2.0 : 1.0,
           ),
           boxShadow: [
             BoxShadow(
-              color: isSelected
-                  ? primaryColor.withValues(alpha: 0.08)
-                  : Colors.black.withValues(alpha: 0.02),
-              blurRadius: 15,
+              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.03),
+              blurRadius: 16,
               offset: const Offset(0, 4),
             )
           ],
@@ -1590,7 +1601,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 decoration: BoxDecoration(
                   color:
                       isSelected ? primaryColor : primaryColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(12),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Icon(
                   icon,
@@ -1599,23 +1610,23 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 ),
               );
             }),
-            const SizedBox(height: 10),
+            const SizedBox(height: 12),
             // Title
             Text(
               AppTranslator.t(context, title),
               style: TextStyle(
-                fontWeight: FontWeight.w900,
+                fontWeight: FontWeight.w800,
                 fontSize: 12,
                 color: isDark ? Colors.white : Colors.black87,
                 letterSpacing: 0.2,
               ),
             ),
-            const SizedBox(height: 2),
+            const SizedBox(height: 4),
             // Subtitle
             Text(
               AppTranslator.t(context, subtitle),
               style: TextStyle(
-                fontWeight: FontWeight.w600,
+                fontWeight: FontWeight.w500,
                 fontSize: 10,
                 color: Colors.grey.shade500,
               ),
@@ -1635,28 +1646,29 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
   }) {
     return Builder(builder: (context) {
       final r = Responsive(context);
-      final cardW = r.dp(165).clamp(140.0, 200.0);
-      final cardH = r.dp(82).clamp(72.0, 95.0);
+      final cardW = r.dp(175).clamp(160.0, 220.0);
+      final cardH = r.dp(102).clamp(95.0, 115.0);
       return Container(
       width: cardW,
       height: cardH,
-      padding: const EdgeInsets.all(12),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 12),
       decoration: BoxDecoration(
         gradient: LinearGradient(
           colors: gradient,
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: gradient.first.withValues(alpha: 0.3),
-            blurRadius: 10,
+            color: gradient.first.withValues(alpha: 0.2),
+            blurRadius: 14,
             offset: const Offset(0, 4),
           )
         ],
       ),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Glassmorphic Icon Box
           Container(
@@ -1668,7 +1680,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
             ),
             child: Icon(icon, color: Colors.white, size: 20),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 12),
           // Text Details
           Expanded(
             child: Column(
@@ -1679,19 +1691,19 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   value,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w900,
+                    fontWeight: FontWeight.w800,
                     fontSize: 16,
                     height: 1.1,
                   ),
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                 ),
-                const SizedBox(height: 2),
+                const SizedBox(height: 4),
                 Text(
                   title,
                   style: const TextStyle(
                     color: Colors.white,
-                    fontWeight: FontWeight.w800,
+                    fontWeight: FontWeight.w700,
                     fontSize: 8,
                     letterSpacing: 0.2,
                   ),
@@ -1703,7 +1715,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                   subtitle,
                   style: TextStyle(
                     color: Colors.white.withValues(alpha: 0.7),
-                    fontWeight: FontWeight.w600,
+                    fontWeight: FontWeight.w500,
                     fontSize: 8,
                   ),
                   maxLines: 1,
@@ -1734,7 +1746,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
     }
 
     return Container(
-      padding: const EdgeInsets.all(20),
+      padding: const EdgeInsets.all(24),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF1E293B) : Colors.white,
         borderRadius: BorderRadius.circular(24),
@@ -1744,8 +1756,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
         ),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.04),
-            blurRadius: 20,
+            color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.03),
+            blurRadius: 24,
             offset: const Offset(0, 8),
           )
         ],
@@ -1865,7 +1877,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
           // Driver Details (if assigned)
           if (req != null && (req.driverAssigned || req.unitName.isNotEmpty)) ...[
             const Padding(
-              padding: EdgeInsets.only(top: 20, bottom: 16),
+              padding: EdgeInsets.only(top: 24, bottom: 20),
               child: Divider(height: 1),
             ),
             Row(
@@ -1888,7 +1900,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -1902,7 +1914,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                               isDark ? Colors.white : const Color(0xFF1E293B),
                         ),
                       ),
-                      const SizedBox(height: 2),
+                      const SizedBox(height: 4),
                       Text(
                         '${req.unitName} • ${req.plateNumber}',
                         style: TextStyle(
@@ -1912,7 +1924,7 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                         ),
                       ),
                       if (req.driverPhone.isNotEmpty) ...[
-                        const SizedBox(height: 2),
+                        const SizedBox(height: 4),
                         Text(
                           req.driverPhone,
                           style: const TextStyle(
@@ -2024,7 +2036,7 @@ class _SosPulseButtonState extends State<SosPulseButton> with TickerProviderStat
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
-              borderRadius: BorderRadius.circular(16),
+              borderRadius: BorderRadius.circular(20),
               boxShadow: isActive 
                 ? [
                     BoxShadow(
@@ -2063,7 +2075,7 @@ class _SosPulseButtonState extends State<SosPulseButton> with TickerProviderStat
                 Builder(builder: (ctx) {
                   final r = Responsive(ctx);
                   return Padding(
-                    padding: EdgeInsets.symmetric(horizontal: r.dp(28), vertical: r.dp(20)),
+                    padding: EdgeInsets.symmetric(horizontal: r.dp(28), vertical: r.dp(24)),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -2077,7 +2089,7 @@ class _SosPulseButtonState extends State<SosPulseButton> with TickerProviderStat
                             size: r.dp(30),
                           ),
                         ),
-                        SizedBox(width: r.dp(14)),
+                        SizedBox(width: r.dp(16)),
                         Flexible(
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.center,

@@ -53,6 +53,21 @@ class SosProvider extends ChangeNotifier {
   // Optional callback to notify the UI that notifications should be refreshed
   VoidCallback? _onNotificationsChanged;
 
+  // ── Live map position — updated by the map screen's GPS stream ──
+  // This is the most accurate position: the exact coordinates the map is currently showing.
+  double? _liveMapLat;
+  double? _liveMapLng;
+  int _liveMapTs = 0; // epoch ms of last update
+
+  /// Called by the map screen every time its GPS stream emits a new position.
+  /// This makes the SOS send use the SAME coordinates shown on the map.
+  void updateLiveMapPosition(double lat, double lng) {
+    _liveMapLat = lat;
+    _liveMapLng = lng;
+    _liveMapTs  = DateTime.now().millisecondsSinceEpoch;
+  }
+
+
   SosState get sosState => _sosState;
   String get selectedType => _selectedType;
   String? get description => _description;
@@ -505,16 +520,42 @@ class SosProvider extends ChangeNotifier {
     }
   }
 
-  Future<Position> _getFallbackPosition() async {
-    double fallbackLat = 2.0469;
-    double fallbackLng = 45.3182;
+  Future<void> _saveToPrefs(Position pos) async {
     try {
       final prefs = await SharedPreferences.getInstance();
-      final userDataStr = prefs.getString('user_data');
-      if (userDataStr != null) {
-        final userData = jsonDecode(userDataStr);
-        fallbackLat = (userData['current_lat'] as num?)?.toDouble() ?? 2.0469;
-        fallbackLng = (userData['current_lng'] as num?)?.toDouble() ?? 45.3182;
+      await prefs.setDouble('last_lat', pos.latitude);
+      await prefs.setDouble('last_lng', pos.longitude);
+      // Also save timestamp so we can check freshness
+      await prefs.setInt('last_lat_lng_ts', DateTime.now().millisecondsSinceEpoch);
+    } catch (_) {}
+  }
+
+  /// Last-resort fallback position when all GPS sources fail.
+  /// Uses SharedPreferences saved coords, then user profile coords, then Dharkenley defaults.
+  Future<Position> _getFallbackPosition() async {
+    double fallbackLat = 2.008;
+    double fallbackLng = 45.263;
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      final savedLat = prefs.getDouble('last_lat');
+      final savedLng = prefs.getDouble('last_lng');
+      final savedTs  = prefs.getInt('last_lat_lng_ts');
+      if (savedLat != null && savedLng != null) {
+        final ageMs = savedTs != null
+            ? DateTime.now().millisecondsSinceEpoch - savedTs
+            : 0;
+        // Use saved coords if within 2 hours
+        if (ageMs < 2 * 60 * 60 * 1000) {
+          fallbackLat = savedLat;
+          fallbackLng = savedLng;
+        }
+      } else {
+        final userDataStr = prefs.getString('user_data');
+        if (userDataStr != null) {
+          final userData = jsonDecode(userDataStr);
+          fallbackLat = (userData['current_lat'] as num?)?.toDouble() ?? 2.008;
+          fallbackLng = (userData['current_lng'] as num?)?.toDouble() ?? 45.263;
+        }
       }
     } catch (_) {}
     print("SOS_LOCATION: Using fallback coordinates: $fallbackLat, $fallbackLng");
@@ -532,6 +573,11 @@ class SosProvider extends ChangeNotifier {
     );
   }
 
+  /// Returns the best available position for an SOS, in this priority order:
+  ///   1. Fresh GPS from device (timeout 6s high → 3s medium)
+  ///   2. SharedPreferences last_lat/last_lng (saved by map screen live stream — most accurate)
+  ///   3. Android getLastKnownPosition() (OS cache — may be stale/from another app)
+  ///   4. User profile coordinates / defaults
   Future<Position?> _determinePosition() async {
     try {
       // 0. Check if location services are enabled on the device
@@ -559,43 +605,107 @@ class SosProvider extends ChangeNotifier {
         return await _getFallbackPosition();
       }
 
-      // 2. Try to get last known position first (instant) - not supported on web
-      if (!kIsWeb) {
-        Position? position = await Geolocator.getLastKnownPosition();
-        if (position != null) {
-          // If last known position is recent (within 1 hour), use it
-          final age = DateTime.now().difference(position.timestamp);
-          if (age.inSeconds < 3600) {
-            print("SOS_LOCATION: Using last known location (age: ${age.inSeconds}s)");
-            return position;
-          }
+      // 2. HIGHEST PRIORITY: Use live map position if fresh (map screen streams GPS continuously)
+      //    This is the EXACT position shown on the map — no mismatch possible.
+      if (_liveMapLat != null && _liveMapLng != null) {
+        final ageMs = DateTime.now().millisecondsSinceEpoch - _liveMapTs;
+        if (ageMs < 2 * 60 * 1000) { // within last 2 minutes
+          print("SOS_LOCATION: Using live map position (age: ${ageMs ~/ 1000}s): $_liveMapLat, $_liveMapLng");
+          return Position(
+            latitude: _liveMapLat!,
+            longitude: _liveMapLng!,
+            timestamp: DateTime.now(),
+            accuracy: 20.0, // stream accuracy is very good
+            altitude: 0.0,
+            altitudeAccuracy: 0.0,
+            heading: 0.0,
+            headingAccuracy: 0.0,
+            speed: 0.0,
+            speedAccuracy: 0.0,
+          );
         }
       }
 
-      // 3. Try high accuracy with shorter timeout (4 seconds) to ensure zero perceptible delay
-      const timeoutDuration = Duration(seconds: 4);
-
+      // 3. Try fresh high-accuracy GPS (6 seconds timeout)
       try {
         print("SOS_LOCATION: Requesting high accuracy position...");
-        return await Geolocator.getCurrentPosition(
+        final pos = await Geolocator.getCurrentPosition(
           locationSettings: const LocationSettings(
             accuracy: LocationAccuracy.high,
           ),
-        ).timeout(timeoutDuration);
+        ).timeout(const Duration(seconds: 6));
+        print("SOS_LOCATION: Got fresh GPS: ${pos.latitude}, ${pos.longitude}, acc=${pos.accuracy}m");
+        _saveToPrefs(pos);
+        return pos;
       } catch (e) {
-        print("SOS_LOCATION: High accuracy failed or timed out: $e. Falling back to medium...");
-        // 4. Fallback to medium accuracy (faster, works better indoors) with 3 seconds timeout
+        print("SOS_LOCATION: High accuracy failed: $e. Trying medium...");
+        // 3. Try medium accuracy (3 seconds timeout)
         try {
-          return await Geolocator.getCurrentPosition(
+          final pos = await Geolocator.getCurrentPosition(
             locationSettings: const LocationSettings(
               accuracy: LocationAccuracy.medium,
             ),
           ).timeout(const Duration(seconds: 3));
+          print("SOS_LOCATION: Got medium GPS: ${pos.latitude}, ${pos.longitude}, acc=${pos.accuracy}m");
+          _saveToPrefs(pos);
+          return pos;
         } catch (e2) {
-          print("SOS_LOCATION: Medium accuracy also failed: $e2. Using fallback...");
-          return await _getFallbackPosition();
+          print("SOS_LOCATION: Medium GPS also failed: $e2");
         }
       }
+
+      // 4. Use SharedPreferences coordinates saved by the map screen live stream
+      //    These are the most accurate local fallback — updated every time map streams a position
+      if (!kIsWeb) {
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          final savedLat = prefs.getDouble('last_lat');
+          final savedLng = prefs.getDouble('last_lng');
+          final savedTs  = prefs.getInt('last_lat_lng_ts');
+          if (savedLat != null && savedLng != null) {
+            final ageMs = savedTs != null
+                ? DateTime.now().millisecondsSinceEpoch - savedTs
+                : 0;
+            // Accept SharedPreferences coords if saved within last 30 minutes
+            if (ageMs < 30 * 60 * 1000) {
+              print("SOS_LOCATION: Using SharedPreferences coords (age: ${ageMs ~/ 1000}s): $savedLat, $savedLng");
+              return Position(
+                latitude: savedLat,
+                longitude: savedLng,
+                timestamp: DateTime.now(),
+                accuracy: 50.0,
+                altitude: 0.0,
+                altitudeAccuracy: 0.0,
+                heading: 0.0,
+                headingAccuracy: 0.0,
+                speed: 0.0,
+                speedAccuracy: 0.0,
+              );
+            } else {
+              print("SOS_LOCATION: SharedPreferences coords too old (${ageMs ~/ 1000}s), skipping");
+            }
+          }
+        } catch (_) {}
+
+        // 5. Last resort: Android OS getLastKnownPosition (may be stale)
+        try {
+          final position = await Geolocator.getLastKnownPosition();
+          if (position != null) {
+            final age = DateTime.now().difference(position.timestamp);
+            print("SOS_LOCATION: Android last known (age: ${age.inSeconds}s): ${position.latitude}, ${position.longitude}");
+            // Accept if within 30 minutes (same threshold as SharedPreferences)
+            if (age.inMinutes < 30) {
+              return position;
+            } else {
+              print("SOS_LOCATION: Android last known too old (${age.inMinutes}min), skipping");
+            }
+          }
+        } catch (_) {}
+      }
+
+      // 6. All GPS sources exhausted — use our best offline fallback
+      print("SOS_LOCATION: All GPS sources failed, using offline fallback.");
+      return await _getFallbackPosition();
     } catch (e) {
       print("SOS_LOCATION: Error determining position: $e");
       return await _getFallbackPosition();

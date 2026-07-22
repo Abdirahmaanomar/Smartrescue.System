@@ -26,35 +26,36 @@ class AmbulanceCard extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 16),
       decoration: BoxDecoration(
         color: Colors.white,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.04),
+            color: Colors.black.withValues(alpha: 0.03),
             blurRadius: 20,
             offset: const Offset(0, 8),
           ),
         ],
         border: Border.all(
-          color: isAvailable ? Colors.green.withValues(alpha: 0.15) : Colors.orange.withValues(alpha: 0.15),
+          color: isAvailable ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
           width: 1.5,
         ),
       ),
       child: Material(
         color: Colors.transparent,
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(24),
         child: InkWell(
           onTap: onTap,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(24),
           highlightColor: isAvailable ? Colors.green.withValues(alpha: 0.05) : Colors.orange.withValues(alpha: 0.05),
           splashColor: isAvailable ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
           child: Padding(
             padding: const EdgeInsets.all(16),
             child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
               children: [
                 // Icon Section
                 Container(
-                  width: 65,
-                  height: 65,
+                  width: 64,
+                  height: 64,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
                       colors: isAvailable
@@ -63,38 +64,40 @@ class AmbulanceCard extends StatelessWidget {
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
-                    borderRadius: BorderRadius.circular(18),
+                    borderRadius: BorderRadius.circular(16),
                     boxShadow: [
                       BoxShadow(
                         color: isAvailable
-                            ? Colors.green.withValues(alpha: 0.3)
-                            : Colors.orange.withValues(alpha: 0.3),
-                        blurRadius: 12,
-                        offset: const Offset(0, 6),
+                            ? Colors.green.withValues(alpha: 0.25)
+                            : Colors.orange.withValues(alpha: 0.25),
+                        blurRadius: 10,
+                        offset: const Offset(0, 4),
                       ),
                     ],
                   ),
                   child: const Icon(
                     Icons.medical_services_rounded,
                     color: Colors.white,
-                    size: 32,
+                    size: 28,
                   ),
                 ),
-                const SizedBox(width: 18),
+                const SizedBox(width: 16),
                 
                 // Details Section
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
                             child: Text(
                               unitName,
                               style: const TextStyle(
-                                fontSize: 18,
+                                fontSize: 16,
                                 fontWeight: FontWeight.w800,
                                 color: Color(0xFF1E293B),
                                 letterSpacing: -0.5,
@@ -103,13 +106,14 @@ class AmbulanceCard extends StatelessWidget {
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
+                          const SizedBox(width: 8),
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                            padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
                             decoration: BoxDecoration(
                               color: isAvailable ? Colors.green.withValues(alpha: 0.1) : Colors.orange.withValues(alpha: 0.1),
-                              borderRadius: BorderRadius.circular(20),
+                              borderRadius: BorderRadius.circular(12),
                               border: Border.all(
-                                color: isAvailable ? Colors.green.withValues(alpha: 0.2) : Colors.orange.withValues(alpha: 0.2),
+                                color: isAvailable ? Colors.green.withValues(alpha: 0.15) : Colors.orange.withValues(alpha: 0.15),
                               )
                             ),
                             child: Text(
@@ -126,18 +130,19 @@ class AmbulanceCard extends StatelessWidget {
                       ),
                       const SizedBox(height: 8),
                       Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
+                            padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                             decoration: BoxDecoration(
                               color: Colors.grey.shade100,
-                              borderRadius: BorderRadius.circular(6),
-                              border: Border.all(color: Colors.grey.shade300),
+                              borderRadius: BorderRadius.circular(8),
+                              border: Border.all(color: Colors.grey.shade200),
                             ),
                             child: Text(
                               plateNumber,
                               style: TextStyle(
-                                fontSize: 12,
+                                fontSize: 11,
                                 fontWeight: FontWeight.w800,
                                 color: Colors.grey.shade700,
                                 letterSpacing: 0.5,
@@ -145,9 +150,9 @@ class AmbulanceCard extends StatelessWidget {
                             ),
                           ),
                           if (distance != null) ...[
-                            const SizedBox(width: 12),
+                            const SizedBox(width: 16),
                             Icon(Icons.location_on, size: 14, color: Colors.grey.shade400),
-                            const SizedBox(width: 2),
+                            const SizedBox(width: 4),
                             Text(
                               distance!,
                               style: TextStyle(
@@ -160,8 +165,9 @@ class AmbulanceCard extends StatelessWidget {
                         ],
                       ),
                       if (driverName != null && driverName!.isNotEmpty) ...[
-                        const SizedBox(height: 10),
+                        const SizedBox(height: 8),
                         Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Container(
                               padding: const EdgeInsets.all(4),
@@ -192,7 +198,7 @@ class AmbulanceCard extends StatelessWidget {
                   const SizedBox(width: 8),
                   Icon(
                     Icons.arrow_forward_ios_rounded,
-                    size: 16,
+                    size: 14,
                     color: Colors.grey.shade300,
                   ),
                 ],

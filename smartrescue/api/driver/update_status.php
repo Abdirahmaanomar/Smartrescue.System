@@ -2,10 +2,20 @@
 session_start();
 require_once '../../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'driver') {
+$driver_id = null;
+if (isset($_REQUEST['driver_id'])) {
+    $driver_id = intval($_REQUEST['driver_id']);
+} elseif (isset($_SESSION['user_id']) && $_SESSION['role'] === 'driver') {
+    $driver_id = intval($_SESSION['user_id']);
+}
+
+if (!$driver_id) {
     header('Content-Type: application/json');
     die(json_encode(['status' => 'error', 'message' => 'Unauthorized']));
 }
+
+// Log incoming update status request for troubleshooting
+file_put_contents('debug_update_status.txt', date('Y-m-d H:i:s') . " - REQUEST: " . print_r($_REQUEST, true) . " - POST: " . print_r($_POST, true) . "\n", FILE_APPEND);
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     header('Content-Type: application/json');
@@ -27,7 +37,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $response = ['status' => 'success'];
     } elseif ($action === 'reject') {
         $q1 = "UPDATE rescue_requests SET status = 'pending', assigned_unit_id = NULL WHERE id = '$request_id'";
-        if (mysqli_query($conn, $q1))
+        $q2 = "UPDATE emergency_units SET status = 'available' WHERE id = '$unit_id'";
+        $q3 = "INSERT INTO dispatches (request_id, unit_id, status) VALUES ('$request_id', '$unit_id', 'rejected')";
+        if (mysqli_query($conn, $q1) && mysqli_query($conn, $q2) && mysqli_query($conn, $q3))
             $response = ['status' => 'success'];
     } elseif ($action === 'en_route') {
         $q1 = "UPDATE rescue_requests SET status = 'en_route' WHERE id = '$request_id'";

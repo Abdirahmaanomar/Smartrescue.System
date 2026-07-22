@@ -1073,7 +1073,11 @@ $page_subtitle = '';
                         <div>
                             <b style="color:${statusColor}">${isBusy ? '🚀' : '🚑'} ${escHtml(u.unit_name)}</b><br>
                             <span style="font-size:11px;color:#64748b">${escHtml(u.driver_name)}</span><br>
-                            <span style="font-size:10px;font-weight:700;color:${statusColor}">${u.status.toUpperCase()}</span>
+                            <span style="font-size:10px;font-weight:700;color:${statusColor}">${
+                                u.status === 'available' ? '🟢 ONLINE' :
+                                u.status === 'offline'   ? '⚫ OFFLINE' :
+                                                          '🟡 ON MISSION'
+                            }</span>
                         </div>
                     </div>`);
                 }

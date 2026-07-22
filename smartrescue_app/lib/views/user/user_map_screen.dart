@@ -6,6 +6,7 @@ import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
+import 'package:shared_preferences/shared_preferences.dart';
 import '../../providers/sos_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
@@ -95,49 +96,120 @@ class _UserMapScreenState extends State<UserMapScreen> {
   }
 
   Future<void> _initLocation() async {
-    bool serviceEnabled;
-    LocationPermission permission;
-
-    serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) return;
-
-    permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) return;
-    }
-
-    if (permission == LocationPermission.deniedForever) return;
-
-    // ── Step 1: Show last known position IMMEDIATELY (cached, near-instant) ──
     try {
-      final lastKnown = await Geolocator.getLastKnownPosition();
-      if (lastKnown != null && mounted) {
-        setState(() {
-          _currentLocation = LatLng(lastKnown.latitude, lastKnown.longitude);
-          _gpsAccuracy = lastKnown.accuracy;
-        });
-        if (_isMapReady) {
-          _mapController.move(_currentLocation!, 17);
+      // ── Step 0: Try to load last saved coordinates immediately for instant UI feedback ──
+      try {
+        final prefs = await SharedPreferences.getInstance();
+        final savedLat = prefs.getDouble('last_lat');
+        final savedLng = prefs.getDouble('last_lng');
+        if (savedLat != null && savedLng != null && mounted) {
+          setState(() {
+            _currentLocation = LatLng(savedLat, savedLng);
+          });
+          if (_isMapReady) {
+            _mapController.move(_currentLocation!, 15);
+          }
+        }
+      } catch (_) {}
+
+      bool serviceEnabled;
+      LocationPermission permission;
+
+      serviceEnabled = await Geolocator.isLocationServiceEnabled();
+      if (!serviceEnabled) {
+        debugPrint("Location services are disabled on device.");
+        return;
+      }
+
+      permission = await Geolocator.checkPermission();
+      if (permission == LocationPermission.denied) {
+        permission = await Geolocator.requestPermission();
+        if (permission == LocationPermission.denied) {
+          debugPrint("Location permission denied.");
+          return;
         }
       }
-    } catch (_) {}
 
-    // ── Step 2: Subscribe to live position stream with 10m distance filter (eliminates jitter/drift) ──
-    try {
+      if (permission == LocationPermission.deniedForever) {
+        debugPrint("Location permission permanently denied.");
+        return;
+      }
+
+      // ── Step 1: Get current position immediately (timeout 4s) with fallback to last known ──
+      try {
+        final rawPos = await Geolocator.getCurrentPosition(
+          locationSettings: const LocationSettings(accuracy: LocationAccuracy.high),
+        ).timeout(const Duration(seconds: 4));
+        final currentPos = rawPos;
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setDouble('last_lat', currentPos.latitude);
+          await prefs.setDouble('last_lng', currentPos.longitude);
+        } catch (_) {}
+        if (mounted) {
+          final sos = Provider.of<SosProvider>(context, listen: false);
+          sos.updateLiveMapPosition(currentPos.latitude, currentPos.longitude);
+          setState(() {
+            _currentLocation = LatLng(currentPos.latitude, currentPos.longitude);
+            _gpsAccuracy = currentPos.accuracy;
+          });
+          if (_isMapReady) {
+            _mapController.move(_currentLocation!, 17);
+          }
+        }
+      } catch (_) {
+        try {
+          final rawLastKnown = await Geolocator.getLastKnownPosition();
+          if (rawLastKnown != null) {
+            final lastKnown = rawLastKnown;
+            try {
+              final prefs = await SharedPreferences.getInstance();
+              await prefs.setDouble('last_lat', lastKnown.latitude);
+              await prefs.setDouble('last_lng', lastKnown.longitude);
+            } catch (_) {}
+            if (mounted) {
+              final sos = Provider.of<SosProvider>(context, listen: false);
+              sos.updateLiveMapPosition(lastKnown.latitude, lastKnown.longitude);
+              setState(() {
+                _currentLocation = LatLng(lastKnown.latitude, lastKnown.longitude);
+                _gpsAccuracy = lastKnown.accuracy;
+              });
+              if (_isMapReady) {
+                _mapController.move(_currentLocation!, 17);
+              }
+            }
+          }
+        } catch (_) {}
+      }
+
+      // ── Step 2: Subscribe to live position stream with 2m distance filter (eliminates drift while keeping it highly responsive) ──
       final positionStream = Geolocator.getPositionStream(
         locationSettings: const LocationSettings(
           accuracy: LocationAccuracy.high,
-          distanceFilter: 10, // Only emit update if device moves 10 meters
+          distanceFilter: 2, // Only emit update if device moves 2 meters
         ),
       );
 
       _positionSubscription = positionStream.listen((Position pos) async {
-        final auth = Provider.of<AuthProvider>(context, listen: false);
-        if (auth.user != null) {
+        // Capture context-dependent objects BEFORE any awaits
+        final auth = mounted ? Provider.of<AuthProvider>(context, listen: false) : null;
+        final sos = mounted ? Provider.of<SosProvider>(context, listen: false) : null;
+
+        if (sos != null) {
+          sos.updateLiveMapPosition(pos.latitude, pos.longitude);
+        }
+
+        try {
+          final prefs = await SharedPreferences.getInstance();
+          await prefs.setDouble('last_lat', pos.latitude);
+          await prefs.setDouble('last_lng', pos.longitude);
+          await prefs.setInt('last_lat_lng_ts', DateTime.now().millisecondsSinceEpoch);
+        } catch (_) {}
+
+        if (auth?.user != null) {
           try {
             await ApiService.updateUserLocation(
-              auth.user!.id.toString(),
+              auth!.user!.id.toString(),
               pos.latitude,
               pos.longitude,
             );
@@ -167,8 +239,12 @@ class _UserMapScreenState extends State<UserMapScreen> {
             }
           }
         }
+      }, onError: (error) {
+        debugPrint("User GPS stream error: $error");
       });
-    } catch (_) {}
+    } catch (e) {
+      debugPrint("Error in _initLocation: $e");
+    }
   }
 
   Future<void> _fetchRoute(LatLng start, LatLng end) async {
@@ -351,8 +427,8 @@ class _UserMapScreenState extends State<UserMapScreen> {
       );
     }
 
-    final latStr = _currentLocation != null ? _currentLocation!.latitude.toStringAsFixed(6) : "2.037703";
-    final lngStr = _currentLocation != null ? _currentLocation!.longitude.toStringAsFixed(6) : "45.301082";
+    final latStr = _currentLocation != null ? _currentLocation!.latitude.toStringAsFixed(6) : "2.008";
+    final lngStr = _currentLocation != null ? _currentLocation!.longitude.toStringAsFixed(6) : "45.263";
 
     return Scaffold(
       backgroundColor: const Color(0xFFEFF6FF), // Soft background tint
@@ -509,7 +585,7 @@ class _UserMapScreenState extends State<UserMapScreen> {
                         FlutterMap(
                           mapController: _mapController,
                           options: MapOptions(
-                            initialCenter: _currentLocation ?? const LatLng(2.037703, 45.301082),
+                            initialCenter: _currentLocation ?? const LatLng(2.008, 45.263),
                             initialZoom: 15,
                             minZoom: 3,
                             maxZoom: 20,
@@ -536,18 +612,6 @@ class _UserMapScreenState extends State<UserMapScreen> {
                               urlTemplate: _getTileUrl(),
                               userAgentPackageName: 'com.smartrescue.app',
                             ),
-                            if (_routePoints.isNotEmpty)
-                              PolylineLayer(
-                                polylines: [
-                                  Polyline(
-                                    points: _routePoints,
-                                    strokeWidth: 5.0,
-                                    color: const Color(0xFF3B82F6),
-                                    borderColor: Colors.white,
-                                    borderStrokeWidth: 1.5,
-                                  ),
-                                ],
-                              ),
                             MarkerLayer(markers: markers),
                           ],
                         ),

@@ -154,15 +154,22 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: cardBg,
-        borderRadius: BorderRadius.circular(16),
+        borderRadius: BorderRadius.circular(20),
         border: Border.all(color: borderColor, width: 1.5),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.025),
+            blurRadius: 12,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           // Icon container
           Container(
-            padding: const EdgeInsets.all(8),
+            padding: const EdgeInsets.all(9),
             decoration: BoxDecoration(
               color: iconContainerColor,
               shape: BoxShape.circle,
@@ -201,7 +208,7 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
         color: fieldBg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: borderColor, width: 1.5),
       ),
       child: DropdownButtonHideUnderline(
@@ -246,7 +253,7 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
       padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 4),
       decoration: BoxDecoration(
         color: fieldBg,
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(14),
         border: Border.all(color: borderColor, width: 1.5),
       ),
       child: TextFormField(
@@ -347,7 +354,7 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
                           : const Icon(Icons.save_rounded, size: 16),
                       label: Text(
                         AppTranslator.t(context, 'Save'),
-                        style: TextStyle(
+                        style: const TextStyle(
                           fontSize: 13,
                           fontWeight: FontWeight.bold,
                         ),
@@ -355,11 +362,11 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
                       style: ElevatedButton.styleFrom(
                         backgroundColor: const Color(0xFF2563EB),
                         foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
+                          borderRadius: BorderRadius.circular(14),
                         ),
-                        elevation: 2,
+                        elevation: 0,
                       ),
                     ),
                   ],
@@ -371,18 +378,16 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
                   padding: const EdgeInsets.all(24),
                   decoration: BoxDecoration(
                     color: cardColor,
-                    borderRadius: BorderRadius.circular(20),
+                    borderRadius: BorderRadius.circular(24),
                     border: Border.all(
                       color: isDark ? const Color(0xFF334155) : Colors.grey.shade100,
                       width: 1.5,
                     ),
                     boxShadow: [
                       BoxShadow(
-                        color: isDark
-                            ? Colors.black.withValues(alpha: 0.3)
-                            : Colors.grey.shade200.withValues(alpha: 0.3),
-                        blurRadius: 10,
-                        offset: const Offset(0, 4),
+                        color: Colors.black.withValues(alpha: isDark ? 0.25 : 0.03),
+                        blurRadius: 20,
+                        offset: const Offset(0, 6),
                       ),
                     ],
                   ),
@@ -498,8 +503,15 @@ class _UserMedicalScreenState extends State<UserMedicalScreen> {
                         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
                         decoration: BoxDecoration(
                           color: isDark ? const Color(0xFF1E293B) : Colors.white,
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(20),
                           border: Border.all(color: isDark ? const Color(0xFF334155) : Colors.grey.shade100, width: 1.5),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: isDark ? 0.2 : 0.025),
+                              blurRadius: 12,
+                              offset: const Offset(0, 4),
+                            ),
+                          ],
                         ),
                         child: SwitchListTile(
                           contentPadding: EdgeInsets.zero,

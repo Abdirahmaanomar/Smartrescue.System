@@ -199,7 +199,7 @@ $result = mysqli_query($conn, $query);
             <!-- Status Dropdown Selector -->
             <div style="flex: 1; min-width: 150px;">
                 <label><?= t('Status') ?></label>
-                <select name="status" class="filter-control" style="width: 100%; cursor: pointer;">
+                <select name="status" class="filter-control" style="width: 100%; cursor: pointer;" onchange="this.form.submit()">
                     <?php foreach(['all', 'pending', 'accepted', 'completed', 'cancelled'] as $s): ?>
                         <option value="<?= $s ?>" <?= $filter_status === $s ? 'selected' : '' ?>><?= t(ucfirst($s)) ?></option>
                     <?php endforeach; ?>

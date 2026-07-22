@@ -972,7 +972,7 @@ class AppTranslator {
   /// Falls back to the original key if no translation found.
   static String t(BuildContext context, String key) {
     try {
-      final auth = Provider.of<AuthProvider>(context, listen: false);
+      final auth = Provider.of<AuthProvider>(context);
       final lang = auth.user?.language ?? 'en';
       if (lang == 'so') return _so[key] ?? key;
       if (lang == 'ar') return _ar[key] ?? key;
@@ -983,7 +983,7 @@ class AppTranslator {
   /// Returns current language code from context
   static String langCode(BuildContext context) {
     try {
-      final auth = Provider.of<AuthProvider>(context, listen: false);
+      final auth = Provider.of<AuthProvider>(context);
       return auth.user?.language ?? 'en';
     } catch (_) {
       return 'en';
