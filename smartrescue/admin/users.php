@@ -8,7 +8,6 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 // Fetch all regular users (include location_updated_at for online/offline status)
 $q = "SELECT id, fullname, email, phone, profile_image, created_at, role, location_updated_at
       FROM users
-      WHERE role = 'user'
       ORDER BY created_at DESC";
 $res = mysqli_query($conn, $q);
 $users = [];
@@ -956,6 +955,10 @@ body::after {
 }
 
 /* Password visibility toggle */
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+}
 .pwd-wrapper {
     position: relative;
     width: 100%;

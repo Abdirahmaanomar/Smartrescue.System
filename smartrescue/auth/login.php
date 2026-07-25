@@ -217,6 +217,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
             .back-btn-mobile:hover { color: var(--primary); }
         }
         
+        input::-ms-reveal,
+        input::-ms-clear {
+            display: none !important;
+        }
         /* Password toggle button */
         .pwd-wrapper { position: relative; }
         .pwd-toggle {

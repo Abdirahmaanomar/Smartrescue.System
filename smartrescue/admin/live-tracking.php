@@ -238,7 +238,7 @@ const mapLayers = {
     sat: L.tileLayer('https://mt{s}.google.com/vt/lyrs=y&x={x}&y={y}&z={z}', {subdomains: '0123', attribution:'© Google Maps', maxZoom:20})
 };
 
-const map = L.map('live-map', {zoomControl:false, layers: [mapLayers.std]}).setView([2.0469, 45.3182], 13);
+const map = L.map('live-map', {zoomControl:false, attributionControl:false, layers: [mapLayers.std]}).setView([2.0469, 45.3182], 13);
 L.control.zoom({position:'bottomright'}).addTo(map);
 
 function setLayer(type) {

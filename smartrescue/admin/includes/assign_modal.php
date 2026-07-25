@@ -126,10 +126,12 @@ function openAssignModal(id, vicLat, vicLng, type) {
     document.getElementById('global-assign-modal').classList.add('show');
     document.getElementById('assignMatchLabel').style.display = 'none';
     document.getElementById('assignVictimInfo').style.display = 'block';
-    // Make sure we have the placeholder visible while fetching
-    document.getElementById('assignDriverInfo').style.display = 'block';
+    // Reset: hide driver preview and disable dispatch until units are loaded
+    document.getElementById('assignDriverInfo').style.display = 'none';
     document.getElementById('drvNamePhone').textContent = 'Loading...';
     document.getElementById('drvPlate').textContent = '';
+    document.getElementById('btnAssignSubmit').disabled = true;
+    document.getElementById('btnAssignSubmit').style.opacity = '0.5';
     
     document.getElementById('vicNamePhone').innerHTML = '<i class="fa fa-spinner fa-spin"></i> Fetching...';
     document.getElementById('vicMedical').textContent = '';
@@ -154,75 +156,65 @@ function openAssignModal(id, vicLat, vicLng, type) {
     // 2. Fetch live Fleet data
     fetch('../api/admin/get_fleet_data.php').then(r=>r.json()).then(d=>{
         if(d.status === 'success'){
-            // Include ALL available units (Ambulance/Medical, Police, Fire, Accident)
-            let avail = d.units.filter(u => u.status === 'available');
-            
-            if(avail.length === 0){
-                grid.innerHTML = '<div style="padding:14px;text-align:center;color:#ef4444;font-weight:800;font-size:0.9rem;">No available responders found nearby.</div>';
-                document.getElementById('btnAssignSubmit').disabled = true;
-                return;
-            }
-            
-            // Calculate distance & prioritize
+            // Strictly filter: ONLINE + correct emergency type only
             let et = (type||'').toLowerCase();
             let isKnownType = et.includes('medical') || et.includes('accident') || et.includes('fire') || et.includes('police');
-            
-            avail.forEach(u => {
-                u.dist = calcDist(vicLat, vicLng, u.current_lat, u.current_lng);
-                
-                let typeMatch = false;
-                let ut = (u.type||'').toLowerCase();
-                
-                // Map 'medical' in DB to 'ambulance' request, else direct string match
-                if(et.includes('medical') && (ut === 'ambulance' || ut === 'medical')) typeMatch = true;
-                else if(et.includes('accident') && ut === 'accident') typeMatch = true;
-                else if(et.includes('fire') && ut === 'fire') typeMatch = true;
-                else if(et.includes('police') && ut === 'police') typeMatch = true;
-                else if(!isKnownType) typeMatch = true; // Fallback: show all if emergency type is unknown
-                
-                u.isMatch = typeMatch;
+
+            // Only consider units that are online (status === 'available')
+            let onlineUnits = d.units.filter(u => u.status === 'available');
+
+            let matchingOnline = onlineUnits.filter(u => {
+                let ut = (u.type||u.unit_type||'').toLowerCase();
+                if(et.includes('medical') && (ut === 'ambulance' || ut === 'medical')) return true;
+                if(et.includes('accident') && ut === 'accident') return true;
+                if(et.includes('fire') && ut === 'fire') return true;
+                if(et.includes('police') && ut === 'police') return true;
+                if(!isKnownType) return true;
+                return false;
             });
-            
-            // PRIORITIZED FILTERING: Try to find responders that match the emergency type first
-            let filteredAvail = avail.filter(u => u.isMatch);
-            let hasDirectMatch = true;
-            
-            if (filteredAvail.length === 0) {
-                // FALLBACK: If no direct matching available responder is found, show ANY available responder!
-                filteredAvail = avail;
-                hasDirectMatch = false;
-                
-                document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-exclamation-triangle"></i> No direct ' + escHtmlLocal(type) + ' match found. Showing <b>any available responder</b> sorted by nearest distance.';
-                document.getElementById('assignMatchLabel').style.background = 'rgba(234, 179, 8, 0.1)';
-                document.getElementById('assignMatchLabel').style.color = '#a16207';
+
+            matchingOnline.forEach(u => {
+                u.dist = calcDist(vicLat, vicLng, u.current_lat, u.current_lng);
+            });
+
+            // Sort by distance
+            matchingOnline.sort((a,b) => a.dist - b.dist);
+
+            if (matchingOnline.length === 0) {
+                document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-circle-exclamation"></i> No online <b>' + escHtmlLocal(type) + '</b> responder available to dispatch.';
+                document.getElementById('assignMatchLabel').style.background = 'rgba(239, 68, 68, 0.1)';
+                document.getElementById('assignMatchLabel').style.color = '#dc2626';
                 document.getElementById('assignMatchLabel').style.display = 'block';
-            } else {
-                document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-crosshairs"></i> Prioritizing matching ' + escHtmlLocal(type) + ' units, sorted by nearest distance.';
-                document.getElementById('assignMatchLabel').style.background = 'rgba(34,197,94,0.1)';
-                document.getElementById('assignMatchLabel').style.color = '#15803d';
-                document.getElementById('assignMatchLabel').style.display = 'block';
+                grid.innerHTML = '<div style="padding:24px;text-align:center;color:#ef4444;font-weight:800;font-size:0.88rem;"><i class="fa fa-circle-xmark" style="font-size:1.5rem;display:block;margin-bottom:8px;"></i>No online ' + escHtmlLocal(type) + ' responders available.<br><span style="font-weight:600;font-size:0.78rem;color:#64748b;">Please wait for a ' + escHtmlLocal(type) + ' unit to come online.</span></div>';
+                document.getElementById('btnAssignSubmit').disabled = true;
+                document.getElementById('btnAssignSubmit').style.opacity = '0.5';
+                document.getElementById('assignDriverInfo').style.display = 'none';
+                currentUnitsData = {};
+                return;
             }
-            
-            // Sort by nearest distance (closest first)
-            filteredAvail.sort((a,b) => a.dist - b.dist);
-            
+
+            document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-crosshairs"></i> <b>' + matchingOnline.length + '</b> online <b>' + escHtmlLocal(type) + '</b> responder(s) — sorted by nearest.';
+            document.getElementById('assignMatchLabel').style.background = 'rgba(34,197,94,0.1)';
+            document.getElementById('assignMatchLabel').style.color = '#15803d';
+            document.getElementById('assignMatchLabel').style.display = 'block';
+            document.getElementById('btnAssignSubmit').disabled = false;
+            document.getElementById('btnAssignSubmit').style.opacity = '1';
+            document.getElementById('assignDriverInfo').style.display = 'block';
+
             currentUnitsData = {};
-            grid.innerHTML = filteredAvail.map((u, index) => {
+            grid.innerHTML = matchingOnline.map((u, index) => {
                 currentUnitsData[u.id] = u;
-                let dStr = u.dist < 99999 ? u.dist.toFixed(1)+' km' : 'Unknown dist';
-                let matchBadge = u.isMatch ? '<i class="fa fa-star" title="Best Match" style="color:#f59e0b; margin-right:6px;"></i>' : '';
-                
+                let dStr = u.dist < 99999 ? u.dist.toFixed(1)+' km' : '--';
                 let avatarHtml = `<div class="unit-mini-avatar" style="background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-weight:800;color:#3b82f6;">${(u.driver_name||'?').charAt(0).toUpperCase()}</div>`;
                 if(u.driver_image) {
                     avatarHtml = `<img src="../${escHtmlLocal(u.driver_image)}" class="unit-mini-avatar" onerror="this.src='https://ui-avatars.com/api/?name=${encodeURIComponent(u.driver_name)}&background=3b82f6&color=fff'">`;
                 }
-
                 return `
                 <div class="assign-unit-card ${index === 0 ? 'active' : ''}" onclick="selectAssignUnit(this, ${u.id})">
-                    <div style="display:flex; align-items:center;">
+                    <div style="display:flex;align-items:center;">
                         ${avatarHtml}
                         <div>
-                            <div style="font-weight:800;font-size:0.9rem;color:#0f172a;margin-bottom:2px;">${matchBadge}${escHtmlLocal(u.unit_name)}</div>
+                            <div style="font-weight:800;font-size:0.9rem;color:#0f172a;margin-bottom:2px;">${escHtmlLocal(u.unit_name)} <span style="background:rgba(34,197,94,0.15);color:#15803d;padding:2px 6px;border-radius:4px;font-size:0.65rem;font-weight:800;">ONLINE</span></div>
                             <div style="font-size:0.7rem;font-weight:800;color:#64748b;text-transform:uppercase;letter-spacing:1px;">Type: ${escHtmlLocal(u.type)}</div>
                         </div>
                     </div>
@@ -231,8 +223,8 @@ function openAssignModal(id, vicLat, vicLng, type) {
                     </div>
                 </div>`;
             }).join('');
-            
-            document.getElementById('assignUnitIdValue').value = filteredAvail[0].id;
+
+            document.getElementById('assignUnitIdValue').value = matchingOnline[0].id;
             document.getElementById('btnAssignSubmit').disabled = false;
             updateDriverPreview();
         }

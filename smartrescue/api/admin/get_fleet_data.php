@@ -23,11 +23,10 @@ $incidents_res = mysqli_query($conn, $incidents_query);
 $incidents = mysqli_fetch_all($incidents_res, MYSQLI_ASSOC);
 
 // 2. Fetch Fleet (Drivers/Units)
-// LOCATION PRIORITY: emergency_units.current_lat updated live by driver's browser.
-// Fall back to users.current_lat if the unit location is NULL (driver offline/not started).
 $units_query = "SELECT e.*, 
                     u.fullname as driver_name, 
                     u.profile_image as driver_image,
+                    u.location_updated_at as driver_location_updated_at,
                     COALESCE(NULLIF(e.current_lat, 0), u.current_lat) as current_lat,
                     COALESCE(NULLIF(e.current_lng, 0), u.current_lng) as current_lng
                 FROM emergency_units e 
@@ -35,7 +34,17 @@ $units_query = "SELECT e.*,
 $units_res = mysqli_query($conn, $units_query);
 $units = mysqli_fetch_all($units_res, MYSQLI_ASSOC);
 
-// 3. All active users with a known current location (removed: not used by map to save database roundtrips)
+// Heartbeat verification: Mark unit as 'offline' if driver location heartbeat is older than 10 minutes (600s)
+$now_ts = time();
+foreach ($units as &$u) {
+    $last_update = !empty($u['driver_location_updated_at']) ? strtotime($u['driver_location_updated_at']) : 0;
+    if ($u['status'] === 'available' && ($last_update === 0 || ($now_ts - $last_update) > 600)) {
+        $u['status'] = 'offline';
+    }
+}
+unset($u);
+
+// 3. All active users with a known current location
 $all_users = [];
 
 // 4. Stats

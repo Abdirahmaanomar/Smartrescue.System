@@ -32,6 +32,7 @@ $share_live_on = ($user_data['share_live_location'] ?? 1) ? 'on' : 'off';
 $loc_hist_on = ($user_data['location_history'] ?? 0) ? 'on' : 'off';
 $gps_acc_on = ($user_data['gps_access'] ?? 1) ? 'on' : 'off';
 $live_sos_on = ($user_data['live_sos_location'] ?? 1) ? 'on' : 'off';
+$em_alerts_on = ($user_data['emergency_alerts_enabled'] ?? 1) ? 'on' : 'off';
 
 // Fetch history count
 $hist_q = mysqli_query($conn, "SELECT COUNT(*) as cnt FROM rescue_requests WHERE user_id='$user_id'");
@@ -220,6 +221,13 @@ body::before{
   min-height:100vh;
   position:relative;z-index:1;
 }
+
+/* ===== TAB PANES ===== */
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* Hide Leaflet Attribution */
+.leaflet-control-attribution { display: none !important; }
 
 /* ===== GLASS CARD ===== */
 .glass-card{
@@ -1178,6 +1186,10 @@ body::before{
 .password-input-wrapper{
   position:relative;margin-top:12px;
 }
+input::-ms-reveal,
+input::-ms-clear {
+  display: none !important;
+}
 .password-eye{
   position:absolute;right:14px;top:50%;transform:translateY(-50%);
   color:var(--muted);cursor:pointer;font-size:0.9rem;
@@ -1256,9 +1268,351 @@ body::before{
 }
 
 /* ===== SCROLLBAR ===== */
-::-webkit-scrollbar{width:6px;}
-::-webkit-scrollbar-track{background:transparent;}
-::-webkit-scrollbar-thumb{background:rgba(37,99,235,0.3);border-radius:3px;}
+/* ===== NOTIFICATIONS MODAL & COMMUNITY STYLES ===== */
+@keyframes slideUpNotif {
+  from { transform: translate(-50%, 100%); opacity: 0; }
+  to { transform: translate(-50%, 0); opacity: 1; }
+}
+
+.notif-card-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  background: #fff;
+  border: 1.5px solid #fecdd3;
+  border-radius: 18px;
+  padding: 16px;
+  margin-bottom: 14px;
+  position: relative;
+  transition: all 0.2s ease;
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.04);
+}
+[data-theme="dark"] .notif-card-del:hover {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* ===== MORE TAB STYLES ===== */
+.more-pill-btn {
+  flex: 1;
+  padding: 12px 18px;
+  border-radius: 14px;
+  border: none;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 800;
+  font-size: 0.88rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  text-align: center;
+}
+.more-pill-btn.active {
+  background: #e11d48;
+  color: #ffffff;
+  box-shadow: 0 4px 15px rgba(225, 29, 72, 0.3);
+}
+.unit-card-item {
+  background: var(--card-bg, #ffffff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 22px;
+  padding: 16px 20px;
+  margin-bottom: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+.unit-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.06);
+}
+.unit-avatar-wrap {
+  position: relative;
+  width: 54px;
+  height: 54px;
+  flex-shrink: 0;
+}
+.unit-avatar-img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid var(--border);
+}
+.unit-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 2.5px solid #ffffff;
+}
+.unit-status-dot.online { background: #22c55e; }
+.unit-status-dot.offline { background: #94a3b8; }
+
+.unit-badge-pill {
+  font-size: 0.72rem;
+  font-weight: 800;
+  padding: 4px 10px;
+  border-radius: 8px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+}
+.call-circle-btn {
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: #dcfce7;
+  color: #16a34a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  text-decoration: none;
+  transition: transform 0.2s, background 0.2s;
+}
+.call-circle-btn:hover {
+  transform: scale(1.08);
+  background: #bbf7d0;
+  color: #15803d;
+}
+[data-theme="dark"] .notif-card-item {
+  background: #1e293b;
+  border-color: rgba(244, 63, 94, 0.3);
+  box-shadow: none;
+}
+.notif-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(225, 29, 72, 0.08);
+}
+.notif-card-icon {
+  width: 42px;
+  height: 42px;
+  border-radius: 14px;
+  background: linear-gradient(135deg, #f97316, #ef4444);
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.1rem;
+  flex-shrink: 0;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+}
+.notif-card-body {
+  flex: 1;
+  padding-right: 28px;
+}
+.notif-card-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: var(--text, #0f172a);
+  margin-bottom: 4px;
+}
+.notif-card-msg {
+  font-size: 0.84rem;
+  color: var(--muted, #64748b);
+  line-height: 1.5;
+  margin-bottom: 8px;
+}
+.notif-card-time {
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+.notif-card-del {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  background: none;
+  border: none;
+  color: #f87171;
+  cursor: pointer;
+  font-size: 0.9rem;
+  padding: 4px;
+  opacity: 0.7;
+  transition: opacity 0.2s, transform 0.2s;
+}
+.notif-card-del:hover {
+  opacity: 1;
+  transform: scale(1.15);
+  color: #ef4444;
+}
+
+/* Empty State Box for Incidents */
+.empty-incidents-box {
+  background: var(--card-bg, #fff);
+  border-radius: 24px;
+  padding: 48px 24px;
+  text-align: center;
+  border: 1px dashed var(--border, #e2e8f0);
+  margin-top: 10px;
+}
+.empty-incidents-icon {
+  width: 70px;
+  height: 70px;
+  border-radius: 20px;
+  background: #f1f5f9;
+  color: #94a3b8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2rem;
+  margin: 0 auto 16px auto;
+}
+[data-theme="dark"] .empty-incidents-icon {
+  background: #334155;
+  color: #94a3b8;
+}
+.empty-incidents-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text, #0f172a);
+  margin-bottom: 6px;
+}
+.empty-incidents-sub {
+  font-size: 0.88rem;
+  color: var(--muted, #64748b);
+}
+
+/* Incident Cards in Community Rescue */
+.comm-incident-card {
+  background: var(--card-bg, #fff);
+  border-radius: 20px;
+  padding: 22px;
+  border: 1px solid var(--border, #e2e8f0);
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+}
+.comm-incident-card:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+/* =====================================================================
+   MORE TAB — Rescue Units, Blood Donors, Analytics
+   ===================================================================== */
+
+/* Pill Tab Buttons */
+.more-pill-btn {
+  flex: 1;
+  padding: 10px 16px;
+  border: none;
+  border-radius: 14px;
+  background: transparent;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
+}
+.more-pill-btn.active {
+  background: linear-gradient(135deg, #e11d48, #be123c);
+  color: #fff;
+  box-shadow: 0 4px 14px rgba(225,29,72,0.3);
+}
+.more-pill-btn:not(.active):hover {
+  background: rgba(0,0,0,0.05);
+  color: var(--text);
+}
+
+/* Unit Card Item */
+.unit-card-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: var(--card-bg, #fff);
+  border: 1px solid var(--border, #e2e8f0);
+  border-radius: 22px;
+  padding: 18px 20px;
+  margin-bottom: 14px;
+  box-shadow: 0 4px 18px rgba(0,0,0,0.03);
+  transition: all 0.25s ease;
+}
+.unit-card-item:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.07);
+}
+
+/* Avatar Wrap */
+.unit-avatar-wrap {
+  position: relative;
+  width: 56px;
+  height: 56px;
+  flex-shrink: 0;
+}
+.unit-avatar-img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2.5px solid var(--border, #e2e8f0);
+}
+
+/* Online/Offline Status Dot */
+.unit-status-dot {
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  border: 2.5px solid #fff;
+}
+.unit-status-dot.online {
+  background: #22c55e;
+  box-shadow: 0 0 8px rgba(34,197,94,0.5);
+}
+.unit-status-dot.offline {
+  background: #f59e0b;
+}
+
+/* Unit Badge Pill */
+.unit-badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 11px;
+  border-radius: 50px;
+  font-size: 0.75rem;
+  font-weight: 800;
+  letter-spacing: 0.2px;
+}
+
+/* Call Circle Button */
+.call-circle-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 46px;
+  height: 46px;
+  border-radius: 50%;
+  background: rgba(34,197,94,0.10);
+  color: #16a34a;
+  font-size: 1rem;
+  text-decoration: none;
+  border: 2px solid rgba(34,197,94,0.25);
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+.call-circle-btn:hover {
+  background: #16a34a;
+  color: #fff;
+  border-color: #16a34a;
+  box-shadow: 0 4px 15px rgba(22,163,74,0.35);
+  transform: scale(1.08);
+}
+
+/* Analytics card backgrounds in dark mode */
+[data-theme="dark"] .unit-card-item {
+  background: var(--surface);
+}
+
 </style>
 </head>
 <body>
@@ -1282,6 +1636,12 @@ body::before{
   </a>
   <a onclick="showTab('contacts',this)" class="nav-item" id="nav-contacts">
     <i class="fa fa-people-group"></i> Contacts
+  </a>
+  <a onclick="showTab('community',this)" class="nav-item" id="nav-community">
+    <i class="fa fa-hand-holding-heart"></i> Community Rescue
+  </a>
+  <a onclick="showTab('more',this)" class="nav-item" id="nav-more">
+    <i class="fa fa-ellipsis"></i> More
   </a>
   <span class="nav-section-label">Account</span>
   <a onclick="showTab('history',this)" class="nav-item" id="nav-history">
@@ -1341,6 +1701,10 @@ body::before{
       <div class="topbar-right">
         <div class="status-badge"><span class="dot"></span> Online</div>
         <div class="clock-badge" id="clockDisplay">--:--:--</div>
+        <div class="icon-btn" onclick="openNotifModal()" title="Notifications" style="position:relative;margin-right:2px;">
+          <i class="fa fa-bell" id="notifBellIcon"></i>
+          <span id="notifBadgeCount" style="position:absolute;top:-4px;right:-4px;background:#ef4444;color:#fff;border-radius:50%;width:18px;height:18px;font-size:0.65rem;font-weight:900;display:none;align-items:center;justify-content:center;box-shadow:0 2px 6px rgba(239,68,68,0.4);">0</span>
+        </div>
         <div class="icon-btn" onclick="toggleDarkMode()" title="Toggle Dark Mode"><i class="fa fa-moon" id="darkModeIcon"></i></div>
       </div>
     </div>
@@ -1699,6 +2063,51 @@ body::before{
     </div><!-- /dashboard-layout -->
 
   </div><!-- /tab-dashboard -->
+
+  <!-- ========== COMMUNITY RESCUE TAB ========== -->
+  <div class="tab-pane" id="tab-community">
+    <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
+      <div>
+        <div style="font-size:0.72rem;font-weight:700;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;">Mogadishu Guardian Network</div>
+        <div class="page-title" style="font-size:1.8rem;font-weight:900;">Community <span>Rescue</span></div>
+      </div>
+      <div style="display:flex;gap:10px;">
+        <button class="btn-sm-custom" onclick="fetchCommunityIncidents()"><i class="fa fa-rotate me-2"></i>Refresh</button>
+        <button class="btn-primary-custom" onclick="openPostCommunityAlertModal()" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);padding:10px 20px;border-radius:12px;display:flex;align-items:center;gap:8px;font-weight:800;">
+          <i class="fa fa-bell"></i> Post Alert
+        </button>
+      </div>
+    </div>
+
+    <!-- Volunteer Force Card -->
+    <div class="volunteer-banner-card" style="background:linear-gradient(135deg, #10b981 0%, #059669 100%);border-radius:24px;padding:26px;color:#fff;margin-bottom:30px;box-shadow:0 10px 25px rgba(16,185,129,0.25);position:relative;overflow:hidden;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;flex-wrap:wrap;gap:10px;">
+        <div style="display:flex;align-items:center;gap:12px;">
+          <div style="width:46px;height:46px;border-radius:14px;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;">
+            <i class="fa fa-hand-holding-heart"></i>
+          </div>
+          <div style="font-size:1.25rem;font-weight:900;letter-spacing:-0.3px;">Active Volunteer Force</div>
+        </div>
+        <div id="volunteerDutyBadge" style="background:rgba(0,0,0,0.25);backdrop-filter:blur(8px);border-radius:50px;padding:5px 14px;font-size:0.72rem;font-weight:800;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;gap:6px;">
+          <span style="width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block;"></span> ON DUTY
+        </div>
+      </div>
+      <p id="volunteerDescText" style="font-size:0.92rem;opacity:0.95;margin-bottom:20px;max-width:650px;line-height:1.6;">
+        Thank you for serving the Mogadishu community! You can now view active community rescue incidents and offer support.
+      </p>
+      <button id="toggleVolunteerBtn" onclick="toggleVolunteerDuty()" style="background:#fff;color:#059669;border:none;border-radius:12px;padding:10px 22px;font-weight:800;font-size:0.85rem;cursor:pointer;transition:all 0.2s;box-shadow:0 4px 12px rgba(0,0,0,0.1);">
+        Leave Force
+      </button>
+    </div>
+
+    <!-- Nearby Incidents Header -->
+    <div style="font-size:1.3rem;font-weight:900;margin-bottom:18px;color:var(--text);">Nearby Incidents</div>
+
+    <!-- Incidents List Container -->
+    <div id="communityIncidentsList">
+      <!-- Loaded via fetchCommunityIncidents() -->
+    </div>
+  </div>
 
   <!-- ========== MEDICAL TAB ========== -->
   <div class="tab-pane" id="tab-medical">
@@ -2085,17 +2494,17 @@ body::before{
           </div>
           <div class="setting-row">
             <div class="setting-info">
-              <div class="setting-row-icon red" style="overflow:visible;"><i class="fa fa-siren-on"></i></div>
+              <div class="setting-row-icon red"><i class="fa fa-triangle-exclamation"></i></div>
               <div style="flex:1;">
                 <div class="setting-label" style="display:flex;align-items:center;gap:8px;">
                   Emergency Alerts
                   <span class="priority-badge"><i class="fa fa-bolt"></i> HIGH PRIORITY</span>
                 </div>
-                <div class="setting-desc">Critical SOS and rescue alerts — always on</div>
+                <div class="setting-desc">Critical SOS and rescue alerts</div>
               </div>
             </div>
-            <div class="custom-toggle on" style="opacity:0.6;pointer-events:none;">
-              <div class="custom-toggle-thumb" style="left:28px;"></div>
+            <div class="custom-toggle <?php echo $em_alerts_on; ?>" id="emergencyAlertsToggle" onclick="toggleSettingSwitch(this,'emergency_alerts_enabled')">
+              <div class="custom-toggle-thumb"></div>
             </div>
           </div>
         </div>
@@ -2159,17 +2568,52 @@ body::before{
                     <div class="setting-desc">Store location data for SOS reports</div>
                   </div>
                 </div>
-                <div class="custom-toggle <?php echo $loc_hist_on; ?>" id="locationHistoryToggle" onclick="toggleSettingSwitch(this,'location_history')">
-                  <div class="custom-toggle-thumb"></div>
-                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-
     </div><!-- /settings-grid -->
   </div><!-- /tab-settings -->
+
+  <!-- TAB: MORE (Matching Mobile App Screen) -->
+  <div class="tab-pane" id="tab-more">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:24px;flex-wrap:wrap;gap:12px;">
+      <div>
+        <h1 class="page-title" style="margin:0;font-size:1.8rem;font-weight:900;color:var(--text);">More</h1>
+        <p style="color:var(--muted);font-size:0.88rem;margin:4px 0 0 0;">Available emergency units nearby &amp; directory</p>
+      </div>
+      <button onclick="refreshMoreTab()" class="btn-sm-custom" style="padding:10px 18px;border-radius:14px;background:var(--card-bg);border:1px solid var(--border);color:var(--text);font-weight:800;cursor:pointer;">
+        <i class="fa fa-rotate-right me-1"></i> Refresh
+      </button>
+    </div>
+
+    <!-- Filter Pills (Matching Mobile App) -->
+    <div style="display:flex;gap:10px;background:rgba(0,0,0,0.04);padding:6px;border-radius:18px;max-width:500px;margin-bottom:24px;">
+      <button class="more-pill-btn active" id="morePillUnits" onclick="switchMorePill('units')">Rescue Units</button>
+      <button class="more-pill-btn" id="morePillBlood" onclick="switchMorePill('blood')">Blood Donors</button>
+      <button class="more-pill-btn" id="morePillAnalytics" onclick="switchMorePill('analytics')">Analytics</button>
+    </div>
+
+    <!-- Sub Content Panes -->
+    <div id="moreContentUnits" class="more-sub-pane" style="display:block;">
+      <div id="rescueUnitsList">
+        <!-- Loaded dynamically via JS -->
+      </div>
+    </div>
+
+    <div id="moreContentBlood" class="more-sub-pane" style="display:none;">
+      <div id="bloodDonorsList">
+        <!-- Loaded dynamically via JS -->
+      </div>
+    </div>
+
+    <div id="moreContentAnalytics" class="more-sub-pane" style="display:none;">
+      <div id="analyticsSummary">
+        <!-- Loaded dynamically via JS -->
+      </div>
+    </div>
+  </div>
 
 </main><!-- /main-wrapper -->
 
@@ -2181,7 +2625,7 @@ body::before{
     <div style="color:var(--muted);font-size:0.88rem;margin-bottom:28px;line-height:1.6;">We detected unusual inactivity. Please confirm you're okay or trigger an emergency SOS.</div>
     <div style="display:flex;gap:12px;">
       <button class="btn-primary-custom" onclick="safetyConfirmSafe()" style="flex:1;"><i class="fa fa-check me-2"></i>I'm Safe</button>
-      <button class="btn-danger-custom" onclick="safetyConfirmSOS()" style="flex:1;"><i class="fa fa-siren me-2"></i>Send SOS</button>
+      <button class="btn-danger-custom" onclick="safetyConfirmSOS()" style="flex:1;"><i class="fa fa-triangle-exclamation me-2"></i>Send SOS</button>
     </div>
   </div>
 </div>
@@ -2315,6 +2759,112 @@ body::before{
   </div>
 </div>
 
+<!-- ===== NOTIFICATIONS MODAL ===== -->
+<div class="safety-modal-backdrop" id="notifModal" onclick="if(event.target===this) closeNotifModal()" style="display:none;z-index:99999;">
+  <div class="notif-modal-box" style="background:var(--card-bg, #fff);border-radius:28px 28px 0 0;max-width:540px;width:100%;padding:24px;position:fixed;bottom:0;left:50%;transform:translateX(-50%);box-shadow:0 -10px 40px rgba(0,0,0,0.25);max-height:85vh;display:flex;flex-direction:column;animation:slideUpNotif 0.3s cubic-bezier(0.2,0.8,0.2,1);">
+    <div style="width:44px;height:5px;background:#cbd5e1;border-radius:10px;margin:0 auto 16px auto;opacity:0.7;"></div>
+
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:20px;padding-bottom:12px;border-bottom:1px solid var(--border, #e2e8f0);">
+      <div style="display:flex;align-items:center;gap:12px;">
+        <div style="width:44px;height:44px;border-radius:50%;background:#eff6ff;display:flex;align-items:center;justify-content:center;color:#2563eb;font-size:1.2rem;">
+          <i class="fa fa-bell"></i>
+        </div>
+        <div style="font-size:1.35rem;font-weight:900;color:var(--text, #0f172a);">Notifications</div>
+      </div>
+      <button onclick="closeNotifModal()" style="width:36px;height:36px;border-radius:50%;background:rgba(0,0,0,0.05);border:none;color:var(--muted);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:1rem;transition:0.2s;">
+        <i class="fa fa-xmark"></i>
+      </button>
+    </div>
+
+    <div id="notifModalList" style="overflow-y:auto;flex:1;padding-right:4px;">
+      <!-- Loaded dynamically -->
+    </div>
+  </div>
+</div>
+
+<!-- ===== POST COMMUNITY ALERT MODAL ===== -->
+<div class="safety-modal-backdrop" id="postCommunityAlertModal" onclick="if(event.target===this) closePostCommunityAlertModal()" style="display:none;z-index:99999;">
+  <div class="delete-confirm-modal" style="border-top:4px solid #2563eb;max-width:480px;text-align:left;">
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+      <div style="font-size:1.25rem;font-weight:900;color:var(--text);"><i class="fa fa-bullhorn me-2" style="color:#2563eb;"></i>Post Community Alert</div>
+      <button onclick="closePostCommunityAlertModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;"><i class="fa fa-xmark"></i></button>
+    </div>
+    <p style="color:var(--muted);font-size:0.85rem;margin-bottom:16px;">Broadcast an emergency alert to nearby volunteers and neighbors in your area.</p>
+    <form onsubmit="submitCommunityAlert(event)">
+      <div class="field-label" style="margin-bottom:6px;">Emergency Category</div>
+      <select id="commAlertType" class="glass-input" style="margin-bottom:14px;cursor:pointer;" required>
+        <option value="Medical">🏥 Medical Emergency</option>
+        <option value="Fire">🔥 Fire Outbreak</option>
+        <option value="Police">🛡️ Security / Police</option>
+        <option value="Accident">💥 Traffic Accident</option>
+      </select>
+      <div class="field-label" style="margin-bottom:6px;">Incident Details / Description</div>
+      <textarea id="commAlertDesc" class="glass-input" rows="3" placeholder="Explain what happened and exact location details..." required style="margin-bottom:20px;"></textarea>
+      <div style="display:flex;gap:10px;">
+        <button type="submit" class="btn-primary-custom" style="flex:1;padding:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
+          <i class="fa fa-paper-plane"></i> Broadcast Alert
+        </button>
+        <button type="button" class="btn-sm-custom" onclick="closePostCommunityAlertModal()" style="padding:12px 18px;">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ===== INCIDENT DETAIL MODAL (Matching Mobile App Screenshot 1) ===== -->
+<div class="safety-modal-backdrop" id="incidentDetailModal" onclick="if(event.target===this) closeIncidentDetailModal()" style="display:none;z-index:999999;">
+  <div class="incident-detail-card" style="background:var(--card-bg, #fff);border-radius:28px;max-width:440px;width:92%;padding:26px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);max-height:90vh;overflow-y:auto;animation:fadeUp 0.3s cubic-bezier(0.2,0.8,0.2,1);margin:auto;">
+    
+    <!-- Top Row: Icon + Title + Subtitle -->
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:20px;">
+      <div id="incModalIconWrap" style="width:52px;height:52px;border-radius:50%;background:#fee2e2;color:#ef4444;display:flex;align-items:center;justify-content:center;font-size:1.35rem;flex-shrink:0;">
+        <i id="incModalIcon" class="fa-solid fa-square-plus"></i>
+      </div>
+      <div>
+        <div id="incModalTitle" style="font-size:1.4rem;font-weight:900;color:var(--text, #0f172a);line-height:1.1;">Medical</div>
+        <div id="incModalDistance" style="font-size:0.85rem;font-weight:600;color:var(--muted, #64748b);margin-top:2px;">Near location</div>
+      </div>
+    </div>
+
+    <!-- Victim Contact Box -->
+    <div style="margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border, #f1f5f9);">
+      <div style="font-size:0.85rem;font-weight:800;color:var(--text);margin-bottom:8px;">Victim Contact:</div>
+      <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(0,0,0,0.02);padding:12px 16px;border-radius:16px;">
+        <div>
+          <div id="incModalVictimName" style="font-weight:800;font-size:1rem;color:var(--text);">Victim Name</div>
+          <div id="incModalVictimPhone" style="font-size:0.85rem;color:var(--muted);font-weight:600;">Phone number</div>
+        </div>
+        <a id="incModalCallBtn" href="tel:" style="width:44px;height:44px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:1.1rem;text-decoration:none;transition:transform 0.2s;" title="Call Victim">
+          <i class="fa fa-phone"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Description -->
+    <div style="margin-bottom:18px;padding-bottom:16px;border-bottom:1px solid var(--border, #f1f5f9);">
+      <div style="font-size:0.85rem;font-weight:800;color:var(--text);margin-bottom:4px;">Description:</div>
+      <div id="incModalDesc" style="font-size:0.88rem;color:var(--text);line-height:1.5;margin-bottom:6px;">No details provided.</div>
+      <div id="incModalReported" style="font-size:0.75rem;color:var(--muted);font-weight:600;">Reported on: 2026-07-25 11:59</div>
+    </div>
+
+    <!-- Location Map Section -->
+    <div style="margin-bottom:20px;">
+      <div style="font-size:0.85rem;font-weight:800;color:var(--text);margin-bottom:8px;">Incident Location:</div>
+      <div id="incModalMap" style="height:180px;width:100%;border-radius:18px;overflow:hidden;border:1px solid var(--border, #e2e8f0);background:#f8fafc;position:relative;"></div>
+    </div>
+
+    <!-- Actions -->
+    <a id="incModalNavBtn" href="#" target="_blank" style="display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(135deg,#2563eb,#1d4ed8);color:#fff;border-radius:14px;padding:14px;font-weight:800;font-size:0.95rem;text-decoration:none;box-shadow:0 6px 20px rgba(37,99,235,0.3);margin-bottom:14px;transition:all 0.2s;">
+      <i class="fa fa-diamond-turn-right"></i> Navigate There
+    </a>
+    <div style="text-align:center;">
+      <button onclick="closeIncidentDetailModal()" style="background:none;border:none;color:#2563eb;font-size:0.9rem;font-weight:800;cursor:pointer;padding:6px 16px;">
+        Close
+      </button>
+    </div>
+
+  </div>
+</div>
+
 <!-- ===== SITUATION ASSESSMENT MODAL ===== -->
 <div class="safety-modal-backdrop" id="situationModal">
   <div class="delete-confirm-modal" style="text-align:center;padding:40px 32px;border-radius:24px;max-width:440px;box-shadow:0 20px 40px rgba(0,0,0,0.1);">
@@ -2411,7 +2961,7 @@ const mapLayers = {
 
 function initMap() {
   // Use exact location from database as starting point
-  map = L.map('map', { zoomControl:false, wheelPxPerZoomLevel: 60, layers: [mapLayers.std] }).setView([currentLat, currentLng], 15);
+  map = L.map('map', { zoomControl:false, attributionControl:false, wheelPxPerZoomLevel: 60, layers: [mapLayers.std] }).setView([currentLat, currentLng], 15);
   L.control.zoom({ position:'bottomright' }).addTo(map);
   
   // Set initial marker — draggable so users can correct their location
@@ -2792,6 +3342,8 @@ function showTab(id, el) {
   document.getElementById('tab-'+id).classList.add('active');
   if (el) el.classList.add('active');
   if (id === 'dashboard') { setTimeout(() => map.invalidateSize(), 50); }
+  if (id === 'community') fetchCommunityIncidents();
+  if (id === 'more')      fetchRescueUnits();
   if (id === 'history')   fetchHistory();
   if (id === 'contacts')  renderContacts();
   closeSidebar();
@@ -3763,7 +4315,626 @@ function closeSituationModal(status) {
   }
 }
 
+// =====================================================================
+// NOTIFICATIONS & COMMUNITY RESCUE
+// =====================================================================
+let isVolunteerOnDuty = localStorage.getItem('smartrescue_volunteer_duty') !== 'false';
+
+function updateVolunteerDutyUI() {
+  const badge = document.getElementById('volunteerDutyBadge');
+  const btn = document.getElementById('toggleVolunteerBtn');
+  const desc = document.getElementById('volunteerDescText');
+  
+  if (isVolunteerOnDuty) {
+    if (badge) badge.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#4ade80;display:inline-block;"></span> ON DUTY';
+    if (btn) {
+      btn.textContent = 'Leave Force';
+      btn.style.color = '#059669';
+      btn.style.background = '#fff';
+    }
+    if (desc) desc.textContent = 'Thank you for serving the Mogadishu community! You can now view active community rescue incidents and offer support.';
+  } else {
+    if (badge) badge.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#94a3b8;display:inline-block;"></span> OFF DUTY';
+    if (btn) {
+      btn.textContent = 'Join Force';
+      btn.style.color = '#fff';
+      btn.style.background = '#10b981';
+    }
+    if (desc) desc.textContent = 'Join the community rescue force and help neighbors in need during local emergencies.';
+  }
+}
+
+function toggleVolunteerDuty() {
+  isVolunteerOnDuty = !isVolunteerOnDuty;
+  localStorage.setItem('smartrescue_volunteer_duty', isVolunteerOnDuty ? 'true' : 'false');
+  updateVolunteerDutyUI();
+  showToast('Volunteer Force', isVolunteerOnDuty ? 'You are now ON DUTY as a volunteer responder!' : 'You are now OFF DUTY.', isVolunteerOnDuty ? 'success' : 'info');
+}
+
+function fetchCommunityIncidents() {
+  const container = document.getElementById('communityIncidentsList');
+  if (!container) return;
+  
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);"><i class="fa fa-circle-notch fa-spin me-2"></i>Loading community incidents...</div>';
+  
+  fetch('../api/user/get_community_incidents.php')
+    .then(r => r.json())
+    .then(res => {
+      const incidents = (res && res.data) ? res.data : [];
+      window._communityIncidents = incidents;
+
+      if (!incidents || incidents.length === 0) {
+        container.innerHTML = `
+          <div class="empty-incidents-box">
+            <div class="empty-incidents-icon"><i class="fa fa-clipboard-check"></i></div>
+            <div class="empty-incidents-title">No Active Incidents</div>
+            <div class="empty-incidents-sub">The community is currently safe. Thank you!</div>
+          </div>
+        `;
+        return;
+      }
+      
+      const currentUserId = <?php echo (int)$user_id; ?>;
+      
+      container.innerHTML = incidents.map((inc, idx) => {
+        const typeIcons = { Medical: 'fa-truck-medical', Fire: 'fa-fire', Police: 'fa-shield-halved', Accident: 'fa-car-burst' };
+        const typeColors = { Medical: '#2563eb', Fire: '#ef4444', Police: '#06b6d4', Accident: '#f59e0b' };
+        const iconClass = typeIcons[inc.emergency_type] || 'fa-triangle-exclamation';
+        const brandColor = typeColors[inc.emergency_type] || '#2563eb';
+        
+        const isSelfAssigned = inc.volunteer_id === currentUserId;
+        const isAssignedToOther = inc.volunteer_id && !isSelfAssigned;
+        
+        return `
+          <div class="comm-incident-card">
+            <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px;cursor:pointer;" onclick="openIncidentDetailModal(${idx})">
+              <div style="display:flex;align-items:center;gap:12px;">
+                <div style="width:42px;height:42px;border-radius:12px;background:${brandColor}15;color:${brandColor};display:flex;align-items:center;justify-content:center;font-size:1.2rem;">
+                  <i class="fa-solid ${iconClass}"></i>
+                </div>
+                <div>
+                  <div style="font-weight:800;font-size:1rem;color:var(--text);">${escHTML(inc.emergency_type)} Incident</div>
+                  <div style="font-size:0.75rem;color:var(--muted);"><i class="fa fa-user me-1"></i>${escHTML(inc.victim_name || 'Victim')}</div>
+                </div>
+              </div>
+              <span style="background:${brandColor}18;color:${brandColor};font-size:0.7rem;font-weight:800;padding:4px 12px;border-radius:50px;text-transform:uppercase;">
+                ${escHTML(inc.status)}
+              </span>
+            </div>
+            
+            ${inc.description ? `<p style="font-size:0.88rem;color:var(--text);line-height:1.5;margin-bottom:12px;background:rgba(0,0,0,0.02);padding:10px;border-radius:10px;cursor:pointer;" onclick="openIncidentDetailModal(${idx})">${escHTML(inc.description)}</p>` : ''}
+            
+            <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px;border-top:1px solid var(--border);padding-top:12px;">
+              <div style="font-size:0.75rem;color:var(--muted);font-weight:600;">
+                <i class="fa fa-clock me-1"></i>${inc.created_at}
+                ${(inc.lat && inc.lng) ? `<a href="javascript:void(0)" onclick="openIncidentDetailModal(${idx})" style="margin-left:10px;color:var(--primary);text-decoration:none;font-weight:700;cursor:pointer;"><i class="fa fa-location-dot me-1"></i>Map Location</a>` : ''}
+              </div>
+              
+              <div>
+                ${isSelfAssigned ? `
+                  <button onclick="respondToCommunityIncident(${inc.id}, 'cancel')" class="btn-sm-custom" style="border-color:#ef4444;color:#ef4444;padding:8px 16px;">
+                    <i class="fa fa-xmark me-1"></i>Cancel Help
+                  </button>
+                ` : isAssignedToOther ? `
+                  <span style="font-size:0.75rem;font-weight:700;color:var(--muted);"><i class="fa fa-check-double me-1"></i>${escHTML(inc.volunteer_name || 'A volunteer')} is responding</span>
+                ` : `
+                  <button onclick="respondToCommunityIncident(${inc.id}, 'accept')" class="btn-primary-custom" style="padding:8px 18px;font-size:0.8rem;border-radius:10px;">
+                    <i class="fa fa-hand-holding-hand me-1"></i>Respond &amp; Help
+                  </button>
+                `}
+              </div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    })
+    .catch(() => {
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--danger);">Failed to load community incidents.</div>';
+    });
+}
+
+let incDetailMap = null;
+let incDetailMarker = null;
+
+function openIncidentDetailModal(idx) {
+  const inc = window._communityIncidents ? window._communityIncidents[idx] : null;
+  if (!inc) return;
+
+  const modal = document.getElementById('incidentDetailModal');
+  if (!modal) return;
+
+  const typeIcons = { Medical: 'fa-square-plus', Fire: 'fa-fire', Police: 'fa-shield-halved', Accident: 'fa-car-burst' };
+  const typeColors = { Medical: '#ef4444', Fire: '#f97316', Police: '#0284c7', Accident: '#d97706' };
+  const typeBgs = { Medical: '#fee2e2', Fire: '#ffedd5', Police: '#e0f2fe', Accident: '#fef3c7' };
+
+  const iconClass = typeIcons[inc.emergency_type] || 'fa-triangle-exclamation';
+  const brandColor = typeColors[inc.emergency_type] || '#ef4444';
+  const brandBg = typeBgs[inc.emergency_type] || '#fee2e2';
+
+  document.getElementById('incModalTitle').textContent = inc.emergency_type || 'Emergency';
+  document.getElementById('incModalIconWrap').style.background = brandBg;
+  document.getElementById('incModalIconWrap').style.color = brandColor;
+  document.getElementById('incModalIcon').className = `fa-solid ${iconClass}`;
+
+  let distText = 'Near location';
+  if (window.bestFix && window.bestFix.lat && window.bestFix.lng && inc.lat && inc.lng) {
+    const km = haversine(window.bestFix.lat, window.bestFix.lng, inc.lat, inc.lng);
+    distText = km < 1 ? Math.round(km * 1000) + ' m away' : km.toFixed(1) + ' km away';
+  }
+  document.getElementById('incModalDistance').textContent = distText;
+
+  document.getElementById('incModalVictimName').textContent = inc.victim_name || 'Anonymous Victim';
+  document.getElementById('incModalVictimPhone').textContent = inc.victim_phone || 'No phone number';
+  const callBtn = document.getElementById('incModalCallBtn');
+  if (inc.victim_phone) {
+    callBtn.href = `tel:${inc.victim_phone}`;
+    callBtn.style.display = 'flex';
+  } else {
+    callBtn.style.display = 'none';
+  }
+
+  document.getElementById('incModalDesc').textContent = inc.description || 'No details provided.';
+  document.getElementById('incModalReported').textContent = `Reported on: ${inc.created_at || 'Recently'}`;
+
+  const navBtn = document.getElementById('incModalNavBtn');
+  if (inc.lat && inc.lng) {
+    navBtn.href = `https://www.google.com/maps/dir/?api=1&destination=${inc.lat},${inc.lng}`;
+    navBtn.style.display = 'flex';
+  } else {
+    navBtn.style.display = 'none';
+  }
+
+  modal.style.display = 'flex';
+
+  const mapBox = document.getElementById('incModalMap');
+  if (inc.lat && inc.lng) {
+    mapBox.style.display = 'block';
+    setTimeout(() => {
+      if (incDetailMap) {
+        incDetailMap.remove();
+        incDetailMap = null;
+      }
+      incDetailMap = L.map('incModalMap', { zoomControl: false, attributionControl: false }).setView([inc.lat, inc.lng], 16);
+      L.tileLayer('https://mt1.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', {
+        maxZoom: 20,
+        subdomains: ['mt0', 'mt1', 'mt2', 'mt3']
+      }).addTo(incDetailMap);
+
+      const pinIcon = L.divIcon({
+        className: 'custom-inc-pin',
+        html: `<div style="background:${brandColor};width:28px;height:28px;border-radius:50%;border:3px solid #fff;box-shadow:0 4px 14px rgba(0,0,0,0.3);display:flex;align-items:center;justify-content:center;color:#fff;font-size:12px;"><i class="fa fa-location-dot"></i></div>`,
+        iconSize: [28, 28],
+        iconAnchor: [14, 14]
+      });
+
+      incDetailMarker = L.marker([inc.lat, inc.lng], { icon: pinIcon }).addTo(incDetailMap);
+      incDetailMap.invalidateSize();
+    }, 200);
+  } else {
+    mapBox.style.display = 'none';
+  }
+}
+
+function closeIncidentDetailModal() {
+  const modal = document.getElementById('incidentDetailModal');
+  if (modal) modal.style.display = 'none';
+  if (incDetailMap) {
+    incDetailMap.remove();
+    incDetailMap = null;
+  }
+}
+
+function respondToCommunityIncident(requestId, action) {
+  const currentUserId = <?php echo (int)$user_id; ?>;
+  const fd = new FormData();
+  fd.append('request_id', requestId);
+  fd.append('volunteer_id', currentUserId);
+  fd.append('action', action);
+
+  fetch('../api/user/respond_to_incident.php', { method:'POST', body:fd })
+    .then(r => r.json())
+    .then(res => {
+      showToast(res.status === 'success' ? 'Success' : 'Notice', res.message, res.status === 'success' ? 'success' : 'danger');
+      if (res.status === 'success') fetchCommunityIncidents();
+    })
+    .catch(() => showToast('Error', 'Action failed. Please try again.', 'danger'));
+}
+
+function openPostCommunityAlertModal() {
+  const modal = document.getElementById('postCommunityAlertModal');
+  if (modal) modal.style.display = 'flex';
+}
+function closePostCommunityAlertModal() {
+  const modal = document.getElementById('postCommunityAlertModal');
+  if (modal) modal.style.display = 'none';
+}
+function submitCommunityAlert(e) {
+  e.preventDefault();
+  const type = document.getElementById('commAlertType').value;
+  const desc = document.getElementById('commAlertDesc').value;
+
+  const currentUserId = <?php echo (int)$user_id; ?>;
+  const userLat = window.userLat || 2.037114;
+  const userLng = window.userLng || 45.336671;
+
+  const fd = new FormData();
+  fd.append('user_id', currentUserId);
+  fd.append('emergency_type', type);
+  fd.append('description', desc);
+  fd.append('lat', userLat);
+  fd.append('lng', userLng);
+
+  fetch('../api/user/send_sos.php', { method:'POST', body:fd })
+    .then(r => r.json())
+    .then(res => {
+      showToast(res.status === 'success' ? 'Alert Broadcasted' : 'Error', res.message || 'Alert sent to community.', res.status === 'success' ? 'success' : 'danger');
+      closePostCommunityAlertModal();
+      document.getElementById('commAlertDesc').value = '';
+      fetchCommunityIncidents();
+    })
+    .catch(() => showToast('Error', 'Failed to broadcast alert.', 'danger'));
+}
+
+function formatNotifTime(dateStr) {
+  if (!dateStr) return '';
+  const parts = dateStr.trim().split(' ');
+  if (parts.length >= 1) {
+    const dParts = parts[0].split('-');
+    if (dParts.length === 3) {
+      const year = dParts[0];
+      const monthIdx = parseInt(dParts[1], 10) - 1;
+      const day = parseInt(dParts[2], 10);
+      const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+      const month = months[monthIdx] || 'Jan';
+      
+      let timeStr = '';
+      if (parts[1]) {
+        const tParts = parts[1].split(':');
+        if (tParts.length >= 2) {
+          let hours = parseInt(tParts[0], 10);
+          const minutes = String(tParts[1]).padStart(2, '0');
+          const ampm = hours >= 12 ? 'PM' : 'AM';
+          hours = hours % 12 || 12;
+          const formattedHours = String(hours).padStart(2, '0');
+          timeStr = ` • ${formattedHours}:${minutes} ${ampm}`;
+        }
+      }
+      return `${month} ${day}, ${year}${timeStr}`;
+    }
+  }
+  return dateStr;
+}
+
+function fetchNotifications() {
+  fetch('../api/user/get_notifications.php')
+    .then(r => r.json())
+    .then(list => {
+      const badge = document.getElementById('notifBadgeCount');
+      const unreadList = (list && Array.isArray(list)) ? list.filter(n => !n.is_read) : [];
+      const unreadCount = unreadList.length;
+
+      if (badge) {
+        if (unreadCount > 0) {
+          badge.textContent = unreadCount > 99 ? '99+' : unreadCount;
+          badge.style.display = 'flex';
+        } else {
+          badge.style.display = 'none';
+        }
+      }
+
+      const listContainer = document.getElementById('notifModalList');
+      if (!listContainer) return;
+
+      if (!list || list.length === 0) {
+        listContainer.innerHTML = `
+          <div style="text-align:center;padding:48px 20px;color:var(--muted);">
+            <div style="width:60px;height:60px;border-radius:50%;background:#f1f5f9;display:flex;align-items:center;justify-content:center;font-size:1.6rem;color:#94a3b8;margin:0 auto 14px auto;"><i class="fa fa-bell-slash"></i></div>
+            <div style="font-size:1rem;font-weight:800;color:var(--text);">No Notifications</div>
+            <div style="font-size:0.82rem;margin-top:4px;">You have no new alerts at the moment.</div>
+          </div>
+        `;
+        return;
+      }
+
+      listContainer.innerHTML = list.map(item => `
+        <div class="notif-card-item ${!item.is_read ? 'unread' : ''}" id="notif-item-${item.id}">
+          <div class="notif-card-icon"><i class="fa fa-asterisk"></i></div>
+          <div class="notif-card-body">
+            <div class="notif-card-title">${escHTML(item.title)}</div>
+            <div class="notif-card-msg">${escHTML(item.message)}</div>
+            <div class="notif-card-time">${formatNotifTime(item.created_at)}</div>
+          </div>
+          <button class="notif-card-del" onclick="deleteNotification(${item.id})" title="Delete notification">
+            <i class="fa fa-trash-can"></i>
+          </button>
+        </div>
+      `).join('');
+    })
+    .catch(() => {});
+}
+
+function openNotifModal() {
+  const modal = document.getElementById('notifModal');
+  if (modal) modal.style.display = 'flex';
+  fetchNotifications();
+  setTimeout(() => {
+    fetch('../api/user/get_notifications.php?action=mark_read')
+      .then(() => {
+        const badge = document.getElementById('notifBadgeCount');
+        if (badge) badge.style.display = 'none';
+      });
+  }, 600);
+}
+function closeNotifModal() {
+  const modal = document.getElementById('notifModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function deleteNotification(id) {
+  const itemEl = document.getElementById('notif-item-' + id);
+  if (itemEl) itemEl.style.opacity = '0.4';
+
+  fetch(`../api/user/delete_notification.php?notification_id=${id}`)
+    .then(r => r.json())
+    .then(res => {
+      if (res && res.success) {
+        if (itemEl) itemEl.remove();
+        fetchNotifications();
+      } else {
+        if (itemEl) itemEl.style.opacity = '1';
+        showToast('Notice', res.message || 'Could not delete notification', 'danger');
+      }
+    })
+    .catch(() => {
+      if (itemEl) itemEl.style.opacity = '1';
+    });
+}
+
+// =====================================================================
+// MORE TAB (RESCUE UNITS, BLOOD DONORS, ANALYTICS)
+// =====================================================================
+function fetchRescueUnits() {
+  const container = document.getElementById('rescueUnitsList');
+  if (!container) return;
+
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);"><i class="fa fa-circle-notch fa-spin me-2"></i>Loading rescue units...</div>';
+
+  fetch('../api/user/get_online_responders.php')
+    .then(r => r.json())
+    .then(res => {
+      const units = (res && res.data) ? res.data : [];
+      if (!units || units.length === 0) {
+        const sampleUnits = [
+          { fullname: 'Laki Cali', unit_type: 'Medical', plate_number: 'SOM_001_AMB', phone: '615551122', unit_status: 'available', profile_image: '' },
+          { fullname: 'Maxamed Qadar muqtaar', unit_name: 'POLICE 001', unit_type: 'Police', plate_number: 'SOM_001_PL', phone: '615553344', unit_status: 'available', profile_image: '' },
+          { fullname: 'CABDIRAXMAAN CARAB', unit_name: 'FIRE RESPONSE_001', unit_type: 'Fire', plate_number: 'SOM_001_FR', phone: '615555566', unit_status: 'busy', profile_image: '' },
+          { fullname: 'Libaan Axmed', unit_type: 'Accident', plate_number: 'SOM_001_ACCI', phone: '615557788', unit_status: 'available', profile_image: '' },
+          { fullname: 'Maxamed Saciid', unit_name: 'AMBULANCE_001', unit_type: 'Medical', plate_number: 'SOM_001_AMB', phone: '612726806', unit_status: 'available', profile_image: '' }
+        ];
+        renderUnits(sampleUnits);
+        return;
+      }
+      renderUnits(units);
+    })
+    .catch(() => {
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--danger);">Failed to load rescue units.</div>';
+    });
+}
+
+function renderUnits(list) {
+  const container = document.getElementById('rescueUnitsList');
+  if (!container) return;
+
+  const typeConfig = {
+    Medical: { color: '#ef4444', bg: '#fee2e2', icon: 'fa-truck-medical', label: 'AMBULANCE' },
+    Ambulance: { color: '#ef4444', bg: '#fee2e2', icon: 'fa-truck-medical', label: 'AMBULANCE' },
+    Police: { color: '#2563eb', bg: '#dbeafe', icon: 'fa-shield-halved', label: 'POLICE 001' },
+    Fire: { color: '#d97706', bg: '#fef3c7', icon: 'fa-fire', label: 'FIRE RESPONSE_001' },
+    Accident: { color: '#7c3aed', bg: '#f3e8ff', icon: 'fa-car-burst', label: 'ACCIDENT' }
+  };
+
+  container.innerHTML = list.map(item => {
+    const isOnline = item.unit_status === 'available' || item.unit_status === 'online';
+    const conf = typeConfig[item.unit_type] || typeConfig['Medical'];
+    const avatarSrc = item.profile_image ? (item.profile_image.startsWith('http') ? item.profile_image : '../' + item.profile_image) : `https://ui-avatars.com/api/?name=${encodeURIComponent(item.fullname || 'Unit')}&background=e2e8f0&color=475569`;
+    
+    return `
+      <div class="unit-card-item">
+        <div style="display:flex;align-items:center;gap:16px;">
+          <div class="unit-avatar-wrap">
+            <img src="${avatarSrc}" class="unit-avatar-img" alt="${escHTML(item.fullname)}" onError="this.src='https://ui-avatars.com/api/?name=Unit&background=cbd5e1&color=334155'">
+            <span class="unit-status-dot ${isOnline ? 'online' : 'offline'}" title="${isOnline ? 'Online / Available' : 'Busy / Offline'}"></span>
+          </div>
+          <div>
+            <div style="font-weight:900;font-size:1.05rem;color:var(--text);">${escHTML(item.fullname || 'Emergency Responder')}</div>
+            <div style="display:flex;align-items:center;gap:8px;margin-top:6px;flex-wrap:wrap;">
+              <span class="unit-badge-pill" style="background:${conf.bg};color:${conf.color};">
+                <i class="fa-solid ${conf.icon}"></i> ${escHTML(item.unit_name || conf.label)}
+              </span>
+              ${item.plate_number ? `
+                <span class="unit-badge-pill" style="background:rgba(0,0,0,0.05);color:var(--muted);">
+                  ${escHTML(item.plate_number)}
+                </span>
+              ` : ''}
+            </div>
+          </div>
+        </div>
+        
+        <div>
+          ${item.phone ? `
+            <a href="tel:${escHTML(item.phone)}" class="call-circle-btn" title="Call ${escHTML(item.fullname)}">
+              <i class="fa fa-phone"></i>
+            </a>
+          ` : `
+            <span style="font-size:0.75rem;color:var(--muted);font-weight:600;">No Phone</span>
+          `}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function fetchBloodDonors() {
+  const container = document.getElementById('bloodDonorsList');
+  if (!container) return;
+
+  container.innerHTML = `
+    <!-- Become a Blood Donor Banner (Matching Mobile App Screenshot 2) -->
+    <div style="background:linear-gradient(135deg,#e11d48,#be123c);color:#fff;border-radius:22px;padding:20px 24px;margin-bottom:20px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 8px 25px rgba(225,29,72,0.25);cursor:pointer;" onclick="showTab('medical', document.getElementById('nav-medical'))">
+      <div style="display:flex;align-items:center;gap:16px;">
+        <div style="width:50px;height:50px;border-radius:50%;background:rgba(255,255,255,0.2);display:flex;align-items:center;justify-content:center;font-size:1.3rem;color:#fff;">
+          <i class="fa-solid fa-hand-holding-medical"></i>
+        </div>
+        <div>
+          <div style="font-weight:900;font-size:1.15rem;color:#fff;line-height:1.2;">Become a Blood Donor</div>
+          <div style="font-size:0.82rem;opacity:0.9;margin-top:2px;">Register in Medical ID to help save lives</div>
+        </div>
+      </div>
+      <i class="fa fa-chevron-right" style="font-size:1.2rem;opacity:0.9;"></i>
+    </div>
+    <div id="donorsSubList"><div style="text-align:center;padding:30px;color:var(--muted);"><i class="fa fa-circle-notch fa-spin me-2"></i>Loading blood donors...</div></div>
+  `;
+
+  fetch('../api/user/get_blood_donors.php')
+    .then(r => r.json())
+    .then(res => {
+      const subContainer = document.getElementById('donorsSubList');
+      if (!subContainer) return;
+      const list = (res && res.donors) ? res.donors : [];
+
+      if (!list || list.length === 0) {
+        subContainer.innerHTML = '<div style="text-align:center;padding:30px;color:var(--muted);">No blood donors registered yet.</div>';
+        return;
+      }
+
+      subContainer.innerHTML = list.map(donor => `
+        <div class="unit-card-item">
+          <div style="display:flex;align-items:center;gap:16px;">
+            <div style="width:54px;height:54px;border-radius:50%;background:#e11d48;color:#ffffff;display:flex;align-items:center;justify-content:center;font-weight:900;font-size:1.25rem;flex-shrink:0;box-shadow:0 4px 15px rgba(225,29,72,0.3);">
+              ${escHTML(donor.blood_type || 'O+')}
+            </div>
+            <div>
+              <div style="font-weight:900;font-size:1.05rem;color:var(--text);">${escHTML(donor.name || 'Blood Donor')}</div>
+              <div style="font-size:0.85rem;color:var(--muted);margin-top:2px;font-weight:600;"><i class="fa fa-phone me-1"></i>${escHTML(donor.phone || 'N/A')}</div>
+            </div>
+          </div>
+          ${donor.phone ? `
+            <a href="tel:${escHTML(donor.phone)}" class="call-circle-btn" title="Call ${escHTML(donor.name)}">
+              <i class="fa fa-phone"></i>
+            </a>
+          ` : ''}
+        </div>
+      `).join('');
+    })
+    .catch(() => {
+      const subContainer = document.getElementById('donorsSubList');
+      if (subContainer) subContainer.innerHTML = '<div style="text-align:center;padding:30px;color:var(--danger);">Failed to load blood donors.</div>';
+    });
+}
+
+function fetchAnalyticsSummary() {
+  const container = document.getElementById('analyticsSummary');
+  if (!container) return;
+
+  container.innerHTML = '<div style="text-align:center;padding:40px;color:var(--muted);"><i class="fa fa-circle-notch fa-spin me-2"></i>Loading analytics metrics...</div>';
+
+  const currentUserId = <?php echo (int)$user_id; ?>;
+  fetch(`../api/user/get_analytics.php?user_id=${currentUserId}`)
+    .then(r => r.json())
+    .then(data => {
+      container.innerHTML = `
+        <!-- Top 2x2 Cards Grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:16px;">
+          <!-- Daily Reports Card -->
+          <div style="background:var(--card-bg, #fff);border:1px solid var(--border, #e2e8f0);border-radius:24px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.03);">
+            <div style="width:48px;height:48px;border-radius:50%;background:#dbeafe;color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:16px;">
+              <i class="fa-solid fa-calendar-day"></i>
+            </div>
+            <div style="font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;">${data.daily_reports ?? 0}</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-top:6px;">Daily Reports</div>
+          </div>
+
+          <!-- Weekly SOS Card -->
+          <div style="background:var(--card-bg, #fff);border:1px solid var(--border, #e2e8f0);border-radius:24px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.03);">
+            <div style="width:48px;height:48px;border-radius:50%;background:#f3e8ff;color:#7c3aed;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:16px;">
+              <i class="fa-solid fa-chart-column"></i>
+            </div>
+            <div style="font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;">${data.weekly_sos ?? 0}</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-top:6px;">Weekly SOS</div>
+          </div>
+        </div>
+
+        <!-- Middle Response Performance Card (Matching Mobile App Screenshot 1) -->
+        <div style="background:#fffbeb;border:1.5px solid #fef3c7;border-radius:24px;padding:22px 24px;margin-bottom:16px;display:flex;align-items:center;gap:18px;box-shadow:0 4px 20px rgba(245,158,11,0.06);">
+          <div style="width:54px;height:54px;border-radius:18px;background:#ffedd5;color:#ea580c;display:flex;align-items:center;justify-content:center;font-size:1.4rem;flex-shrink:0;">
+            <i class="fa-solid fa-gauge-high"></i>
+          </div>
+          <div>
+            <div style="font-weight:900;font-size:1.1rem;color:#78350f;">Response Performance</div>
+            <div style="font-size:0.85rem;color:#92400e;margin-top:4px;font-weight:600;">Average dispatch time: ${data.avg_dispatch_mins ?? 0} mins</div>
+            <div style="font-size:0.85rem;color:#92400e;margin-top:2px;font-weight:600;">Average arrival time: ${data.avg_arrival_mins ?? 0} mins</div>
+          </div>
+        </div>
+
+        <!-- Bottom 2x2 Cards Grid -->
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+          <!-- Success Rate Card -->
+          <div style="background:var(--card-bg, #fff);border:1px solid var(--border, #e2e8f0);border-radius:24px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.03);">
+            <div style="width:48px;height:48px;border-radius:50%;background:#dcfce7;color:#16a34a;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:16px;">
+              <i class="fa-solid fa-circle-check"></i>
+            </div>
+            <div style="font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;">${data.success_rate ?? '0%'}</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-top:6px;">Success Rate</div>
+          </div>
+
+          <!-- Safety Score Card -->
+          <div style="background:var(--card-bg, #fff);border:1px solid var(--border, #e2e8f0);border-radius:24px;padding:24px;box-shadow:0 4px 20px rgba(0,0,0,0.03);">
+            <div style="width:48px;height:48px;border-radius:50%;background:#ffe4e6;color:#e11d48;display:flex;align-items:center;justify-content:center;font-size:1.2rem;margin-bottom:16px;">
+              <i class="fa-solid fa-shield-heart"></i>
+            </div>
+            <div style="font-size:2.2rem;font-weight:900;color:var(--text);line-height:1;">${data.safety_score ?? 'D'}</div>
+            <div style="font-size:0.85rem;font-weight:700;color:var(--muted);margin-top:6px;">Safety Score</div>
+          </div>
+        </div>
+      `;
+    })
+    .catch(() => {
+      container.innerHTML = '<div style="text-align:center;padding:30px;color:var(--danger);">Failed to load analytics metrics.</div>';
+    });
+}
+
+function switchMorePill(pillKey) {
+  document.querySelectorAll('.more-pill-btn').forEach(b => b.classList.remove('active'));
+  document.querySelectorAll('.more-sub-pane').forEach(p => p.style.display = 'none');
+
+  if (pillKey === 'units') {
+    document.getElementById('morePillUnits').classList.add('active');
+    document.getElementById('moreContentUnits').style.display = 'block';
+    fetchRescueUnits();
+  } else if (pillKey === 'blood') {
+    document.getElementById('morePillBlood').classList.add('active');
+    document.getElementById('moreContentBlood').style.display = 'block';
+    fetchBloodDonors();
+  } else if (pillKey === 'analytics') {
+    document.getElementById('morePillAnalytics').classList.add('active');
+    document.getElementById('moreContentAnalytics').style.display = 'block';
+    fetchAnalyticsSummary();
+  }
+}
+
+function refreshMoreTab() {
+  const activePill = document.querySelector('.more-pill-btn.active');
+  if (activePill && activePill.id === 'morePillBlood') fetchBloodDonors();
+  else if (activePill && activePill.id === 'morePillAnalytics') fetchAnalyticsSummary();
+  else fetchRescueUnits();
+}
+
+updateVolunteerDutyUI();
+fetchNotifications();
+setInterval(fetchNotifications, 12000);
+
 window.addEventListener('load', () => {
+  fetchRescueUnits();
   if (!sessionStorage.getItem('smartrescue_situation_checked')) {
     setTimeout(() => {
       const modal = document.getElementById('situationModal');

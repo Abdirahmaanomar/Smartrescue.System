@@ -10,6 +10,13 @@ if (!$user_id) {
     exit();
 }
 
+// Mark notifications as read if action=mark_read
+if (isset($_REQUEST['action']) && $_REQUEST['action'] === 'mark_read') {
+    mysqli_query($conn, "UPDATE notifications SET is_read = 1 WHERE user_id = '$user_id'");
+    echo json_encode(['success' => true]);
+    exit();
+}
+
 // Seed default notifications ONCE per session — skip the COUNT query on every poll
 $session_key = '_notif_seeded_' . $user_id;
 if (!isset($_SESSION[$session_key])) {

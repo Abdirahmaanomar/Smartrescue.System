@@ -391,7 +391,6 @@ body {
             <a class="s-nav-item active" data-target="panel-general"><i class="fa fa-gear"></i> <?= t('General') ?></a>
             <a class="s-nav-item" data-target="panel-notify"><i class="fa fa-bell"></i> <?= t('Notifications') ?></a>
             <a class="s-nav-item" data-target="panel-system"><i class="fa fa-sliders"></i> <?= t('Configuration') ?></a>
-            <a class="s-nav-item" data-target="panel-profile"><i class="fa fa-user-shield"></i> <?= t('Master Profile') ?></a>
             <a class="s-nav-item" data-target="panel-backup"><i class="fa fa-cloud-arrow-down"></i> <?= t('Backups & Logs') ?></a>
         </nav>
 
@@ -520,50 +519,7 @@ body {
                     </div>
                 </div>
 
-                <!-- PROFILE -->
-                <div class="settings-panel" id="panel-profile">
-                    <div class="s-card">
-                        <div class="s-card-header">
-                            <div class="sc-icon"><i class="fa fa-id-badge"></i></div>
-                            <div>
-                                <h3 class="sc-title"><?= t('Administrator Credentials') ?></h3>
-                                <p class="sc-desc"><?= t('Manage master access. Changing password logs you out immediately.') ?></p>
-                            </div>
-                        </div>
-                        
-                        <div class="avatar-upload-zone">
-                            <img src="https://ui-avatars.com/api/?name=Admin&background=2563eb&color=fff&size=200" alt="Avatar" class="avatar-preview">
-                            <br>
-                            <label class="avatar-btn">
-                                <i class="fa fa-upload"></i> Upload New Picture
-                                <input type="file" accept="image/*" style="display:none;" onchange="alert('Avatar upload logic simulated.')">
-                            </label>
-                        </div>
 
-                        <div class="form-row">
-                            <label class="form-label"><?= t('Admin Full Name') ?></label>
-                            <div class="input-group-custom">
-                                <i class="fa fa-user input-icon-left"></i>
-                                <input type="text" name="admin_name" class="s-input track-change" value="<?= htmlspecialchars($settings['admin_name']) ?>">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <label class="form-label"><?= t('Master User Email') ?></label>
-                            <div class="input-group-custom">
-                                <i class="fa fa-at input-icon-left"></i>
-                                <input type="email" name="admin_email" class="s-input track-change" value="<?= htmlspecialchars($settings['admin_email']) ?>">
-                            </div>
-                        </div>
-                        <div class="form-row">
-                            <label class="form-label"><?= t('New Master Password') ?></label>
-                            <div class="input-group-custom">
-                                <i class="fa fa-lock input-icon-left"></i>
-                                <input type="password" name="new_password" class="s-input track-change" placeholder="••••••••">
-                            </div>
-                            <p class="form-hint"><?= t('Leave empty to keep current password.') ?></p>
-                        </div>
-                    </div>
-                </div>
 
                 <!-- BACKUPS & LOGS -->
                 <div class="settings-panel" id="panel-backup">

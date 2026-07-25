@@ -3,7 +3,7 @@ header("Content-Type: application/json");
 session_start();
 require_once '../../config/db.php';
 
-$user_id = isset($_GET['user_id']) ? (int)$_GET['user_id'] : 0;
+$user_id = isset($_REQUEST['user_id']) ? (int)$_REQUEST['user_id'] : (isset($_SESSION['user_id']) ? (int)$_SESSION['user_id'] : 0);
 
 $user_filter = $user_id > 0 ? "user_id = $user_id AND " : "";
 $user_filter_where = $user_id > 0 ? "WHERE user_id = $user_id" : "";

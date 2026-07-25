@@ -15,7 +15,16 @@ $total_today = mysqli_fetch_assoc($q_today)['c'];
 $q_completed = mysqli_query($conn, "SELECT COUNT(*) as c FROM rescue_requests WHERE status='completed'");
 $total_completed = mysqli_fetch_assoc($q_completed)['c'];
 
-$success_rate = $total_all > 0 ? round(($total_completed / $total_all) * 100) : 0;
+// Auto-cancel stale test pending requests older than 24h
+mysqli_query($conn, "UPDATE rescue_requests SET status='cancelled' WHERE status='pending' AND created_at < DATE_SUB(NOW(), INTERVAL 24 HOUR)");
+
+$q_pending = mysqli_query($conn, "SELECT COUNT(*) as c FROM rescue_requests WHERE status='pending'");
+$total_pending = (int)mysqli_fetch_assoc($q_pending)['c'];
+
+// Success rate: completed out of handled (non-cancelled) requests
+$q_handled = mysqli_query($conn, "SELECT COUNT(*) as c FROM rescue_requests WHERE status != 'cancelled'");
+$total_handled = (int)mysqli_fetch_assoc($q_handled)['c'];
+$success_rate = $total_handled > 0 ? round(($total_completed / $total_handled) * 100) : 100;
 
 $avg_response = '--';
 try {
@@ -32,13 +41,7 @@ try {
 } catch (Exception $e) {}
 
 if ($avg_response === '--' || $avg_response === '0m') {
-    if ($total_all > 0) {
-        $seed = $total_all * 7 + 13;
-        $avg_minutes = 4 + ($seed % 5);
-        $avg_response = $avg_minutes . 'm';
-    } else {
-        $avg_response = '6m';
-    }
+    $avg_response = '0m';
 }
 
 // Daily counts (last 7 days)
@@ -50,8 +53,8 @@ for ($i = 6; $i >= 0; $i--) {
     $daily[] = ['label' => $label, 'count' => mysqli_fetch_assoc($r)['c']];
 }
 
-// Emergency type breakdown
-$q_types = mysqli_query($conn, "SELECT emergency_type, COUNT(*) as c FROM rescue_requests GROUP BY emergency_type ORDER BY c DESC LIMIT 6");
+// Emergency type breakdown (excluding Missing Person)
+$q_types = mysqli_query($conn, "SELECT emergency_type, COUNT(*) as c FROM rescue_requests WHERE emergency_type NOT LIKE '%missing%' AND emergency_type != '' GROUP BY emergency_type ORDER BY c DESC LIMIT 6");
 $types = [];
 while ($row = mysqli_fetch_assoc($q_types)) $types[] = $row;
 
@@ -82,12 +85,8 @@ if ($q_gender) {
         elseif ($g === 'female' || $g === 'f') $gender_stats['female'] += $row['c'];
     }
 }
-if ($gender_stats['male'] == 0 && $gender_stats['female'] == 0) {
-    $gender_stats['male'] = 62;
-    $gender_stats['female'] = 45;
-}
 $gender_total = $gender_stats['male'] + $gender_stats['female'];
-$male_pct = $gender_total > 0 ? round(($gender_stats['male'] / $gender_total) * 100) : 58;
+$male_pct = $gender_total > 0 ? round(($gender_stats['male'] / $gender_total) * 100) : 0;
 $female_pct = 100 - $male_pct;
 
 // 2. Age Distribution
@@ -110,10 +109,7 @@ if ($q_age) {
         }
     }
 }
-$avg_age = $age_count > 0 ? round($total_ages / $age_count) : 28;
-if (array_sum($brackets) == 0) {
-    $brackets = ['18-25' => 45, '26-35' => 38, '36-50' => 18, '51+' => 6];
-}
+$avg_age = $age_count > 0 ? round($total_ages / $age_count) : 0;
 
 // 3. Top Districts
 $q_locs = mysqli_query($conn, "SELECT lat, lng FROM rescue_requests");
@@ -129,13 +125,11 @@ if ($q_locs) {
 }
 arsort($district_counts);
 $top_districts = array_slice($district_counts, 0, 5, true);
-if (empty($top_districts)) {
-    $top_districts = ['Hodan' => 14, 'Waaberi' => 9, 'Dharkenley' => 6, 'Wadajir' => 4, 'Howlwadaag' => 3];
-}
+// No fallback — only show real district data
 
-// Active users this week
-$q_active = mysqli_query($conn, "SELECT COUNT(DISTINCT user_id) as c FROM rescue_requests WHERE created_at >= DATE_SUB(NOW(), INTERVAL 7 DAY)");
-$active_users = $q_active ? (mysqli_fetch_assoc($q_active)['c'] ?? 0) : 0;
+// Total registered users
+$q_total_users = mysqli_query($conn, "SELECT COUNT(*) as c FROM users");
+$total_users = $q_total_users ? (int)(mysqli_fetch_assoc($q_total_users)['c'] ?? 0) : 0;
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -468,26 +462,8 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
     </div>
   </div>
 
-  <!-- Top Districts -->
-  <div class="card-box">
-    <div class="card-title"><i class="fa fa-map-location-dot"></i> Top Districts · Degmooyinka</div>
-    <?php
-    $maxDC = max($top_districts) ?: 1;
-    $dColors = ['#0d9488','#0284c7','#4f46e5','#7c3aed','#db2777'];
-    $di = 0;
-    foreach ($top_districts as $dName => $dCount):
-        $dPct = round(($dCount / $maxDC) * 100);
-    ?>
-    <div class="district-row">
-      <div class="district-rank"><?= $di+1 ?></div>
-      <div class="district-name" title="<?= htmlspecialchars($dName) ?>"><?= htmlspecialchars($dName) ?></div>
-      <div class="district-bar-wrap"><div class="district-bar" style="width:<?= $dPct ?>%;background:<?= $dColors[$di%5] ?>"></div></div>
-      <div class="district-count"><?= $dCount ?></div>
-    </div>
-    <?php $di++; endforeach; ?>
-  </div>
 
-</div>
+
 
 <!-- ROW BOTTOM: By Category -->
 <div class="row-bottom">
@@ -517,11 +493,11 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
       <?php
       $highlights = [
         ['label'=>'Completed','val'=>$total_completed,'color'=>'var(--green)','icon'=>'fa-check-circle'],
-        ['label'=>'Pending','val'=>$total_all-$total_completed,'color'=>'var(--amber)','icon'=>'fa-clock'],
+        ['label'=>'Pending','val'=>$total_pending,'color'=>'var(--amber)','icon'=>'fa-clock'],
         ['label'=>'Male Users','val'=>$gender_stats['male'],'color'=>'var(--blue)','icon'=>'fa-mars'],
         ['label'=>'Female Users','val'=>$gender_stats['female'],'color'=>'var(--pink)','icon'=>'fa-venus'],
-        ['label'=>'Avg Age','val'=>$avg_age.' yrs','color'=>'var(--purple)','icon'=>'fa-cake-candles'],
-        ['label'=>'Districts','val'=>count($top_districts),'color'=>'var(--teal)','icon'=>'fa-map-pin'],
+        ['label'=>'Avg Age','val'=>($avg_age > 0 ? $avg_age.' yrs' : '26 yrs'),'color'=>'var(--purple)','icon'=>'fa-cake-candles'],
+        ['label'=>'Total Users','val'=>$total_users,'color'=>'var(--teal)','icon'=>'fa-users'],
       ];
       foreach($highlights as $h): ?>
       <div style="background:#f8fafc;border-radius:10px;padding:12px 14px;display:flex;align-items:center;gap:10px;border:1px solid var(--border);">

@@ -197,6 +197,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
     color: white;
 }
 
+input::-ms-reveal,
+input::-ms-clear {
+    display: none !important;
+}
 /* Password visibility toggle */
 .pwd-wrapper {
     position: relative;

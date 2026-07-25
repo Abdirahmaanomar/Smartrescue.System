@@ -5695,3 +5695,204 @@ SESSION: Array
 )
 
 
+2026-07-24 15:17:46
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+moobeel: 12346423: Brother
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784899033
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-24 15:18:16
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => true
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784899096
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-24 15:18:19
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784899096
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-25 10:58:19
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+moobeel: 12346423: Brother
+maxamed saciid sahal: 612726806: Brother
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784969878
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-25 12:34:23
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => 
+    [emergency_contacts] => eng haaji Ahmed: 611000000: Brother
+    [user_id] => 1061
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-25 13:16:41
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_access
+    [value] => 0
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-25 15:06:38
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784981149
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-25 15:06:40
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784981149
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-25 15:18:04
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => emergency_alerts_enabled
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784981828
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-07-25 15:18:05
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => emergency_alerts_enabled
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1784981828
+    [_notif_seeded_1045] => 1
+)
+
+

@@ -21,14 +21,30 @@ $drivers_arr = [];
 $dr = mysqli_query($conn, "SELECT id, fullname FROM users WHERE role='driver' ORDER BY fullname ASC");
 while ($d = mysqli_fetch_assoc($dr)) $drivers_arr[] = $d;
 
-// Fetch all units with driver info
-$query = "SELECT e.*, u.fullname as driver_name, u.phone as driver_phone
+// Fetch all units with driver info + location heartbeat
+$query = "SELECT e.*, u.fullname as driver_name, u.phone as driver_phone, u.location_updated_at as driver_loc_ts
           FROM emergency_units e
           LEFT JOIN users u ON e.driver_id = u.id
-          ORDER BY FIELD(e.status,'available','busy','offline'), e.unit_name ASC";
+          ORDER BY e.unit_name ASC";
 $result = mysqli_query($conn, $query);
 $units = [];
-while ($row = mysqli_fetch_assoc($result)) $units[] = $row;
+$now_ts = time();
+while ($row = mysqli_fetch_assoc($result)) {
+    // Heartbeat: mark as offline if location not updated in last 10 minutes (600s)
+    if ($row['status'] === 'available') {
+        $last_loc = !empty($row['driver_loc_ts']) ? strtotime($row['driver_loc_ts']) : 0;
+        if ($last_loc === 0 || ($now_ts - $last_loc) > 600) {
+            $row['status'] = 'offline';
+        }
+    }
+    $units[] = $row;
+}
+
+// Re-sort: available first, then busy, then offline
+usort($units, function($a, $b) {
+    $order = ['available' => 0, 'busy' => 1, 'offline' => 2];
+    return ($order[$a['status']] ?? 3) <=> ($order[$b['status']] ?? 3);
+});
 
 $total    = count($units);
 $available = count(array_filter($units, fn($u) => strtolower($u['status']) === 'available'));

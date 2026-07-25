@@ -58,6 +58,8 @@ $page_subtitle = '';
             overflow-x: hidden;
         }
 
+        .leaflet-control-attribution { display: none !important; }
+
         .main-wrapper {
             margin-left: var(--sidebar-width);
             padding: 36px 44px;
@@ -880,7 +882,7 @@ $page_subtitle = '';
         };
 
         function initMap() {
-            map = L.map('master-map', { zoomControl: false, wheelPxPerZoomLevel: 60, layers: [mapLayers.std] }).setView([2.0469, 45.3182], 13);
+            map = L.map('master-map', { zoomControl: false, attributionControl: false, wheelPxPerZoomLevel: 60, layers: [mapLayers.std] }).setView([2.0469, 45.3182], 13);
             L.control.zoom({ position: 'bottomright' }).addTo(map);
         }
 

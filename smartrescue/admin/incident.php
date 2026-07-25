@@ -421,7 +421,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
 <?php if ($inc['lat'] && $inc['lng']): ?>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
-const map = L.map('incident-map').setView([<?= $inc['lat'] ?>, <?= $inc['lng'] ?>], 15);
+const map = L.map('incident-map', { attributionControl: false }).setView([<?= $inc['lat'] ?>, <?= $inc['lng'] ?>], 15);
 L.tileLayer('https://mt{s}.google.com/vt/lyrs=m&x={x}&y={y}&z={z}', { subdomains: '0123', attribution: '© Google Maps', maxZoom: 20 }).addTo(map);
 const icon = L.divIcon({
     className:'',

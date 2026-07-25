@@ -11,6 +11,8 @@ header("Access-Control-Allow-Headers: Content-Type, Authorization, X-Requested-W
 error_reporting(0);
 ini_set('display_errors', 0);
 
+date_default_timezone_set('Africa/Mogadishu');
+
 if (isset($_SERVER['REQUEST_METHOD']) && $_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
     exit(0);
 }
@@ -32,6 +34,7 @@ if (!$conn) {
 
 // In xogta loogu diro habka UTF-8
 mysqli_set_charset($conn, "utf8mb4");
+mysqli_query($conn, "SET time_zone = '+03:00'");
 
 // --- ROBUST SELF-HEALING DATABASE CHECK ---
 // 1. Hubi emergency_units

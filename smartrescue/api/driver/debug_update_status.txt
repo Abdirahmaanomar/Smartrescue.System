@@ -808,3 +808,138 @@
     [driver_id] => 1048
 )
 
+2026-07-24 15:24:54 - REQUEST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-24 15:24:59 - REQUEST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-24 15:25:06 - REQUEST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-24 15:25:11 - REQUEST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 417
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-07-25 12:36:03 - REQUEST: Array
+(
+    [request_id] => 422
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 422
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-25 14:32:22 - REQUEST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-07-25 14:32:45 - REQUEST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-07-25 14:32:48 - REQUEST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-07-25 14:32:50 - REQUEST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 433
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
