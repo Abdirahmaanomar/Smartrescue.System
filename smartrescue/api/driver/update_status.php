@@ -41,7 +41,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $q3 = "INSERT INTO dispatches (request_id, unit_id, status) VALUES ('$request_id', '$unit_id', 'rejected')";
         if (mysqli_query($conn, $q1) && mysqli_query($conn, $q2) && mysqli_query($conn, $q3))
             $response = ['status' => 'success'];
-    } elseif ($action === 'en_route') {
+    } elseif (in_array($action, ['en_route', 'on_the_way', 'start_trip'])) {
         $q1 = "UPDATE rescue_requests SET status = 'en_route' WHERE id = '$request_id'";
         if (mysqli_query($conn, $q1))
             $response = ['status' => 'success'];

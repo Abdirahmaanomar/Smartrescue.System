@@ -5896,3 +5896,159 @@ SESSION: Array
 )
 
 
+2026-07-26 14:15:22
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785064511
+)
+
+
+2026-07-26 14:15:24
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785064511
+)
+
+
+2026-07-26 14:15:25
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785064511
+)
+
+
+2026-07-26 14:15:27
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785064511
+)
+
+
+2026-07-26 14:15:29
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785064511
+)
+
+
+2026-07-26 14:15:30
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785064511
+)
+
+
+2026-07-27 13:53:53
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1784646840.jpg
+    [_sg_checked_1047] => 1785149631
+)
+
+
+2026-07-27 13:53:55
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1785149633.png
+    [_sg_checked_1047] => 1785149631
+)
+
+

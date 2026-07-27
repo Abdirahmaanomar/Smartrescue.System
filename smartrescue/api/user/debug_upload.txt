@@ -1057,3 +1057,43 @@ POST: Array
     [birth_date] => 
 )
 
+2026-07-27 13:53:53
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_Screenshot 2026-07-27 131631.png
+            [full_path] => scaled_Screenshot 2026-07-27 131631.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\php6427.tmp
+            [error] => 0
+            [size] => 4735
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-27 13:53:55
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+

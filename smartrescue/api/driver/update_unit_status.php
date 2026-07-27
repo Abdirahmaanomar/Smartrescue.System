@@ -17,7 +17,11 @@ if (!$driver_id) {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit();
 }
-$status = isset($_POST['status']) ? mysqli_real_escape_string($conn, $_POST['status']) : null;
+$status = isset($_POST['status']) ? mysqli_real_escape_string($conn, $_POST['status']) : (isset($_GET['status']) ? mysqli_real_escape_string($conn, $_GET['status']) : null);
+if ($status === 'online') {
+    $status = 'available';
+}
+
 $log_file = __DIR__ . '/../../scratch/api_log.txt';
 $log_data = "--- [update_unit_status] " . date('Y-m-d H:i:s') . " ---\n";
 $log_data .= "POST: " . json_encode($_POST) . "\n";
@@ -50,7 +54,7 @@ if (!$unit) {
         $plate = "SOM-" . rand(100, 999) . "-DRV";
         
         $create_unit = "INSERT INTO emergency_units (unit_name, unit_type, plate_number, status, driver_id, current_lat, current_lng)
-                        VALUES ('$unit_name', '$type', '$plate', 'available', '$driver_id', 2.0469, 45.3182)";
+                        VALUES ('$unit_name', '$type', '$plate', 'offline', '$driver_id', 2.0469, 45.3182)";
         if (mysqli_query($conn, $create_unit)) {
             // Re-fetch unit
             $unit_res = mysqli_query($conn, $unit_query);

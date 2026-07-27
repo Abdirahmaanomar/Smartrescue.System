@@ -55,7 +55,7 @@ if (!$unit) {
         $plate = "SOM-" . rand(100, 999) . "-DRV";
         
         $create_unit = "INSERT INTO emergency_units (unit_name, unit_type, plate_number, status, driver_id, current_lat, current_lng)
-                        VALUES ('$unit_name', '$type', '$plate', 'available', '$driver_id', 2.0469, 45.3182)";
+                        VALUES ('$unit_name', '$type', '$plate', 'offline', '$driver_id', 2.0469, 45.3182)";
         if (mysqli_query($conn, $create_unit)) {
             // Re-fetch unit
             $unit_r = mysqli_query($conn, $unit_q);

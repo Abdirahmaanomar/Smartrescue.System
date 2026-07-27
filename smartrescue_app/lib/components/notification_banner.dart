@@ -200,6 +200,19 @@ class _NotificationBannerWidgetState extends State<_NotificationBannerWidget>
                   ],
                 ),
               ),
+              const SizedBox(width: 8),
+              InkWell(
+                onTap: _dismiss,
+                borderRadius: BorderRadius.circular(12),
+                child: Padding(
+                  padding: const EdgeInsets.all(4.0),
+                  child: Icon(
+                    Icons.close_rounded,
+                    size: 18,
+                    color: isDark ? Colors.grey.shade400 : const Color(0xFF94A3B8),
+                  ),
+                ),
+              ),
             ],
           ),
         ),

@@ -146,6 +146,16 @@ class AppTranslator {
     'EMERGENCY COMMAND CENTER': 'XARUNTA GURMADKA DEGDEGGA AH',
     'WELCOME': 'Soo Dhawoow',
 
+    // Safety Check Dialog
+    'Are You Safe?': 'Ma Nabad Qabtaa?',
+    "We detected unusual inactivity. Please confirm you're okay or trigger an emergency SOS.":
+        "Waxaan ogaanay dhaqdhaqaaq la'aan aan caadi ahayn. Fadlan xaqiiji inaad nabad tahay ama dir SOS degdeg ah.",
+    "I'm Safe": "Nabad Baan Ahay",
+    'Status Noted': 'Xaaladda Waa La Diiwangeliyey',
+    'Glad to hear you are safe. We continue monitoring.':
+        'Aad baan ugu faraxsanahay inaad nabad tahay. Sii wadaynaa la socodka.',
+
+
     // Notifications Screen
     'Alert Notifications': 'Ogeysiisyada Digniinta',
     'Notifications': 'Ogeysiisyada',

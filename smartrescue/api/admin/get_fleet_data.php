@@ -2,7 +2,7 @@
 session_start();
 require_once '../../config/db.php';
 
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role'] ?? '') !== 'admin') {
     echo json_encode(['status' => 'error', 'message' => 'Unauthorized']);
     exit();
 }
@@ -25,6 +25,7 @@ $incidents = mysqli_fetch_all($incidents_res, MYSQLI_ASSOC);
 // 2. Fetch Fleet (Drivers/Units)
 $units_query = "SELECT e.*, 
                     u.fullname as driver_name, 
+                    u.phone as phone,
                     u.profile_image as driver_image,
                     u.location_updated_at as driver_location_updated_at,
                     COALESCE(NULLIF(e.current_lat, 0), u.current_lat) as current_lat,
@@ -34,11 +35,10 @@ $units_query = "SELECT e.*,
 $units_res = mysqli_query($conn, $units_query);
 $units = mysqli_fetch_all($units_res, MYSQLI_ASSOC);
 
-// Heartbeat verification: Mark unit as 'offline' if driver location heartbeat is older than 10 minutes (600s)
-$now_ts = time();
+// Heartbeat verification: Keep unit status as configured in database
+// If unit status is empty, treat as offline (not available)
 foreach ($units as &$u) {
-    $last_update = !empty($u['driver_location_updated_at']) ? strtotime($u['driver_location_updated_at']) : 0;
-    if ($u['status'] === 'available' && ($last_update === 0 || ($now_ts - $last_update) > 600)) {
+    if (empty($u['status'])) {
         $u['status'] = 'offline';
     }
 }

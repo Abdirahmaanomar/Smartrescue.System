@@ -45,14 +45,14 @@ if (mysqli_num_rows($tables) == 0) {
         unit_name VARCHAR(100),
         unit_type VARCHAR(50),
         plate_number VARCHAR(50),
-        status VARCHAR(20) DEFAULT 'available',
+        status VARCHAR(20) DEFAULT 'offline',
         driver_id INT,
         current_lat DECIMAL(10,8),
         current_lng DECIMAL(11,8),
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
 } else {
-    $cols = ["unit_name" => "VARCHAR(100)", "unit_type" => "VARCHAR(50)", "plate_number" => "VARCHAR(50)", "status" => "VARCHAR(20) DEFAULT 'available'", "driver_id" => "INT", "current_lat" => "DECIMAL(10,8)", "current_lng" => "DECIMAL(11,8)"];
+    $cols = ["unit_name" => "VARCHAR(100)", "unit_type" => "VARCHAR(50)", "plate_number" => "VARCHAR(50)", "status" => "VARCHAR(20) DEFAULT 'offline'", "driver_id" => "INT", "current_lat" => "DECIMAL(10,8)", "current_lng" => "DECIMAL(11,8)"];
     foreach ($cols as $col => $def) {
         $check = mysqli_query($conn, "SHOW COLUMNS FROM emergency_units LIKE '$col'");
         if (mysqli_num_rows($check) == 0)

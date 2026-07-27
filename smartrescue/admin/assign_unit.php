@@ -27,7 +27,7 @@ $request = mysqli_fetch_assoc($req_res);
 $unit_sql = "SELECT e.*, u.fullname as driver_name, u.profile_image as driver_image 
              FROM emergency_units e 
              JOIN users u ON e.driver_id = u.id 
-             WHERE e.status = 'available'";
+             WHERE e.status IN ('available', 'online')";
 $units = mysqli_query($conn, $unit_sql);
 ?>
 <!DOCTYPE html>
@@ -122,7 +122,7 @@ $units = mysqli_query($conn, $unit_sql);
 <aside class="sidebar">
     <div class="d-flex align-items-center gap-3 mb-5 px-2">
         <div style="background: linear-gradient(135deg, #0d6efd, #0a58ca); color: white; border-radius: 10px; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(13,110,253,0.35); flex-shrink:0;">
-            <i class="fa fa-truck-medical fs-5"></i>
+            <i class="fa-solid fa-suitcase-medical fs-5"></i>
         </div>
         <span class="fw-800 fs-5 mb-0 text-white" style="letter-spacing: -0.5px;">Smart<span style="color: #93c5fd;">Rescue</span></span>
     </div>

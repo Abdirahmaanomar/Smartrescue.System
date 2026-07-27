@@ -4,7 +4,7 @@ require_once '../config/db.php';
 require_once '../includes/functions.php';
 
 // 1. Amniga: Hubi in qofka uu yahay Admin
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role'] ?? '') !== 'admin') {
     die("Error: Ma lihid ogolaansho aad ku qabato shaqadan.");
 }
 
@@ -13,11 +13,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $request_id = mysqli_real_escape_string($conn, $_POST['request_id']);
     $unit_id = mysqli_real_escape_string($conn, $_POST['unit_id']);
 
-    // 2. Hubi in gaariga uu wali Available yahay (Double Check)
+    // 2. Hubi in gaariga uu wali Available/Online yahay (Double Check)
     $check_unit = mysqli_query($conn, "SELECT status FROM emergency_units WHERE id = '$unit_id'");
     $unit_data = mysqli_fetch_assoc($check_unit);
 
-    if ($unit_data['status'] !== 'available') {
+    if (!$unit_data || !in_array($unit_data['status'], ['available', 'online'])) {
         header("Location: assign_unit.php?id=$request_id&error=unit_busy");
         exit();
     }

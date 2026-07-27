@@ -348,7 +348,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
             <div class="panel-body">
                 <?php if ($inc['status'] === 'pending'): ?>
                 <button class="action-btn action-primary" onclick="openAssignModal(<?= $inc['id'] ?>, <?= $inc['lat'] ? floatval($inc['lat']) : 'null' ?>, <?= $inc['lng'] ? floatval($inc['lng']) : 'null' ?>, '<?= addslashes(htmlspecialchars($inc['emergency_type'] ?? '')) ?>') ">
-                    <i class="fa fa-truck-medical"></i> Assign Unit
+                    <i class="fa-solid fa-suitcase-medical"></i> Assign Unit
                 </button>
                 <?php elseif ($inc['status'] === 'accepted' || $inc['status'] === 'dispatched'): ?>
                 <button class="action-btn action-primary" onclick="openAssignModal(<?= $inc['id'] ?>, <?= $inc['lat'] ? floatval($inc['lat']) : 'null' ?>, <?= $inc['lng'] ? floatval($inc['lng']) : 'null' ?>, '<?= addslashes(htmlspecialchars($inc['emergency_type'] ?? '')) ?>') ">

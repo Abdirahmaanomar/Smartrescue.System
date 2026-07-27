@@ -149,6 +149,8 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
                 final driverProv = Provider.of<DriverProvider>(context, listen: false);
                 final authProv = Provider.of<AuthProvider>(context, listen: false);
                 final navigator = Navigator.of(context);
+                // Set driver offline in DB before clearing session
+                await driverProv.updateUnitAvailability(false, forceOffline: true);
                 driverProv.stop();
                 await authProv.logout();
                 navigator.pushReplacementNamed('/login');

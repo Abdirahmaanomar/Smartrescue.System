@@ -107,7 +107,9 @@ class DriverProvider extends ChangeNotifier {
       // Always extract unit info (returned in all non-error responses)
       if (jobRes['unit'] != null) {
         _unit = Map<String, dynamic>.from(jobRes['unit'] as Map);
-        _unitStatus = _unit!['status'] ?? 'offline';
+        if (!_isTogglingStatus) {
+          _unitStatus = _unit!['status'] ?? 'offline';
+        }
       }
 
       if (jobRes['status'] == 'success' && jobRes['request'] != null) {
@@ -296,9 +298,9 @@ class DriverProvider extends ChangeNotifier {
   }
 
   // ─── Update Unit Availability ───────────────────────────────────────────────
-  Future<bool> updateUnitAvailability(bool isOnline) async {
-    // Don't allow going offline while an active job is in progress
-    if (!isOnline && hasActiveJob) return false;
+  Future<bool> updateUnitAvailability(bool isOnline, {bool forceOffline = false}) async {
+    // Don't allow going offline while an active job is in progress (unless forced — e.g. logout)
+    if (!isOnline && hasActiveJob && !forceOffline) return false;
     if (_isTogglingStatus) return false; // Already toggling
 
     final statusStr = isOnline ? 'available' : 'offline';
@@ -318,16 +320,19 @@ class DriverProvider extends ChangeNotifier {
         return true;
       }
       debugPrint('[DriverProvider] updateUnitStatus FAILED: ${res['message']}');
-      // Revert on failure
-      final reverted = isOnline ? 'offline' : 'available';
-      _unitStatus = reverted;
-      if (_unit != null) _unit!['status'] = reverted;
+      // Revert on failure (only if not forced offline — logout doesn't need revert)
+      if (!forceOffline) {
+        final reverted = isOnline ? 'offline' : 'available';
+        _unitStatus = reverted;
+        if (_unit != null) _unit!['status'] = reverted;
+      }
     } catch (e) {
       debugPrint('[DriverProvider] updateUnitStatus EXCEPTION: $e');
-      // Revert on exception
-      final reverted = isOnline ? 'offline' : 'available';
-      _unitStatus = reverted;
-      if (_unit != null) _unit!['status'] = reverted;
+      if (!forceOffline) {
+        final reverted = isOnline ? 'offline' : 'available';
+        _unitStatus = reverted;
+        if (_unit != null) _unit!['status'] = reverted;
+      }
     }
 
     _isTogglingStatus = false;

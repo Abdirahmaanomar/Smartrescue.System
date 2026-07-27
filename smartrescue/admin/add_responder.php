@@ -624,7 +624,7 @@ body {
 
         <!-- Brand -->
         <div class="left-brand">
-            <div class="left-brand-icon"><i class="fa fa-truck-medical"></i></div>
+            <div class="left-brand-icon"><i class="fa-solid fa-suitcase-medical"></i></div>
             <div class="left-brand-text">Smart<span>Rescue</span></div>
         </div>
 

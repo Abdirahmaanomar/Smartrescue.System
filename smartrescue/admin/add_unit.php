@@ -26,7 +26,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $error = 'Please fill in all required fields.';
     } else {
         $sql = "INSERT INTO emergency_units (unit_name, unit_type, plate_number, status, driver_id)
-                VALUES ('$unit_name', '$unit_type', '$plate', 'available', '$driver_id')";
+                VALUES ('$unit_name', '$unit_type', '$plate', 'offline', '$driver_id')";
         if (mysqli_query($conn, $sql)) {
             header("Location: fleet.php?added=1");
             exit();
@@ -514,7 +514,7 @@ body {
 
     <!-- Brand mark -->
     <div class="left-brand">
-      <div class="left-brand-icon"><i class="fa fa-truck-medical"></i></div>
+      <div class="left-brand-icon"><i class="fa-solid fa-suitcase-medical"></i></div>
       <div class="left-brand-text">Smart<span>Rescue</span></div>
     </div>
   </div>

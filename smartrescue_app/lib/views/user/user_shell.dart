@@ -9,6 +9,7 @@ import '../../services/api_service.dart';
 import '../../services/sound_service.dart';
 import '../../components/app_drawer.dart';
 import '../../components/notification_banner.dart';
+import '../../components/safety_check_dialog.dart';
 import '../../utils/translator.dart';
 import 'user_home_screen.dart';
 import 'user_map_screen.dart';
@@ -86,7 +87,13 @@ class _UserShellState extends State<UserShell> with WidgetsBindingObserver {
     });
     // Also fire once immediately after first frame
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (mounted) _pollNotifications();
+      if (mounted) {
+        _pollNotifications();
+        // Show "Are You Safe?" safety dialog when user logs in/opens the app
+        if (_sosProvider != null && !_sosProvider!.hasActiveRequest) {
+          SafetyCheckDialog.show(context);
+        }
+      }
     });
   }
 

@@ -119,7 +119,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <aside class="sidebar">
     <div class="d-flex align-items-center gap-3 mb-5 px-2">
         <div style="background: linear-gradient(135deg, #0d6efd, #0a58ca); color: white; border-radius: 10px; width: 42px; height: 42px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(13,110,253,0.35); flex-shrink:0;">
-            <i class="fa fa-truck-medical fs-5"></i>
+            <i class="fa-solid fa-suitcase-medical fs-5"></i>
         </div>
         <span class="fw-800 fs-5 mb-0 text-white" style="letter-spacing: -0.5px;">Smart<span style="color: #93c5fd;">Rescue</span></span>
     </div>

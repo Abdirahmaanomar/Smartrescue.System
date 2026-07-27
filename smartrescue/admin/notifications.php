@@ -199,7 +199,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
         <div class="notif-time"><i class="fa fa-clock" style="margin-right:4px"></i><?= $timeAgo ?></div>
     </div>
     <?php if ($isPending): ?>
-    <a href="javascript:void(0)" onclick="openAssignModal(<?= $a['id'] ?>, <?= floatval($a['lat']) ?>, <?= floatval($a['lng']) ?>, '<?= addslashes(htmlspecialchars($a['emergency_type'])) ?>')" class="notif-action-btn urgent"><i class="fa fa-truck-medical"></i> Assign</a>
+    <a href="javascript:void(0)" onclick="openAssignModal(<?= $a['id'] ?>, <?= floatval($a['lat']) ?>, <?= floatval($a['lng']) ?>, '<?= addslashes(htmlspecialchars($a['emergency_type'])) ?>')" class="notif-action-btn urgent"><i class="fa-solid fa-suitcase-medical"></i> Assign</a>
     <?php else: ?>
     <a href="incident.php?id=<?= $a['id'] ?>" class="notif-action-btn"><i class="fa fa-eye"></i> View</a>
     <?php endif; ?>

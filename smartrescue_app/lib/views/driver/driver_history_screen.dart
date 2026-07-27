@@ -18,12 +18,7 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen>
   late AnimationController _filterAnimController;
   late Animation<double> _filterFadeAnim;
 
-  static const _filters = [
-    {'key': 'all', 'label': 'All'},
-    {'key': 'completed', 'label': '✅ Completed'},
-    {'key': 'active', 'label': '🔵 Active'},
-    {'key': 'rejected', 'label': '❌ Rejected'},
-  ];
+
 
   @override
   void initState() {
@@ -125,19 +120,8 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen>
           isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
       body: Column(
         children: [
-          // ── Premium Filter Bar ─────────────────────────────────────────
-          _buildFilterBar(isDark),
-
-          // ── Subtle divider ─────────────────────────────────────────────
-          Container(
-            height: 1,
-            margin: const EdgeInsets.symmetric(horizontal: 16),
-            color: isDark
-                ? Colors.white.withValues(alpha: 0.06)
-                : Colors.grey.shade200,
-          ),
-
-          const SizedBox(height: 4),
+          // ── Top KPI Stats Cards (Main Filters) ──────────────────────────
+          _buildHistoryKpiGrid(driver, isDark),
 
           // ── List ───────────────────────────────────────────────────────
           Expanded(
@@ -151,11 +135,8 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen>
                       backgroundColor:
                           isDark ? const Color(0xFF1E293B) : Colors.white,
                       child: ListView(
-                        padding: const EdgeInsets.fromLTRB(0, 12, 0, 32),
+                        padding: const EdgeInsets.fromLTRB(0, 4, 0, 32),
                         children: [
-                          // ── KPI Stats Row (top of history page) ──────────
-                          _buildHistoryKpiGrid(driver, isDark),
-
                           // ── Active Mission Banner (below kpi) ────────────
                           if (driver.hasActiveJob && driver.activeJob != null)
                             _buildActiveMissionBanner(driver, isDark),
@@ -371,43 +352,52 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen>
   // ── KPI Stats Grid ────────────────────────────────────────────────────
   Widget _buildHistoryKpiGrid(DriverProvider driver, bool isDark) {
     final completedCount = driver.history.where((m) => m['status'] == 'completed').length;
-    final total = driver.history.length;
-    final rate = total > 0 ? ((completedCount / total) * 100).round() : 0;
+    final activeCount = driver.history.where((m) => ['pending', 'accepted', 'en_route', 'arrived'].contains(m['status'])).length + (driver.hasActiveJob ? 1 : 0);
+    final rejectedCount = driver.history.where((m) => m['status'] == 'rejected' || m['status'] == 'cancelled').length;
 
     return Padding(
-      padding: const EdgeInsets.fromLTRB(16, 0, 16, 12),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 8),
       child: Row(
         children: [
           Expanded(
             child: _HistoryKpiCard(
               isDark: isDark,
-              icon: Icons.favorite_rounded,
-              iconGradient: const [Color(0xFFFF6B6B), Color(0xFFEF4444)],
-              title: 'Saved',
-              value: driver.saves.toString(),
-              subtitle: 'Lives rescued',
+              isSelected: _filter == 'completed',
+              onTap: () => _switchFilter('completed'),
+              icon: Icons.check_circle_rounded,
+              iconBgColor: const Color(0xFF10B981).withValues(alpha: 0.14),
+              iconColor: const Color(0xFF10B981),
+              valueColor: const Color(0xFF10B981),
+              title: 'Completed',
+              value: completedCount.toString(),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: _HistoryKpiCard(
               isDark: isDark,
-              icon: Icons.assignment_rounded,
-              iconGradient: const [Color(0xFF818CF8), Color(0xFF6366F1)],
-              title: 'Missions',
-              value: total.toString(),
-              subtitle: 'All time',
+              isSelected: _filter == 'active',
+              onTap: () => _switchFilter('active'),
+              icon: Icons.autorenew_rounded,
+              iconBgColor: const Color(0xFFF59E0B).withValues(alpha: 0.14),
+              iconColor: const Color(0xFFF59E0B),
+              valueColor: const Color(0xFFF59E0B),
+              title: 'Active Now',
+              value: activeCount.toString(),
             ),
           ),
           const SizedBox(width: 10),
           Expanded(
             child: _HistoryKpiCard(
               isDark: isDark,
-              icon: Icons.insights_rounded,
-              iconGradient: const [Color(0xFF34D399), Color(0xFF10B981)],
-              title: 'Success',
-              value: '$rate%',
-              subtitle: 'Completion',
+              isSelected: _filter == 'rejected',
+              onTap: () => _switchFilter('rejected'),
+              icon: Icons.block_rounded,
+              iconBgColor: const Color(0xFFEF4444).withValues(alpha: 0.14),
+              iconColor: const Color(0xFFEF4444),
+              valueColor: const Color(0xFFEF4444),
+              title: 'Rejected',
+              value: rejectedCount.toString(),
             ),
           ),
         ],
@@ -415,30 +405,6 @@ class _DriverHistoryScreenState extends State<DriverHistoryScreen>
     );
   }
 
-  // ── Filter Bar ────────────────────────────────────────────────────────────
-  Widget _buildFilterBar(bool isDark) {
-    return Container(
-      height: 60,
-      color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-        itemCount: _filters.length,
-        separatorBuilder: (_, __) => const SizedBox(width: 8),
-        itemBuilder: (context, i) {
-          final f = _filters[i];
-          final isSelected = _filter == f['key'];
-          return _FilterChip(
-            label: f['label']!,
-            isSelected: isSelected,
-            isDark: isDark,
-            primaryColor: Theme.of(context).colorScheme.primary,
-            onTap: () => _switchFilter(f['key']!),
-          );
-        },
-      ),
-    );
-  }
 
   // ── Item builder helpers ──────────────────────────────────────────────────
   int _countItems(
@@ -1185,98 +1151,98 @@ class _DetailTile extends StatelessWidget {
 // ─── History KPI Card ─────────────────────────────────────────────────────────
 class _HistoryKpiCard extends StatelessWidget {
   final bool isDark;
+  final bool isSelected;
+  final VoidCallback onTap;
   final IconData icon;
-  final List<Color> iconGradient;
+  final Color iconBgColor;
+  final Color iconColor;
+  final Color valueColor;
   final String title;
   final String value;
-  final String subtitle;
 
   const _HistoryKpiCard({
     required this.isDark,
+    required this.isSelected,
+    required this.onTap,
     required this.icon,
-    required this.iconGradient,
+    required this.iconBgColor,
+    required this.iconColor,
+    required this.valueColor,
     required this.title,
     required this.value,
-    required this.subtitle,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
-      decoration: BoxDecoration(
-        color: isDark ? const Color(0xFF0F1C30) : Colors.white,
-        borderRadius: BorderRadius.circular(20),
-        border: Border.all(
-          color: isDark
-              ? Colors.white.withValues(alpha: 0.07)
-              : Colors.grey.shade100,
-          width: 1.2,
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 14),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF0F1C30) : Colors.white,
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: isSelected
+                ? iconColor
+                : (isDark
+                    ? Colors.white.withValues(alpha: 0.07)
+                    : Colors.grey.shade200),
+            width: isSelected ? 2.0 : 1.2,
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: isSelected
+                  ? iconColor.withValues(alpha: 0.20)
+                  : (isDark
+                      ? Colors.black.withValues(alpha: 0.30)
+                      : Colors.black.withValues(alpha: 0.03)),
+              blurRadius: isSelected ? 16 : 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
-        boxShadow: [
-          BoxShadow(
-            color: isDark
-                ? Colors.black.withValues(alpha: 0.30)
-                : Colors.blue.withValues(alpha: 0.08),
-            blurRadius: 18,
-            offset: const Offset(0, 6),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: 36,
-            height: 36,
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: iconGradient,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
+        child: Row(
+          children: [
+            Container(
+              width: 34,
+              height: 34,
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                borderRadius: BorderRadius.circular(12),
               ),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: iconGradient.last.withValues(alpha: 0.35),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+              child: Icon(icon, color: iconColor, size: 18),
             ),
-            child: Icon(icon, color: Colors.white, size: 18),
-          ),
-          const SizedBox(height: 12),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 22,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
-              letterSpacing: -0.5,
+            const SizedBox(width: 8),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    value,
+                    style: TextStyle(
+                      fontWeight: FontWeight.w900,
+                      fontSize: 19,
+                      color: valueColor,
+                      letterSpacing: -0.5,
+                    ),
+                  ),
+                  Text(
+                    title,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: TextStyle(
+                      color: isDark ? Colors.grey.shade400 : const Color(0xFF475569),
+                      fontSize: 10,
+                      fontWeight: FontWeight.w700,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          const SizedBox(height: 2),
-          Text(
-            title,
-            style: TextStyle(
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
-              fontSize: 10,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-          const SizedBox(height: 1),
-          Text(
-            subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
-              fontSize: 9,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

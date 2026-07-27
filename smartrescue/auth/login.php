@@ -13,12 +13,7 @@ if (isset($_GET['error']) && $_GET['error'] === 'driver_app_only') {
 
 // 3. Haddii uu qofku horay u soo galay, toos ugu dir dashboard-kiisa
 if (isset($_SESSION['user_id']) && isset($_SESSION['role'])) {
-    if (strtolower($_SESSION['role']) === 'driver') {
-        session_destroy();
-        header("Location: login.php?error=driver_app_only");
-        exit();
-    }
-    header("Location: ../" . $_SESSION['role'] . "/index.php");
+    header("Location: ../" . strtolower($_SESSION['role']) . "/index.php");
     exit();
 }
 
@@ -44,13 +39,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
 
         // Hubi Password-ka (Isticmaal password_verify)
         if (password_verify($password, $user['password'])) {
-            
-            // Check if user is a driver and it is NOT a Flutter app request
-            if (strtolower($user['role']) === 'driver' && !isset($_POST['flutter'])) {
-                $message = "<div class='alert alert-danger shadow-sm mt-3 p-3'>Drivers must use the SmartRescue Mobile App. Web login is disabled for driver accounts.</div>";
-            } else {
-                // Generate a fresh session ID to prevent fixation
-                session_regenerate_id(true);
+            // Generate a fresh session ID to prevent fixation
+            session_regenerate_id(true);
 
                 // Keydi xogta Session-ka
                 $_SESSION['user_id']   = $user['id'];
@@ -80,7 +70,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['login_btn'])) {
                 
                 header("Location: $target");
                 exit();
-            }
 
         } else {
             if (isset($_POST['flutter'])) {

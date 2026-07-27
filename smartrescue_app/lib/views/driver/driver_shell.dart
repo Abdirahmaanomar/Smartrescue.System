@@ -60,14 +60,20 @@ class _DriverShellState extends State<DriverShell> {
 
     if (driver.isSessionExpired) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
-        auth.logout();
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Session expired. Please log in again.'),
-            backgroundColor: Colors.redAccent,
-          ),
-        );
-        Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+        // Capture context-dependent objects before async gap
+        final messenger = ScaffoldMessenger.of(context);
+        final navigator = Navigator.of(context);
+        // Set offline in DB before logging out
+        driver.updateUnitAvailability(false, forceOffline: true).then((_) {
+          auth.logout();
+          messenger.showSnackBar(
+            const SnackBar(
+              content: Text('Session expired. Please log in again.'),
+              backgroundColor: Colors.redAccent,
+            ),
+          );
+          navigator.pushNamedAndRemoveUntil('/login', (route) => false);
+        });
       });
       return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }

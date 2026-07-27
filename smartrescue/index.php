@@ -456,7 +456,7 @@
     <div class="container-fluid px-4 px-lg-5">
         <a class="navbar-brand" href="#home" style="display: flex; align-items: center; gap: 8px;">
             <div style="background: linear-gradient(135deg, var(--primary), #0a58ca); color: white; border-radius: 8px; width: 38px; height: 38px; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 10px rgba(13, 110, 253, 0.3);">
-                <i class="fa-solid fa-truck-medical" style="font-size: 1.2rem; margin: 0;"></i>
+                <i class="fa-solid fa-suitcase-medical" style="font-size: 1.2rem; margin: 0;"></i>
             </div>
             <span style="font-weight: 800; font-size: 1.4rem; letter-spacing: -0.5px;"><span style="color: var(--secondary);">Smart</span><span style="color: var(--primary);">Rescue</span></span>
         </a>

@@ -25,7 +25,6 @@ class _LoginScreenState extends State<LoginScreen>
   bool _identifierFocused = false;
   bool _passwordFocused = false;
   bool _rememberMe = false;
-  String _selectedLanguage = 'English';
 
   late AnimationController _blobController;
   late AnimationController _cardController;
@@ -117,12 +116,12 @@ class _LoginScreenState extends State<LoginScreen>
               child: Responsive(context).wrapWidescreen(
                 Column(
                   children: [
-                    // ── ABSOLUTE TOP HEADER: Logo (Boorso + Plus) & Language Selector ──
+                    // ── ABSOLUTE TOP HEADER: Logo (Boorso + Plus) ──
                     Padding(
                       padding: const EdgeInsets.only(
                           left: 16, right: 16, top: 10, bottom: 4),
                       child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           // Medical Bag Icon Badge (Boorso dhexda Plus kaga taallo)
                           Container(
@@ -144,10 +143,10 @@ class _LoginScreenState extends State<LoginScreen>
                                 ),
                               ],
                             ),
-                            child: Row(
+                            child: const Row(
                               mainAxisSize: MainAxisSize.min,
                               children: [
-                                const Text(
+                                Text(
                                   'SmartRescue',
                                   style: TextStyle(
                                     fontSize: 15,
@@ -159,9 +158,6 @@ class _LoginScreenState extends State<LoginScreen>
                               ],
                             ),
                           ),
-
-                          // Language Selector top right
-                          _buildLanguageSelector(),
                         ],
                       ),
                     ),
@@ -251,65 +247,7 @@ class _LoginScreenState extends State<LoginScreen>
     );
   }
 
-  Widget _buildLanguageSelector() {
-    return GestureDetector(
-      onTap: () {
-        showModalBottomSheet(
-          context: context,
-          shape: const RoundedRectangleBorder(
-            borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-          ),
-          builder: (_) => _LanguagePickerSheet(
-            selected: _selectedLanguage,
-            onSelect: (lang) => setState(() => _selectedLanguage = lang),
-          ),
-        );
-      },
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 7),
-        decoration: BoxDecoration(
-          color: Colors.white.withValues(alpha: 0.95),
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(
-            color: const Color(0xFFCBD5E1),
-            width: 1.2,
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.04),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Icon(
-              Icons.language_rounded,
-              size: 16,
-              color: Color(0xFF2563EB),
-            ),
-            const SizedBox(width: 6),
-            Text(
-              _selectedLanguage,
-              style: const TextStyle(
-                fontSize: 13,
-                fontWeight: FontWeight.w700,
-                color: Color(0xFF1E293B),
-              ),
-            ),
-            const SizedBox(width: 4),
-            const Icon(
-              Icons.keyboard_arrow_down_rounded,
-              size: 16,
-              color: Color(0xFF64748B),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+
 
   Widget _buildGlassCard(AuthProvider auth) {
     return Container(
@@ -671,76 +609,7 @@ class _LoginScreenState extends State<LoginScreen>
   }
 }
 
-// ─── Language Picker Sheet ────────────────────────────────────────────────────
-class _LanguagePickerSheet extends StatelessWidget {
-  final String selected;
-  final void Function(String) onSelect;
 
-  const _LanguagePickerSheet(
-      {required this.selected, required this.onSelect});
-
-  static const _languages = [
-    ('English', '🇬🇧'),
-    ('Somali', '🇸🇴'),
-    ('Arabic', '🇸🇦'),
-    ('French', '🇫🇷'),
-  ];
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          const Padding(
-            padding: EdgeInsets.only(left: 4, bottom: 12),
-            child: Text(
-              'Select Language',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.w800,
-                color: Color(0xFF0F172A),
-              ),
-            ),
-          ),
-          ..._languages.map((lang) {
-            final isSelected = lang.$1 == selected;
-            return ListTile(
-              onTap: () {
-                onSelect(lang.$1);
-                Navigator.pop(context);
-              },
-              leading: Text(lang.$2, style: const TextStyle(fontSize: 24)),
-              title: Text(
-                lang.$1,
-                style: TextStyle(
-                  fontSize: 15.5,
-                  fontWeight:
-                      isSelected ? FontWeight.w800 : FontWeight.w500,
-                  color: isSelected
-                      ? const Color(0xFF2563EB)
-                      : const Color(0xFF334155),
-                ),
-              ),
-              trailing: isSelected
-                  ? const Icon(Icons.check_circle_rounded,
-                      color: Color(0xFF2563EB), size: 22)
-                  : null,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(14),
-              ),
-              tileColor: isSelected
-                  ? const Color(0xFF2563EB).withValues(alpha: 0.08)
-                  : null,
-            );
-          }),
-        ],
-      ),
-    );
-  }
-}
 
 // ─── Animated Background Blobs ───────────────────────────────────────────────
 class _AnimatedBackground extends StatelessWidget {

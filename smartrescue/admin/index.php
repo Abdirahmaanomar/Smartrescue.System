@@ -2,7 +2,7 @@
 $start_time = microtime(true);
 session_start();
 require_once '../config/db.php';
-if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
+if (!isset($_SESSION['user_id']) || strtolower($_SESSION['role'] ?? '') !== 'admin') {
     header("Location: ../auth/login.php");
     exit();
 }
@@ -954,7 +954,7 @@ $page_subtitle = '';
                 const action = i.status === 'pending'
                     ? `<div style="display:flex;gap:6px;justify-content:flex-end;">
                         <a href="incident.php?id=${i.id}" class="btn-cmd btn-view"><i class="fa fa-eye"></i> Details</a>
-                        <button onclick="openAssignModal(${i.id}, ${i.lat || i.user_lat}, ${i.lng || i.user_lng}, '${escHtml(i.emergency_type)}')" class="btn-cmd btn-assign"><i class="fa fa-truck-medical"></i> Assign</button>
+                        <button onclick="openAssignModal(${i.id}, ${i.lat || i.user_lat}, ${i.lng || i.user_lng}, '${escHtml(i.emergency_type)}')" class="btn-cmd btn-assign"><i class="fa-solid fa-suitcase-medical"></i> Assign</button>
                        </div>`
                     : i.status === 'accepted'
                         ? `<a href="incident.php?id=${i.id}" class="btn-cmd btn-view"><i class="fa fa-eye"></i> Details</a>`
