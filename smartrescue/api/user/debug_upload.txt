@@ -1097,3 +1097,300 @@ POST: Array
     [birth_date] => 
 )
 
+2026-07-28 12:25:20
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpCE96.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:25:22
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:25:57
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php5B66.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+    [gender] => Male
+)
+
+2026-07-28 12:26:00
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+    [gender] => Male
+)
+
+2026-07-28 12:34:15
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpF7E4.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:36:07
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:40:14
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php6F8D.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:47:32
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php1EED.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:47:52
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php6F31.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:52:06
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_WhatsApp Image 2026-07-21 at 15.07.13.jpeg
+            [full_path] => scaled_WhatsApp Image 2026-07-21 at 15.07.13.jpeg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\php4B6A.tmp
+            [error] => 0
+            [size] => 26412
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:53:39
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_photo-1605071483252-41904a888644.avif
+            [full_path] => scaled_photo-1605071483252-41904a888644.avif
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpB740.tmp
+            [error] => 0
+            [size] => 541492
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:53:56
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_ChatGPT Image Jul 21, 2026, 06_03_06 PM.png
+            [full_path] => scaled_ChatGPT Image Jul 21, 2026, 06_03_06 PM.png
+            [type] => image/png
+            [tmp_name] => C:\xampp\tmp\phpF9F7.tmp
+            [error] => 0
+            [size] => 731091
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+2026-07-28 12:56:07
+FILES: Array
+(
+    [avatar] => Array
+        (
+            [name] => scaled_images (2).jpeg
+            [full_path] => scaled_images (2).jpeg
+            [type] => image/jpeg
+            [tmp_name] => C:\xampp\tmp\phpFAD9.tmp
+            [error] => 0
+            [size] => 10392
+        )
+
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+

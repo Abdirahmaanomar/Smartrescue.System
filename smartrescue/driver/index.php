@@ -259,19 +259,33 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 
 .topbar-actions { display: flex; align-items: center; gap: 12px; }
 
-/* Online toggle pill */
-.online-pill {
-    display: inline-flex; align-items: center; gap: 7px;
-    padding: 8px 18px; border-radius: 30px; cursor: pointer;
-    font-weight: 700; font-size: 12px; letter-spacing: 0.5px;
-    transition: all .2s; user-select: none; border: none;
+/* ── iOS Toggle Switch ──────────────────────────────── */
+.toggle-switch {
+    display: inline-flex; align-items: center; gap: 9px;
+    cursor: pointer; user-select: none;
 }
-.online-pill.on  { background: rgba(16,185,129,.12); color: var(--green); border: 1.5px solid rgba(16,185,129,.3); }
-.online-pill.off { background: rgba(239,68,68,.1);   color: var(--red);   border: 1.5px solid rgba(239,68,68,.3); }
-.online-dot { width: 8px; height: 8px; border-radius: 50%; }
-.on  .online-dot { background: var(--green); box-shadow: 0 0 8px var(--green); animation: blink 1.5s infinite; }
-.off .online-dot { background: var(--red); }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+.toggle-track {
+    position: relative; width: 44px; height: 26px;
+    border-radius: 30px; transition: background .25s, box-shadow .25s;
+    flex-shrink: 0;
+}
+.toggle-track.on  { background: var(--green); box-shadow: 0 0 10px rgba(16,185,129,.4); }
+.toggle-track.off { background: #cbd5e1; }
+[data-theme="dark"] .toggle-track.off { background: #334155; }
+.toggle-knob {
+    position: absolute; top: 3px; left: 3px;
+    width: 20px; height: 20px; border-radius: 50%;
+    background: #fff; box-shadow: 0 2px 6px rgba(0,0,0,.25);
+    transition: transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.toggle-track.on  .toggle-knob { transform: translateX(18px); }
+.toggle-track.off .toggle-knob { transform: translateX(0); }
+.toggle-label {
+    font-weight: 700; font-size: 12px; letter-spacing: 0.4px;
+    transition: color .2s;
+}
+.toggle-switch:has(.toggle-track.on)  .toggle-label { color: var(--green); }
+.toggle-switch:has(.toggle-track.off) .toggle-label { color: var(--muted); }
 
 /* Icon btn */
 .icon-btn {
@@ -730,11 +744,13 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 
     <div class="topbar-actions">
 
-        <!-- Online Toggle -->
-        <button id="onlinePill" class="online-pill <?php echo $is_avail ? 'on' : 'off'; ?>" onclick="toggleDispatch()">
-            <span class="online-dot"></span>
-            <span id="onlineText"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
-        </button>
+        <!-- Online Toggle Switch -->
+        <label class="toggle-switch" onclick="toggleDispatch()">
+            <div id="onlinePill" class="toggle-track <?php echo $is_avail ? 'on' : 'off'; ?>">
+                <div class="toggle-knob"></div>
+            </div>
+            <span id="onlineText" class="toggle-label"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
+        </label>
 
         <!-- Theme toggle -->
         <button class="icon-btn" id="themeBtn" onclick="toggleTheme()" title="Toggle theme">
@@ -979,21 +995,51 @@ document.addEventListener('DOMContentLoaded', () => {
 function driverIcon() {
     return L.divIcon({
         className: '',
-        html: `<div style="width:42px;height:42px;border-radius:50%;background:#2563eb;
-                    display:flex;align-items:center;justify-content:center;
-                    box-shadow:0 0 20px #2563eb99;border:3px solid #fff;color:#fff;font-size:18px;">
-                <i class="fa-solid fa-truck-medical"></i></div>`,
-        iconSize: [42,42], iconAnchor: [21,21]
+        html: `
+            <div style="position:relative; width:70px; height:70px; display:flex; align-items:center; justify-content:center;">
+                <div class="drv-pulse2" style="
+                    position:absolute; border-radius:50%;
+                    width:68px; height:68px; z-index:0;
+                "></div>
+                <div style="
+                    position:absolute; width:50px; height:50px; border-radius:50%;
+                    background:#ffffff;
+                    box-shadow: 0 0 14px 5px rgba(37,99,235,0.4);
+                    z-index:1;
+                "></div>
+                <div style="
+                    position:relative; z-index:2;
+                    width:40px; height:40px; border-radius:50%;
+                    background:#2563eb;
+                    display:flex; align-items:center; justify-content:center;
+                    color:#ffffff; font-size:18px;
+                    box-shadow: 0 4px 16px rgba(37,99,235,0.55);
+                ">
+                    <i class="fa-solid fa-truck-medical"></i>
+                </div>
+                <div style="
+                    position:absolute; top:6px; right:6px; z-index:3;
+                    width:9px; height:9px; border-radius:50%;
+                    background:#60a5fa; border:1.5px solid #fff;
+                    box-shadow: 0 0 7px #2563eb;
+                "></div>
+            </div>
+            <style>
+            @keyframes drvPulse2 {
+                0%   { transform:scale(0.65); background:rgba(37,99,235,0.25); opacity:0.95; }
+                100% { transform:scale(1.05); background:rgba(37,99,235,0.0);  opacity:0; }
+            }
+            .drv-pulse2 { animation: drvPulse2 1.2s ease-out infinite; }
+            </style>`,
+        iconSize: [70, 70],
+        iconAnchor: [35, 35]
     });
 }
 function victimIcon() {
     return L.divIcon({
         className: '',
-        html: `<div style="width:42px;height:42px;border-radius:50%;background:#ef4444;
-                    display:flex;align-items:center;justify-content:center;
-                    box-shadow:0 0 20px #ef444499;border:3px solid #fff;color:#fff;font-size:18px;">
-                <i class="fa-solid fa-person-falling-burst"></i></div>`,
-        iconSize: [42,42], iconAnchor: [21,21]
+        html: `<div style="width:14px;height:14px;border-radius:50%;background:#2563eb;box-shadow:0 2px 6px rgba(0,0,0,0.35);border:1px solid #1d4ed8;"></div>`,
+        iconSize: [14, 14], iconAnchor: [7, 7]
     });
 }
 
@@ -1037,10 +1083,12 @@ function poll() {
         .then(data => {
             if (data.status === 'success' && data.request) {
                 renderDispatch(data.request);
+                checkAndShowDispatchModal(data.request);
                 document.getElementById('dispatchStatus').textContent = 'Active';
                 document.getElementById('dispatchStatus').style.color = '#ef4444';
             } else {
                 renderStandby();
+                hideDispatchModal();
                 document.getElementById('dispatchStatus').textContent = 'On Standby';
                 document.getElementById('dispatchStatus').style.color = 'var(--muted)';
             }
@@ -1139,7 +1187,7 @@ function toggleDispatch() {
         if (d.status === 'success') {
             isOnline = !isOnline;
             const pill = document.getElementById('onlinePill');
-            pill.className = 'online-pill ' + (isOnline ? 'on' : 'off');
+            pill.className = 'toggle-track ' + (isOnline ? 'on' : 'off');
             document.getElementById('onlineText').textContent = isOnline ? 'Online' : 'Offline';
             document.getElementById('unitStatusText').textContent = isOnline ? 'Available' : 'Offline';
             const dot = pill.querySelector('.online-dot');
@@ -1189,5 +1237,6 @@ function playAlert() {
     } catch(e) {}
 }
 </script>
+<?php require_once 'dispatch_modal.php'; ?>
 </body>
 </html>

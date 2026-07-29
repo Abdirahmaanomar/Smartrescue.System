@@ -438,30 +438,22 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
             alignment: Alignment.bottomRight,
             children: [
               Container(
+                width: 100,
+                height: 100,
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   boxShadow: [
                     BoxShadow(
-                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.2),
-                      blurRadius: 16,
-                      spreadRadius: 2,
+                      color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.25),
+                      blurRadius: 20,
+                      spreadRadius: 3,
                     )
                   ],
                 ),
-                child: CircleAvatar(
-                  radius: 50,
-                  backgroundColor: Theme.of(context).colorScheme.primary,
-                  backgroundImage: _avatarBytes != null
-                      ? MemoryImage(_avatarBytes!) as ImageProvider
-                      : (user.profileImage.isNotEmpty
-                          ? NetworkImage(ApiConstants.avatarUrl(user.profileImage))
-                          : null),
+                child: ClipOval(
                   child: _isUploadingAvatar
                       ? Container(
-                          decoration: BoxDecoration(
-                            color: Colors.black.withValues(alpha: 0.4),
-                            shape: BoxShape.circle,
-                          ),
+                          color: Theme.of(context).colorScheme.primary,
                           child: const Center(
                             child: CircularProgressIndicator(
                               color: Colors.white,
@@ -469,13 +461,60 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
                             ),
                           ),
                         )
-                      : (_avatarBytes == null && user.profileImage.isEmpty
-                          ? Text(initials,
-                              style: const TextStyle(
-                                  fontSize: 36,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white))
-                          : null),
+                      : _avatarBytes != null
+                          ? Image.memory(
+                              _avatarBytes!,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            )
+                          : user.profileImage.isNotEmpty
+                              ? Image.network(
+                                  ApiConstants.avatarUrl(user.profileImage),
+                                  width: 100,
+                                  height: 100,
+                                  fit: BoxFit.cover,
+                                  loadingBuilder: (ctx, child, progress) {
+                                    if (progress == null) return child;
+                                    return Container(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      child: const Center(
+                                        child: CircularProgressIndicator(
+                                          color: Colors.white,
+                                          strokeWidth: 2,
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                  errorBuilder: (ctx, err, stack) {
+                                    return Container(
+                                      color: Theme.of(context).colorScheme.primary,
+                                      child: Center(
+                                        child: Text(
+                                          initials,
+                                          style: const TextStyle(
+                                            fontSize: 36,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ),
+                                    );
+                                  },
+                                )
+                              : Container(
+                                  color: Theme.of(context).colorScheme.primary,
+                                  child: Center(
+                                    child: Text(
+                                      initials,
+                                      style: const TextStyle(
+                                        fontSize: 36,
+                                        fontWeight: FontWeight.bold,
+                                        color: Colors.white,
+                                      ),
+                                    ),
+                                  ),
+                                ),
                 ),
               ),
               GestureDetector(

@@ -6052,3 +6052,296 @@ SESSION: Array
 )
 
 
+2026-07-28 12:25:20
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-28 12:25:22
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785230720.avif
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 12:25:57
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+    [gender] => Male
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785230720.avif
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 12:26:00
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+    [gender] => Male
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785230757.avif
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 12:32:38
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1785230757.avif
+    [_sg_checked_1047] => 1785231140
+)
+
+
+2026-07-28 12:32:40
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1785230757.avif
+    [_sg_checked_1047] => 1785231140
+)
+
+
+2026-07-28 12:34:15
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-28 12:36:07
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785231255.avif
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 12:40:14
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785231255.avif
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 12:47:32
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1785231614.avif
+    [_sg_checked_1047] => 1785232025
+)
+
+
+2026-07-28 12:47:52
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1785232052.avif
+    [_sg_checked_1047] => 1785232025
+)
+
+
+2026-07-28 12:52:06
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [role] => driver
+    [profile_image] => uploads/avatars/avatar_1047_1785232072.avif
+    [_sg_checked_1047] => 1785232325
+)
+
+
+2026-07-28 12:53:39
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+)
+
+
+2026-07-28 12:53:56
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785232419.avif
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 12:56:07
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1047
+    [fullname] => Maxamed Qadar muqtaar
+    [phone] => 619525563
+    [email] => maxamed@gmail.com
+    [birth_date] => 
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785232436.png
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+
+2026-07-28 13:22:22
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => language
+    [value] => en
+    [user_id] => 1047
+)
+
+SESSION: Array
+(
+    [profile_image] => uploads/avatars/avatar_1047_1785232567.jpeg
+    [fullname] => Maxamed Qadar muqtaar
+)
+
+

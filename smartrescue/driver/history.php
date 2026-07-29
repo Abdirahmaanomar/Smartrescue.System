@@ -42,34 +42,64 @@ $type_map = [
 ];
 $tm = $type_map[$unit_type] ?? $type_map['medical'];
 
-// Stats
-$total_q    = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id'");
-$total      = (int)(mysqli_fetch_assoc($total_q)['c'] ?? 0);
+// Fetch all missions for this unit (assigned + rejected via dispatches) - identical to App API
+$all_history_q = "
+    SELECT 
+        r.id, r.user_id, r.lat, r.lng, r.accuracy, r.emergency_type, r.status, r.assigned_unit_id, 
+        r.description, r.evidence_image, r.created_at, r.neighborhood, r.updated_at,
+        u.fullname as patient_name, u.phone as patient_phone 
+    FROM rescue_requests r 
+    JOIN users u ON r.user_id = u.id 
+    WHERE r.assigned_unit_id = '$unit_id' 
 
-$done_q     = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id' AND status='completed'");
-$done       = (int)(mysqli_fetch_assoc($done_q)['c'] ?? 0);
+    UNION ALL
 
-$cancelled_q = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id' AND status IN('cancelled','rejected')");
-$cancelled   = (int)(mysqli_fetch_assoc($cancelled_q)['c'] ?? 0);
+    SELECT 
+        r.id, r.user_id, r.lat, r.lng, r.accuracy, r.emergency_type, 'rejected' as status, NULL as assigned_unit_id, 
+        r.description, r.evidence_image, d.assigned_at as created_at, r.neighborhood, r.updated_at,
+        u.fullname as patient_name, u.phone as patient_phone 
+    FROM rescue_requests r 
+    JOIN users u ON r.user_id = u.id 
+    JOIN dispatches d ON d.request_id = r.id
+    WHERE d.unit_id = '$unit_id' AND d.status = 'rejected'
 
-$active_q   = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id' AND status IN('pending','accepted','en_route','arrived')");
-$active     = (int)(mysqli_fetch_assoc($active_q)['c'] ?? 0);
+    ORDER BY created_at DESC
+";
+$history_res = mysqli_query($conn, $all_history_q);
 
-// Filter
+$all_rows = [];
+$done = 0;
+$active = 0;
+$rejected = 0;
+
+if ($history_res) {
+    while ($r = mysqli_fetch_assoc($history_res)) {
+        $st = $r['status'] ?? 'pending';
+        if ($st === 'completed') {
+            $done++;
+        } elseif (in_array($st, ['pending', 'accepted', 'en_route', 'arrived'])) {
+            $active++;
+        } elseif ($st === 'rejected' || $st === 'cancelled') {
+            $rejected++;
+        }
+        $all_rows[] = $r;
+    }
+}
+$total = count($all_rows);
+
+// Filter selection
 $filter = $_GET['filter'] ?? 'all';
-$allowed_filters = ['all', 'completed', 'rejected', 'cancelled', 'en_route', 'accepted'];
+$allowed_filters = ['all', 'completed', 'active', 'rejected'];
 if (!in_array($filter, $allowed_filters)) $filter = 'all';
 
-$where_status = ($filter === 'all') ? '' : (($filter === 'rejected' || $filter === 'cancelled') ? "AND r.status IN('cancelled','rejected')" : "AND r.status = '$filter'");
-
-$history_q = "SELECT r.*, u.fullname AS patient_name, u.phone AS patient_phone
-              FROM rescue_requests r
-              LEFT JOIN users u ON r.user_id = u.id
-              WHERE r.assigned_unit_id = '$unit_id' $where_status
-              ORDER BY r.created_at DESC";
-$history_res = mysqli_query($conn, $history_q);
 $rows = [];
-while ($row = mysqli_fetch_assoc($history_res)) $rows[] = $row;
+foreach ($all_rows as $r) {
+    $st = $r['status'] ?? 'pending';
+    if ($filter === 'completed' && $st !== 'completed') continue;
+    if ($filter === 'active' && !in_array($st, ['pending', 'accepted', 'en_route', 'arrived'])) continue;
+    if ($filter === 'rejected' && $st !== 'rejected' && $st !== 'cancelled') continue;
+    $rows[] = $r;
+}
 ?>
 <!DOCTYPE html>
 <html lang="en" data-theme="<?php echo $dark_mode ? 'dark' : 'light'; ?>">
@@ -192,17 +222,25 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 .topbar-breadcrumb .page-title { font-size:16px; font-weight:800; color:var(--text); }
 .topbar-actions { display:flex; align-items:center; gap:12px; }
 
-.online-pill {
-    display:inline-flex; align-items:center; gap:7px;
-    padding:8px 18px; border-radius:30px; cursor:pointer;
-    font-weight:700; font-size:12px; transition:all .2s; user-select:none; border:none;
+/* ── iOS Toggle Switch */
+.toggle-switch { display:inline-flex; align-items:center; gap:9px; cursor:pointer; user-select:none; }
+.toggle-track {
+    position:relative; width:44px; height:26px;
+    border-radius:30px; transition:background .25s, box-shadow .25s; flex-shrink:0;
 }
-.online-pill.on  { background:rgba(16,185,129,.12); color:var(--green); border:1.5px solid rgba(16,185,129,.3); }
-.online-pill.off { background:rgba(239,68,68,.1);   color:var(--red);   border:1.5px solid rgba(239,68,68,.3); }
-.online-dot { width:8px; height:8px; border-radius:50%; }
-.on  .online-dot { background:var(--green); box-shadow:0 0 8px var(--green); animation:blink 1.5s infinite; }
-.off .online-dot { background:var(--red); }
-@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.35} }
+.toggle-track.on  { background:var(--green); box-shadow:0 0 10px rgba(16,185,129,.4); }
+.toggle-track.off { background:#cbd5e1; }
+[data-theme="dark"] .toggle-track.off { background:#334155; }
+.toggle-knob {
+    position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%;
+    background:#fff; box-shadow:0 2px 6px rgba(0,0,0,.25);
+    transition:transform .25s cubic-bezier(.34,1.56,.64,1);
+}
+.toggle-track.on  .toggle-knob { transform:translateX(18px); }
+.toggle-track.off .toggle-knob { transform:translateX(0); }
+.toggle-label { font-weight:700; font-size:12px; letter-spacing:0.4px; transition:color .2s; }
+.toggle-switch:has(.toggle-track.on)  .toggle-label { color:var(--green); }
+.toggle-switch:has(.toggle-track.off) .toggle-label { color:var(--muted); }
 
 .icon-btn {
     width:40px; height:40px; border-radius:12px;
@@ -253,23 +291,32 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
    STATS ROW
 ══════════════════════════════════════════════════════ */
 .stats-row {
-    display:grid; grid-template-columns:repeat(4,1fr); gap:14px;
-    margin-bottom:24px;
+    display:grid; grid-template-columns:repeat(3,1fr); gap:14px;
+    margin-bottom:20px;
 }
-.mini-stat {
-    background:var(--surface); border:1px solid var(--border);
-    border-radius:var(--radius); padding:18px 16px;
-    box-shadow:var(--shadow); display:flex; align-items:center; gap:14px;
-    transition:transform .2s;
+.kpi-stat-card {
+    background:var(--surface); border:1.5px solid var(--border);
+    border-radius:20px; padding:18px 20px;
+    box-shadow:var(--shadow-sm); display:flex; align-items:center; gap:14px;
+    transition:all .2s ease; text-decoration:none; color:inherit;
+    cursor:pointer;
 }
-.mini-stat:hover { transform:translateY(-2px); }
-.ms-icon {
-    width:44px; height:44px; border-radius:14px;
+.kpi-stat-card:hover { transform:translateY(-2px); box-shadow:var(--shadow); border-color:var(--blue); }
+.kpi-stat-card.active { border-color:var(--blue); background:var(--surface2); box-shadow:0 4px 16px rgba(37,99,235,.12); }
+.kpi-icon-box {
+    width:46px; height:46px; border-radius:14px;
     display:flex; align-items:center; justify-content:center;
-    font-size:18px; flex-shrink:0;
+    font-size:20px; flex-shrink:0;
 }
-.ms-val   { font-weight:900; font-size:24px; line-height:1; }
-.ms-label { font-size:11px; color:var(--muted); font-weight:700; margin-top:3px; }
+.kpi-icon-box.green { background:rgba(16,185,129,.14); color:#10b981; }
+.kpi-icon-box.amber { background:rgba(245,158,11,.14); color:#f59e0b; }
+.kpi-icon-box.red   { background:rgba(239,68,68,.14);   color:#ef4444; }
+
+.kpi-val { font-weight:900; font-size:24px; line-height:1; }
+.kpi-val.green { color:#10b981; }
+.kpi-val.amber { color:#f59e0b; }
+.kpi-val.red   { color:#ef4444; }
+.kpi-label { font-size:12px; color:var(--muted); font-weight:700; margin-top:4px; }
 
 /* ══════════════════════════════════════════════════════
    FILTER BAR
@@ -348,6 +395,22 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
     text-decoration:none; transition:all .2s; white-space:nowrap;
 }
 .mc-phone:hover { background:rgba(16,185,129,.2); }
+.mc-subtitle { font-size:12px; color:var(--muted); font-weight:600; margin-bottom:6px; }
+
+/* Date group headers — matching Flutter's _buildGroupHeader() */
+.date-group-header {
+    display:flex; align-items:center; gap:10px;
+    padding-top:20px; padding-bottom:6px;
+}
+.date-group-label {
+    font-size:10px; font-weight:800; letter-spacing:1.2px;
+    color:var(--muted); background:var(--bg);
+    border-radius:8px; padding:4px 10px; white-space:nowrap;
+}
+.date-group-line {
+    flex:1; height:1px;
+    background:linear-gradient(to right, var(--border), transparent);
+}
 
 /* Empty state */
 .empty-state {
@@ -434,10 +497,12 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
         <span><?php echo $total; ?> missions total</span>
     </div>
     <div class="topbar-actions">
-        <button id="onlinePill" class="online-pill <?php echo $is_avail ? 'on' : 'off'; ?>" onclick="toggleDispatch()">
-            <span class="online-dot"></span>
-            <span id="onlineText"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
-        </button>
+        <label class="toggle-switch" onclick="toggleDispatch()">
+            <div id="onlinePill" class="toggle-track <?php echo $is_avail ? 'on' : 'off'; ?>">
+                <div class="toggle-knob"></div>
+            </div>
+            <span id="onlineText" class="toggle-label"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
+        </label>
         <button class="icon-btn" onclick="toggleTheme()" title="Toggle theme">
             <i class="fa-solid <?php echo $dark_mode ? 'fa-sun' : 'fa-moon'; ?>" id="themeIcon"></i>
         </button>
@@ -471,63 +536,84 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
         </div>
     </div>
 
-    <!-- STATS ROW -->
+    <!-- STATS ROW (Matching App 3-KPI Grid) -->
     <div class="stats-row">
-        <div class="mini-stat">
-            <div class="ms-icon" style="background:rgba(37,99,235,.1);color:var(--blue)">
-                <i class="fa-solid fa-clipboard-list"></i>
-            </div>
-            <div>
-                <div class="ms-val"><?php echo $total; ?></div>
-                <div class="ms-label">Total Missions</div>
-            </div>
-        </div>
-        <div class="mini-stat">
-            <div class="ms-icon" style="background:rgba(16,185,129,.1);color:var(--green)">
+        <a href="?filter=completed" class="kpi-stat-card <?php echo $filter==='completed' ? 'active' : ''; ?>">
+            <div class="kpi-icon-box green">
                 <i class="fa-solid fa-circle-check"></i>
             </div>
             <div>
-                <div class="ms-val" style="color:var(--green)"><?php echo $done; ?></div>
-                <div class="ms-label">Completed</div>
+                <div class="kpi-val green"><?php echo $done; ?></div>
+                <div class="kpi-label">Completed</div>
             </div>
-        </div>
-        <div class="mini-stat">
-            <div class="ms-icon" style="background:rgba(245,158,11,.1);color:var(--amber)">
-                <i class="fa-solid fa-spinner"></i>
+        </a>
+        <a href="?filter=active" class="kpi-stat-card <?php echo $filter==='active' ? 'active' : ''; ?>">
+            <div class="kpi-icon-box amber">
+                <i class="fa-solid fa-arrows-rotate"></i>
             </div>
             <div>
-                <div class="ms-val" style="color:var(--amber)"><?php echo $active; ?></div>
-                <div class="ms-label">Active Now</div>
+                <div class="kpi-val amber"><?php echo $active; ?></div>
+                <div class="kpi-label">Active Now</div>
             </div>
-        </div>
-        <div class="mini-stat">
-            <div class="ms-icon" style="background:rgba(239,68,68,.1);color:var(--red)">
+        </a>
+        <a href="?filter=rejected" class="kpi-stat-card <?php echo $filter==='rejected' ? 'active' : ''; ?>">
+            <div class="kpi-icon-box red">
                 <i class="fa-solid fa-ban"></i>
             </div>
             <div>
-                <div class="ms-val" style="color:var(--red)"><?php echo $cancelled; ?></div>
-                <div class="ms-label">Rejected</div>
+                <div class="kpi-val red"><?php echo $rejected; ?></div>
+                <div class="kpi-label">Rejected</div>
             </div>
-        </div>
+        </a>
     </div>
 
     <!-- FILTER BAR -->
     <div class="filter-bar">
-        <a href="?filter=all"       class="filter-btn <?php echo $filter==='all'       ? 'active' : ''; ?>">
+        <a href="?filter=all" class="filter-btn <?php echo $filter==='all' ? 'active' : ''; ?>">
             <i class="fa-solid fa-list"></i> All <span class="filter-count"><?php echo $total; ?></span>
         </a>
         <a href="?filter=completed" class="filter-btn green <?php echo $filter==='completed' ? 'active' : ''; ?>">
             <i class="fa-solid fa-circle-check"></i> Completed <span class="filter-count"><?php echo $done; ?></span>
         </a>
-        <a href="?filter=en_route"  class="filter-btn <?php echo $filter==='en_route'  ? 'active' : ''; ?>">
-            <i class="fa-solid fa-truck-fast"></i> En Route
+        <a href="?filter=active" class="filter-btn amber <?php echo $filter==='active' ? 'active' : ''; ?>">
+            <i class="fa-solid fa-arrows-rotate"></i> Active Now <span class="filter-count"><?php echo $active; ?></span>
         </a>
-        <a href="?filter=rejected" class="filter-btn red <?php echo ($filter==='rejected' || $filter==='cancelled') ? 'active' : ''; ?>">
-            <i class="fa-solid fa-ban"></i> Rejected <span class="filter-count"><?php echo $cancelled; ?></span>
+        <a href="?filter=rejected" class="filter-btn red <?php echo $filter==='rejected' ? 'active' : ''; ?>">
+            <i class="fa-solid fa-ban"></i> Rejected <span class="filter-count"><?php echo $rejected; ?></span>
         </a>
     </div>
 
     <!-- MISSIONS LIST -->
+    <?php
+    // Group rows by date label — matching Flutter's _dateGroup()
+    function date_group_label($rawTime) {
+        if (empty($rawTime)) return 'Unknown Date';
+        $dt = strtotime($rawTime);
+        if ($dt === false) return 'Unknown Date';
+        $today     = strtotime('today');
+        $yesterday = strtotime('yesterday');
+        $mDay      = strtotime(date('Y-m-d', $dt));
+        if ($mDay === $today)     return 'Today';
+        if ($mDay === $yesterday) return 'Yesterday';
+        $diff = ($today - $mDay) / 86400;
+        if ($diff <= 7)           return 'This Week';
+        return date('j/n/Y', $dt);
+    }
+
+    $grouped = [];
+    foreach ($rows as $row) {
+        $grp = date_group_label($row['created_at']);
+        $grouped[$grp][] = $row;
+    }
+
+    // Sort groups: Today first, Yesterday, This Week, then oldest
+    $groupOrder = ['Today', 'Yesterday', 'This Week'];
+    $sorted_groups = array_merge(
+        array_intersect($groupOrder, array_keys($grouped)),
+        array_diff(array_keys($grouped), $groupOrder)
+    );
+    ?>
+
     <div class="missions-grid">
     <?php if (empty($rows)): ?>
         <div class="empty-state">
@@ -538,60 +624,80 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
             </div>
         </div>
     <?php else: ?>
-        <?php foreach ($rows as $row):
-            $st    = $row['status'] ?? 'pending';
-            $etype = ucfirst($row['emergency_type'] ?? 'Medical');
-            $loc   = $row['neighborhood'] ?? 'Unknown location';
-            $pname = $row['patient_name']  ?? 'Unknown';
-            $phone = $row['patient_phone'] ?? '';
-            $desc  = $row['description']   ?? '';
-            $date  = date('M j, Y', strtotime($row['created_at']));
-            $time  = date('g:i a',  strtotime($row['created_at']));
-
-            $badge_map = [
-                'completed' => ['bg'=>'rgba(16,185,129,.12)', 'color'=>'#10b981', 'icon'=>'fa-circle-check',    'label'=>'Completed'],
-                'cancelled' => ['bg'=>'rgba(239,68,68,.12)',  'color'=>'#ef4444', 'icon'=>'fa-ban',             'label'=>'Rejected'],
-                'rejected'  => ['bg'=>'rgba(239,68,68,.12)',  'color'=>'#ef4444', 'icon'=>'fa-ban',             'label'=>'Rejected'],
-                'pending'   => ['bg'=>'rgba(245,158,11,.12)', 'color'=>'#f59e0b', 'icon'=>'fa-clock',           'label'=>'Pending'],
-                'accepted'  => ['bg'=>'rgba(99,102,241,.12)', 'color'=>'#6366f1', 'icon'=>'fa-check-circle',    'label'=>'Accepted'],
-                'en_route'  => ['bg'=>'rgba(37,99,235,.12)',  'color'=>'#2563eb', 'icon'=>'fa-truck-fast',      'label'=>'En Route'],
-                'arrived'   => ['bg'=>'rgba(6,182,212,.12)',  'color'=>'#06b6d4', 'icon'=>'fa-location-dot',   'label'=>'Arrived'],
-            ];
-            $bm = $badge_map[$st] ?? $badge_map['pending'];
-        ?>
-        <div class="mission-card <?php echo htmlspecialchars($st); ?>">
-
-            <!-- Icon -->
-            <div class="mc-icon" style="background:<?php echo $tm['bg']; ?>;color:<?php echo $tm['color']; ?>">
-                <i class="fa-solid <?php echo $tm['icon']; ?>"></i>
+        <?php foreach ($sorted_groups as $grp): ?>
+            <!-- Date Group Header -->
+            <div class="date-group-header">
+                <span class="date-group-label"><?php echo htmlspecialchars(strtoupper($grp)); ?></span>
+                <div class="date-group-line"></div>
             </div>
+            <?php foreach ($grouped[$grp] as $row):
+                $st    = $row['status'] ?? 'pending';
+                $etype = ucfirst($row['emergency_type'] ?? 'Medical');
+                $loc   = $row['neighborhood'] ?? '';
+                $pname = $row['patient_name']  ?? 'Anonymous Patient';
+                $phone = $row['patient_phone'] ?? '';
+                $desc  = $row['description']   ?? '';
+                $date  = date('M j, Y', strtotime($row['created_at']));
+                $time  = date('g:i a',  strtotime($row['created_at']));
 
-            <!-- Body -->
-            <div class="mc-body">
-                <div class="mc-top">
-                    <span class="mc-title"><i class="fa-solid fa-triangle-exclamation" style="color:#ef4444;margin-right:5px;font-size:13px"></i><?php echo $etype; ?> Emergency</span>
-                    <span class="mc-badge" style="background:<?php echo $bm['bg']; ?>;color:<?php echo $bm['color']; ?>">
-                        <i class="fa-solid <?php echo $bm['icon']; ?>"></i> <?php echo $bm['label']; ?>
-                    </span>
+                $badge_map = [
+                    'completed' => ['bg'=>'rgba(16,185,129,.12)', 'color'=>'#10b981', 'icon'=>'fa-circle-check',  'label'=>'Completed'],
+                    'cancelled' => ['bg'=>'rgba(239,68,68,.12)',  'color'=>'#ef4444', 'icon'=>'fa-ban',           'label'=>'Rejected'],
+                    'rejected'  => ['bg'=>'rgba(239,68,68,.12)',  'color'=>'#ef4444', 'icon'=>'fa-ban',           'label'=>'Rejected'],
+                    'pending'   => ['bg'=>'rgba(245,158,11,.12)', 'color'=>'#f59e0b', 'icon'=>'fa-clock',         'label'=>'Pending'],
+                    'accepted'  => ['bg'=>'rgba(99,102,241,.12)', 'color'=>'#6366f1', 'icon'=>'fa-check-circle',  'label'=>'Accepted'],
+                    'en_route'  => ['bg'=>'rgba(37,99,235,.12)',  'color'=>'#2563eb', 'icon'=>'fa-truck-fast',    'label'=>'En Route'],
+                    'arrived'   => ['bg'=>'rgba(6,182,212,.12)',  'color'=>'#06b6d4', 'icon'=>'fa-location-dot', 'label'=>'Arrived'],
+                ];
+                $bm = $badge_map[$st] ?? $badge_map['pending'];
+
+                // Emergency-type icon, matching Flutter's _emergencyIcon()
+                $etype_icons = [
+                    'medical'  => 'fa-kit-medical',
+                    'fire'     => 'fa-fire',
+                    'police'   => 'fa-shield-halved',
+                    'accident' => 'fa-car-burst',
+                ];
+                $etype_key = strtolower($row['emergency_type'] ?? 'medical');
+                $eicon = $etype_icons[$etype_key] ?? 'fa-triangle-exclamation';
+
+                $subtitle_parts = array_filter([$etype, $loc]);
+                $subtitle = implode('  ·  ', $subtitle_parts);
+            ?>
+            <div class="mission-card <?php echo htmlspecialchars($st); ?>">
+                <!-- Left: emergency-type icon, colored by status -->
+                <div class="mc-icon" style="background:<?php echo $bm['bg']; ?>;color:<?php echo $bm['color']; ?>">
+                    <i class="fa-solid <?php echo $eicon; ?>"></i>
                 </div>
-                <div class="mc-meta">
-                    <span class="mc-meta-item"><i class="fa-solid fa-user" style="color:var(--blue)"></i> <?php echo htmlspecialchars($pname); ?></span>
-                    <span class="mc-meta-item"><i class="fa-solid fa-location-dot" style="color:var(--red)"></i> <?php echo htmlspecialchars($loc); ?></span>
+
+                <!-- Body -->
+                <div class="mc-body">
+                    <div class="mc-top">
+                        <span class="mc-title"><?php echo htmlspecialchars($pname); ?></span>
+                        <span class="mc-badge" style="background:<?php echo $bm['bg']; ?>;color:<?php echo $bm['color']; ?>">
+                            <i class="fa-solid <?php echo $bm['icon']; ?>"></i> <?php echo $bm['label']; ?>
+                        </span>
+                    </div>
+                    <?php if ($subtitle): ?>
+                    <div class="mc-subtitle"><?php echo htmlspecialchars($subtitle); ?></div>
+                    <?php endif; ?>
+                    <?php if ($desc): ?>
+                    <div class="mc-desc"><?php echo htmlspecialchars($desc); ?></div>
+                    <?php endif; ?>
                     <?php if ($phone): ?>
-                    <span class="mc-meta-item"><i class="fa-solid fa-phone" style="color:var(--green)"></i> <?php echo htmlspecialchars($phone); ?></span>
+                    <a href="tel:<?php echo htmlspecialchars($phone); ?>" class="mc-phone" onclick="event.stopPropagation()">
+                        <i class="fa-solid fa-phone"></i> <?php echo htmlspecialchars($phone); ?>
+                    </a>
                     <?php endif; ?>
                 </div>
-                <?php if ($desc): ?>
-                <div class="mc-desc"><?php echo htmlspecialchars($desc); ?></div>
-                <?php endif; ?>
-            </div>
 
-            <div class="mc-right">
-                <div class="mc-date"><?php echo $date; ?></div>
-                <div class="mc-time"><?php echo $time; ?></div>
+                <!-- Right: date + time -->
+                <div class="mc-right">
+                    <div class="mc-date"><?php echo $date; ?></div>
+                    <div class="mc-time"><?php echo $time; ?></div>
+                </div>
             </div>
-
-        </div>
+            <?php endforeach; ?>
         <?php endforeach; ?>
     <?php endif; ?>
     </div>
@@ -613,7 +719,7 @@ function toggleDispatch() {
         if (d.status === 'success') {
             isOnline = !isOnline;
             const pill = document.getElementById('onlinePill');
-            pill.className = 'online-pill ' + (isOnline ? 'on' : 'off');
+            pill.className = 'toggle-track ' + (isOnline ? 'on' : 'off');
             document.getElementById('onlineText').textContent = isOnline ? 'Online' : 'Offline';
         }
     }).catch(() => {});
@@ -634,10 +740,22 @@ function toggleSidebar() {
     document.getElementById('sidebar').classList.toggle('open');
     document.getElementById('sidebarOverlay').classList.toggle('open');
 }
-function closeSidebar() {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebarOverlay').classList.remove('open');
+function pollModal() {
+    fetch(`../api/driver/get_active_job.php?driver_id=${DRV_ID}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success' && data.request) {
+                checkAndShowDispatchModal(data.request);
+            } else {
+                hideDispatchModal();
+            }
+        }).catch(() => {});
 }
+document.addEventListener('DOMContentLoaded', () => {
+    pollModal();
+    setInterval(pollModal, 3500);
+});
 </script>
+<?php require_once 'dispatch_modal.php'; ?>
 </body>
 </html>

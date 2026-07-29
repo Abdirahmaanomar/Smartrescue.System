@@ -7,6 +7,7 @@ import 'package:provider/provider.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../providers/sos_provider.dart';
 import '../../providers/auth_provider.dart';
 import '../../services/api_service.dart';
@@ -785,9 +786,9 @@ class _UserMapScreenState extends State<UserMapScreen> {
                                               ),
                                               child: Row(
                                                 children: [
-                                                  const Icon(
-                                                    Icons.local_shipping_rounded,
-                                                    size: 14,
+                                                  const FaIcon(
+                                                    FontAwesomeIcons.truckMedical,
+                                                    size: 13,
                                                     color: Color(0xFF2563EB),
                                                   ),
                                                   const SizedBox(width: 4),
@@ -1280,10 +1281,12 @@ class _WailingAmbulanceMarkerState extends State<WailingAmbulanceMarker>
                   end: Alignment.bottomRight,
                 ),
               ),
-              child: const Icon(
-                Icons.local_shipping_rounded, // Premium rescue vehicle icon
-                color: Colors.white,
-                size: 20,
+              child: const Center(
+                child: FaIcon(
+                  FontAwesomeIcons.truckMedical,
+                  color: Colors.white,
+                  size: 18,
+                ),
               ),
             ),
             // Wailing little beacon light at top right of marker

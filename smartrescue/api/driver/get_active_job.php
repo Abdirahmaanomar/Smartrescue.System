@@ -92,6 +92,21 @@ $sql = "SELECT r.id, r.lat, r.lng, r.emergency_type, r.status, r.neighborhood,
 
 $result = mysqli_query($conn, $sql);
 
+if (!$result || mysqli_num_rows($result) === 0) {
+    // If unit is available/busy, auto-assign any pending unassigned SOS request
+    $auto_q = "SELECT id FROM rescue_requests 
+               WHERE (assigned_unit_id IS NULL OR assigned_unit_id = 0) 
+                 AND status = 'pending' 
+               ORDER BY id DESC LIMIT 1";
+    $auto_res = mysqli_query($conn, $auto_q);
+    if ($auto_res && mysqli_num_rows($auto_res) > 0) {
+        $auto_row = mysqli_fetch_assoc($auto_res);
+        $auto_id = $auto_row['id'];
+        mysqli_query($conn, "UPDATE rescue_requests SET assigned_unit_id = '$unit_id' WHERE id = '$auto_id'");
+        $result = mysqli_query($conn, $sql);
+    }
+}
+
 if ($result && mysqli_num_rows($result) > 0) {
     $row = mysqli_fetch_assoc($result);
     log_and_respond([

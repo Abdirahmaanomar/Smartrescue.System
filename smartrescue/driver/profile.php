@@ -130,13 +130,18 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 .topbar-breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:600;flex:1}
 .page-title{font-size:16px;font-weight:800;color:var(--text)}
 .topbar-actions{display:flex;align-items:center;gap:12px}
-.online-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:30px;cursor:pointer;font-weight:700;font-size:12px;transition:all .2s;user-select:none;border:none}
-.online-pill.on{background:rgba(16,185,129,.12);color:var(--green);border:1.5px solid rgba(16,185,129,.3)}
-.online-pill.off{background:rgba(239,68,68,.1);color:var(--red);border:1.5px solid rgba(239,68,68,.3)}
-.online-dot{width:8px;height:8px;border-radius:50%}
-.on .online-dot{background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.5s infinite}
-.off .online-dot{background:var(--red)}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+/* ── iOS Toggle Switch */
+.toggle-switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.toggle-track{position:relative;width:44px;height:26px;border-radius:30px;transition:background .25s,box-shadow .25s;flex-shrink:0}
+.toggle-track.on{background:var(--green);box-shadow:0 0 10px rgba(16,185,129,.4)}
+.toggle-track.off{background:#cbd5e1}
+[data-theme="dark"] .toggle-track.off{background:#334155}
+.toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.toggle-track.on .toggle-knob{transform:translateX(18px)}
+.toggle-track.off .toggle-knob{transform:translateX(0)}
+.toggle-label{font-weight:700;font-size:12px;letter-spacing:.4px;transition:color .2s}
+.toggle-switch:has(.toggle-track.on) .toggle-label{color:var(--green)}
+.toggle-switch:has(.toggle-track.off) .toggle-label{color:var(--muted)}
 .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;transition:all .2s;font-size:15px;text-decoration:none}
 .icon-btn:hover{border-color:var(--blue);color:var(--blue)}
 .avatar-wrap{display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:30px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .2s;text-decoration:none}
@@ -244,10 +249,12 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
         <span><?php echo htmlspecialchars($fullname); ?></span>
     </div>
     <div class="topbar-actions">
-        <button id="onlinePill" class="online-pill <?php echo $is_avail ? 'on' : 'off'; ?>" onclick="toggleDispatch()">
-            <span class="online-dot"></span>
-            <span id="onlineText"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
-        </button>
+        <label class="toggle-switch" onclick="toggleDispatch()">
+            <div id="onlinePill" class="toggle-track <?php echo $is_avail ? 'on' : 'off'; ?>">
+                <div class="toggle-knob"></div>
+            </div>
+            <span id="onlineText" class="toggle-label"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
+        </label>
         <button class="icon-btn" onclick="toggleTheme()"><i class="fa-solid <?php echo $dark_mode ? 'fa-sun' : 'fa-moon'; ?>" id="themeIcon"></i></button>
         <a href="profile.php" class="avatar-wrap">
             <div class="avatar-circle">
@@ -387,11 +394,56 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 
 <script>
 const DRV_ID = <?php echo (int)$driver_id; ?>;
+const UNIT_ID = <?php echo (int)$unit_id; ?>;
 let isOnline = <?php echo $is_avail ? 'true' : 'false'; ?>;
-function toggleDispatch(){const s=isOnline?'offline':'available';fetch('../api/driver/update_unit_status.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`status=${s}&driver_id=${DRV_ID}`}).then(r=>r.json()).then(d=>{if(d.status==='success'){isOnline=!isOnline;const p=document.getElementById('onlinePill');p.className='online-pill '+(isOnline?'on':'off');document.getElementById('onlineText').textContent=isOnline?'Online':'Offline'}}).catch(()=>{})}
+let lastAlertId = null, lastAudio = 0;
+
+function toggleDispatch(){const s=isOnline?'offline':'available';fetch('../api/driver/update_unit_status.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`status=${s}&driver_id=${DRV_ID}`}).then(r=>r.json()).then(d=>{if(d.status==='success'){isOnline=!isOnline;const p=document.getElementById('onlinePill');p.className='toggle-track '+(isOnline?'on':'off');document.getElementById('onlineText').textContent=isOnline?'Online':'Offline'}}).catch(()=>{})}
 function toggleTheme(){const h=document.documentElement;const d=h.getAttribute('data-theme')==='dark';h.setAttribute('data-theme',d?'light':'dark');document.getElementById('themeIcon').className='fa-solid '+(d?'fa-moon':'fa-sun');fetch('../api/driver/save_setting.php',{method:'POST',headers:{'Content-Type':'application/x-www-form-urlencoded'},body:`key=dark_mode&value=${d?0:1}&driver_id=${DRV_ID}`}).catch(()=>{})}
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('open')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('open')}
+
+function doAction(rid, action) {
+    fetch('../api/driver/update_status.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `request_id=${rid}&unit_id=${UNIT_ID}&action=${action}&driver_id=${DRV_ID}`
+    }).then(r => r.json()).then(() => pollModal()).catch(() => {});
+}
+
+function playAlert() {
+    const now = Date.now();
+    if (now - lastAudio < 5000) return;
+    lastAudio = now;
+    try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        [[880,0],[1100,0.15],[880,0.30]].forEach(([f,t]) => {
+            const o = ctx.createOscillator(), g = ctx.createGain();
+            o.type = 'sine'; o.frequency.value = f;
+            g.gain.setValueAtTime(0.3, ctx.currentTime + t);
+            g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + t + 0.12);
+            o.connect(g); g.connect(ctx.destination);
+            o.start(ctx.currentTime + t); o.stop(ctx.currentTime + t + 0.15);
+        });
+    } catch(e) {}
+}
+
+function pollModal() {
+    fetch(`../api/driver/get_active_job.php?driver_id=${DRV_ID}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success' && data.request) {
+                checkAndShowDispatchModal(data.request);
+            } else {
+                hideDispatchModal();
+            }
+        }).catch(() => {});
+}
+document.addEventListener('DOMContentLoaded', () => {
+    pollModal();
+    setInterval(pollModal, 3500);
+});
 </script>
+<?php require_once 'dispatch_modal.php'; ?>
 </body>
 </html>

@@ -81,13 +81,18 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 .topbar-breadcrumb{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--muted);font-weight:600;flex:1}
 .page-title{font-size:16px;font-weight:800;color:var(--text)}
 .topbar-actions{display:flex;align-items:center;gap:12px}
-.online-pill{display:inline-flex;align-items:center;gap:7px;padding:8px 18px;border-radius:30px;cursor:pointer;font-weight:700;font-size:12px;transition:all .2s;user-select:none;border:none}
-.online-pill.on{background:rgba(16,185,129,.12);color:var(--green);border:1.5px solid rgba(16,185,129,.3)}
-.online-pill.off{background:rgba(239,68,68,.1);color:var(--red);border:1.5px solid rgba(239,68,68,.3)}
-.online-dot{width:8px;height:8px;border-radius:50%}
-.on .online-dot{background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.5s infinite}
-.off .online-dot{background:var(--red)}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+/* ── iOS Toggle Switch */
+.toggle-switch{display:inline-flex;align-items:center;gap:9px;cursor:pointer;user-select:none}
+.toggle-track{position:relative;width:44px;height:26px;border-radius:30px;transition:background .25s,box-shadow .25s;flex-shrink:0}
+.toggle-track.on{background:var(--green);box-shadow:0 0 10px rgba(16,185,129,.4)}
+.toggle-track.off{background:#cbd5e1}
+[data-theme="dark"] .toggle-track.off{background:#334155}
+.toggle-knob{position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 2px 6px rgba(0,0,0,.25);transition:transform .25s cubic-bezier(.34,1.56,.64,1)}
+.toggle-track.on .toggle-knob{transform:translateX(18px)}
+.toggle-track.off .toggle-knob{transform:translateX(0)}
+.toggle-label{font-weight:700;font-size:12px;letter-spacing:.4px;transition:color .2s}
+.toggle-switch:has(.toggle-track.on) .toggle-label{color:var(--green)}
+.toggle-switch:has(.toggle-track.off) .toggle-label{color:var(--muted)}
 .icon-btn{width:40px;height:40px;border-radius:12px;border:1px solid var(--border);background:var(--bg);display:flex;align-items:center;justify-content:center;color:var(--muted);cursor:pointer;transition:all .2s;font-size:15px;text-decoration:none}
 .icon-btn:hover{border-color:var(--blue);color:var(--blue)}
 .avatar-wrap{display:flex;align-items:center;gap:10px;padding:6px 12px;border-radius:30px;border:1px solid var(--border);background:var(--bg);cursor:pointer;transition:all .2s;text-decoration:none}
@@ -189,10 +194,12 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
         <span><?php echo htmlspecialchars($unit_name); ?></span>
     </div>
     <div class="topbar-actions">
-        <button id="onlinePill" class="online-pill <?php echo $is_avail ? 'on' : 'off'; ?>" onclick="toggleDispatch()">
-            <span class="online-dot"></span>
-            <span id="onlineText"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
-        </button>
+        <label class="toggle-switch" onclick="toggleDispatch()">
+            <div id="onlinePill" class="toggle-track <?php echo $is_avail ? 'on' : 'off'; ?>">
+                <div class="toggle-knob"></div>
+            </div>
+            <span id="onlineText" class="toggle-label"><?php echo $is_avail ? 'Online' : 'Offline'; ?></span>
+        </label>
         <button class="icon-btn" onclick="toggleDarkBtn()" id="themeBtn">
             <i class="fa-solid <?php echo $dark_mode ? 'fa-sun' : 'fa-moon'; ?>" id="themeIcon"></i>
         </button>
@@ -457,7 +464,7 @@ function toggleDispatch(val) {
         if(d.status==='success'){
             isOnline = val;
             const pill = document.getElementById('onlinePill');
-            pill.className = 'online-pill ' + (isOnline ? 'on' : 'off');
+            pill.className = 'toggle-track ' + (isOnline ? 'on' : 'off');
             document.getElementById('onlineText').textContent = isOnline ? 'Online' : 'Offline';
             document.getElementById('dispatchToggle').checked = isOnline;
             showToast(isOnline ? 'You are now Online' : 'You are now Offline');
@@ -492,6 +499,23 @@ function changeLang(lang) {
 
 function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebarOverlay').classList.toggle('open')}
 function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebarOverlay').classList.remove('open')}
+
+function pollModal() {
+    fetch(`../api/driver/get_active_job.php?driver_id=${DRV_ID}`)
+        .then(r => r.json())
+        .then(data => {
+            if (data.status === 'success' && data.request) {
+                checkAndShowDispatchModal(data.request);
+            } else {
+                hideDispatchModal();
+            }
+        }).catch(() => {});
+}
+document.addEventListener('DOMContentLoaded', () => {
+    pollModal();
+    setInterval(pollModal, 3500);
+});
 </script>
+<?php require_once 'dispatch_modal.php'; ?>
 </body>
 </html>

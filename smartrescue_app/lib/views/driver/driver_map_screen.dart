@@ -5,6 +5,7 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:provider/provider.dart';
 import 'package:http/http.dart' as http;
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../providers/driver_provider.dart';
 
 import '../../components/app_button.dart';
@@ -191,25 +192,9 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       markers.add(
         Marker(
           point: startLoc,
-          width: 50,
-          height: 50,
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: const LinearGradient(
-                colors: [Color(0xFF1E40AF), Color(0xFF3B82F6)],
-              ),
-              shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 3),
-              boxShadow: [
-                BoxShadow(
-                  color: const Color(0xFF1E40AF).withValues(alpha: 0.5),
-                  blurRadius: 10,
-                  spreadRadius: 2,
-                )
-              ]
-            ),
-            child: const Icon(Icons.airport_shuttle_rounded, color: Colors.white, size: 20),
-          ),
+          width: 70,
+          height: 70,
+          child: const WailingAmbulanceDriverMarker(),
         ),
       );
     }
@@ -218,20 +203,19 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
       markers.add(
         Marker(
           point: endLoc,
-          width: 28,
-          height: 28,
+          width: 16,
+          height: 16,
           child: Container(
             decoration: BoxDecoration(
-              color: Colors.red,
+              color: const Color(0xFF2563EB),
               shape: BoxShape.circle,
-              border: Border.all(color: Colors.white, width: 4),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.red.withValues(alpha: 0.4),
-                  blurRadius: 8,
-                  spreadRadius: 2,
+                  color: const Color(0xFF2563EB).withValues(alpha: 0.4),
+                  blurRadius: 6,
+                  spreadRadius: 1,
                 )
-              ]
+              ],
             ),
           ),
         ),
@@ -566,6 +550,127 @@ class _DriverMapScreenState extends State<DriverMapScreen> {
           ],
         )
       ],
+    );
+  }
+}
+
+// ─── Animated Siren Ambulance Marker ────────────────────────────────────────
+class WailingAmbulanceDriverMarker extends StatefulWidget {
+  const WailingAmbulanceDriverMarker({super.key});
+
+  @override
+  State<WailingAmbulanceDriverMarker> createState() =>
+      _WailingAmbulanceDriverMarkerState();
+}
+
+class _WailingAmbulanceDriverMarkerState
+    extends State<WailingAmbulanceDriverMarker>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 1200),
+    )..repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return AnimatedBuilder(
+      animation: _controller,
+      builder: (context, child) {
+        final double pulse = _controller.value;
+        // Single solid blue — no red/siren switching
+        const Color blueColor = Color(0xFF2563EB);
+
+        return Stack(
+          alignment: Alignment.center,
+          children: [
+            // Outer pulsing blue ring
+            Container(
+              width: 45 + (pulse * 25),
+              height: 45 + (pulse * 25),
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: blueColor.withValues(alpha: 0.22 * (1.0 - pulse)),
+                border: Border.all(
+                  color: blueColor.withValues(alpha: 0.35 * (1.0 - pulse)),
+                  width: 1.5,
+                ),
+              ),
+            ),
+            // Inner white glow ring
+            Container(
+              width: 50,
+              height: 50,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: blueColor.withValues(alpha: 0.38),
+                    blurRadius: 12,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+            ),
+            // Main solid blue circle with ambulance icon
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: blueColor,
+                boxShadow: [
+                  BoxShadow(
+                    color: blueColor.withValues(alpha: 0.5),
+                    blurRadius: 14,
+                    spreadRadius: 2,
+                  ),
+                ],
+              ),
+              child: const Center(
+                child: FaIcon(
+                  FontAwesomeIcons.truckMedical,
+                  color: Colors.white,
+                  size: 19,
+                ),
+              ),
+            ),
+            // Blue beacon dot top-right
+            Positioned(
+              top: 6,
+              right: 6,
+              child: Container(
+                width: 9,
+                height: 9,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: const Color(0xFF60A5FA),
+                  border: Border.all(color: Colors.white, width: 1.5),
+                  boxShadow: [
+                    BoxShadow(
+                      color: blueColor.withValues(alpha: 0.8),
+                      blurRadius: 6,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ],
+        );
+      },
     );
   }
 }

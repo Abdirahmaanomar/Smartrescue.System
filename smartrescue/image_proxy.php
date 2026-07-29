@@ -15,7 +15,7 @@ $path = $_GET['path'] ?? '';
 $path = str_replace(['..', '\\', "\0"], '', $path);
 $path = ltrim($path, '/');
 
-if (!preg_match('/^uploads\/avatars\/[a-zA-Z0-9_\-\.]+\.(jpg|jpeg|png|gif|webp)$/i', $path)) {
+if (!preg_match('/^uploads\/(avatars\/)?[a-zA-Z0-9_\-\.]+\.(jpg|jpeg|png|gif|webp)$/i', $path)) {
     http_response_code(403);
     echo json_encode(['error' => 'Forbidden']);
     exit();

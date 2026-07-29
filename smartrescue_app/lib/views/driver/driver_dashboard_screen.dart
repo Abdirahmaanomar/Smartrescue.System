@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import '../../providers/auth_provider.dart';
 import '../../providers/driver_provider.dart';
 import '../../constants/api_constants.dart';
@@ -367,8 +368,8 @@ class _DriverDashboardScreenState extends State<DriverDashboardScreen>
                               const SizedBox(height: 3),
                               Row(
                                 children: [
-                                  Icon(
-                                    Icons.airport_shuttle_rounded,
+                                  FaIcon(
+                                    FontAwesomeIcons.truckMedical,
                                     size: 13,
                                     color: Colors.white.withValues(alpha: 0.75),
                                   ),
@@ -680,7 +681,7 @@ class _DriverDashboardScreenState extends State<DriverDashboardScreen>
     final stepIcons = [
       Icons.notification_important_rounded,
       Icons.check_circle_rounded,
-      Icons.airport_shuttle_rounded,
+      Icons.medical_services_rounded,
       Icons.location_on_rounded,
       Icons.verified_rounded,
     ];
@@ -1024,7 +1025,7 @@ class _DriverDashboardScreenState extends State<DriverDashboardScreen>
                       Expanded(
                         child: _ActionButton(
                           label: 'Start Trip',
-                          icon: Icons.airport_shuttle_rounded,
+                          icon: Icons.medical_services_rounded,
                           gradient: const [Color(0xFFF59E0B), Color(0xFFD97706)],
                           onTap: () => driver.updateMissionStatus('en_route'),
                         ),
