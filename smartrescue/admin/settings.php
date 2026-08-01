@@ -846,16 +846,7 @@ body {
                             <p class="form-hint"><?= t('Displayed to users on the mobile app when maintenance mode is active.') ?></p>
                         </div>
 
-                        <div class="setting-toggle-row">
-                            <div class="str-info">
-                                <h6><?= t('Verbose Debug Logging') ?></h6>
-                                <p><?= t('Record detailed API diagnostic payloads in system audit logs.') ?></p>
-                            </div>
-                            <label class="s-toggle">
-                                <input type="checkbox" name="debug_mode" class="track-change" <?= ($settings['debug_mode'] == '1' || $settings['debug_mode'] == 'on') ? 'checked' : '' ?>>
-                                <span class="s-toggle-slider"></span>
-                            </label>
-                        </div>
+
                     </div>
                 </div>
 

@@ -641,25 +641,32 @@
         <div class="container">
             <h2 class="section-title reveal-up">Essential Safety Tips</h2>
             <div class="row g-4 mt-4">
-                <div class="col-lg-4 col-md-6 reveal-up" style="transition-delay: 0.1s;">
+                <div class="col-lg-3 col-md-6 reveal-up" style="transition-delay: 0.1s;">
                     <div class="tip-card">
                         <i class="fa-solid fa-fire-extinguisher tip-icon"></i>
                         <h4 class="tip-title">Fire Emergencies</h4>
                         <p class="tip-text">Stay low to the ground where the air is cleaner. Never use elevators during a fire; always take the stairs. Know your emergency exits.</p>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 reveal-up" style="transition-delay: 0.2s;">
+                <div class="col-lg-3 col-md-6 reveal-up" style="transition-delay: 0.2s;">
                     <div class="tip-card">
                         <i class="fa-solid fa-house-medical tip-icon"></i>
                         <h4 class="tip-title">Medical First Aid</h4>
                         <p class="tip-text">If someone is injured, do not move them unless they are in immediate danger. Apply pressure to bleeding wounds and call for an ambulance instantly.</p>
                     </div>
                 </div>
-                <div class="col-lg-4 col-md-6 reveal-up" style="transition-delay: 0.3s;">
+                <div class="col-lg-3 col-md-6 reveal-up" style="transition-delay: 0.3s;">
                     <div class="tip-card">
                         <i class="fa-solid fa-car-burst tip-icon"></i>
                         <h4 class="tip-title">Traffic Accidents</h4>
                         <p class="tip-text">Turn on your hazard lights. If safe to do so, move vehicles out of traffic. Do not leave the scene until emergency services arrive.</p>
+                    </div>
+                </div>
+                <div class="col-lg-3 col-md-6 reveal-up" style="transition-delay: 0.4s;">
+                    <div class="tip-card">
+                        <i class="fa-solid fa-shield-halved tip-icon"></i>
+                        <h4 class="tip-title">Police</h4>
+                        <p class="tip-text">Stay calm and call 1999 during any security threat. Do not confront suspects. Move to a safe location and provide your exact address to the officer.</p>
                     </div>
                 </div>
             </div>
@@ -758,9 +765,9 @@
                 <p class="footer-text">Nidaamka casriga ah ee gurmadka degdega ah. Bridging the gap between distressed citizens and immediate rescue operations in Mogadishu.</p>
                 <div class="social-links">
                     <a href="https://www.facebook.com/share/1Gu5vKYcde/"><i class="fa-brands fa-facebook-f"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                    <a href="#"><i class="fa-brands fa-instagram"></i></a>
-                    <a href="#"><i class="fa-brands fa-linkedin-in"></i></a>
+                    <a href="https://tiktok.com/@smart.rescue" target="_blank"><i class="fa-brands fa-tiktok"></i></a>
+                    <a href="#"><i class="fa-brands fa-snapchat"></i></a>
+                    <a href="https://wa.me/252611226645" target="_blank"><i class="fa-brands fa-whatsapp"></i></a>
                 </div>
             </div>
             <!-- Quick Links -->
@@ -781,16 +788,16 @@
                     <li><a href="#">Medical Ambulance</a></li>
                     <li><a href="#">Fire Department</a></li>
                     <li><a href="#">Police Assistance</a></li>
-                    <li><a href="#">Disaster Management</a></li>
+                    <li><a href="#">Accident</a></li>
                 </ul>
             </div>
             <!-- Contact Info -->
             <div class="col-lg-3 col-md-6">
                 <h5 class="footer-title">Contact Us</h5>
                 <ul class="contact-list">
-                    <li><i class="fa-solid fa-location-dot"></i> Maka Al Mukarama Rd, Mogadishu, Somalia</li>
-                    <li><i class="fa-solid fa-phone"></i> 999 (Toll Free Emergency)</li>
-                    <li><i class="fa-solid fa-envelope"></i> help@smartrescue.so</li>
+                    <li><i class="fa-solid fa-location-dot"></i> Jamhuuriye University, Mogadishu, Somalia</li>
+                    <li><i class="fa-solid fa-phone"></i> 1999 (Toll Free Emergency)</li>
+                    <li><i class="fa-solid fa-envelope"></i> <a href="mailto:smartrescue.system@gmail.com" style="color:inherit;text-decoration:none;">smartrescue.system@gmail.com</a></li>
                 </ul>
             </div>
         </div>

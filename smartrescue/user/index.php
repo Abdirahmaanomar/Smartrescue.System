@@ -1882,21 +1882,27 @@ input::-ms-clear {
                 <div style="font-size:0.68rem;color:var(--muted);font-weight:600;margin-top:1px;">For rescuers context</div>
               </div>
             </div>
-            <div class="upload-zone" id="uploadZone" style="flex:1;min-height:100px;"
+            <div class="upload-zone" id="uploadZone" style="flex:1;min-height:80px;"
               onclick="document.getElementById('sos_image').click()"
               ondragover="event.preventDefault();this.classList.add('drag-over');"
               ondragleave="this.classList.remove('drag-over');"
-              ondrop="event.preventDefault();this.classList.remove('drag-over');document.getElementById('sos_image').files=event.dataTransfer.files;previewImage(document.getElementById('sos_image'));">
-              <div class="upload-content">
+              ondrop="event.preventDefault();this.classList.remove('drag-over');addFilesToPreview(event.dataTransfer.files);">
+              <div class="upload-content" id="uploadContent">
                 <div class="upload-icon-wrapper" style="width:40px;height:40px;margin-bottom:8px;"><i class="fa-solid fa-cloud-arrow-up fa-lg"></i></div>
                 <div class="upload-text-main" style="font-size:0.85rem;">Drag &amp; Drop or <span style="color:var(--primary);text-decoration:underline;">Browse</span></div>
                 <div class="upload-text-sub" style="margin-top:6px;display:flex;align-items:center;justify-content:center;gap:4px;flex-wrap:wrap;">
-                  <span style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);border-radius:4px;padding:2px 6px;font-weight:700;">JPG & PNG</span>
-                  <span style="color:var(--muted);margin-left:4px;">Max 10MB</span>
+                  <span style="background:rgba(37,99,235,0.08);border:1px solid rgba(37,99,235,0.15);border-radius:4px;padding:2px 6px;font-weight:700;">JPG &amp; PNG</span>
+                  <span style="color:var(--muted);margin-left:4px;">Max 10MB · Up to 5</span>
                 </div>
               </div>
-              <input type="file" id="sos_image" accept="image/*" class="d-none" onchange="previewImage(this)">
+              <input type="file" id="sos_image" accept="image/*" multiple class="d-none" onchange="previewImage(this)">
             </div>
+            <!-- Thumbnail grid (populated by JS) -->
+            <div id="imgThumbGrid" style="display:none;margin-top:10px;"></div>
+            <!-- Add more button (shown after first pick) -->
+            <button type="button" id="addMoreBtn" onclick="document.getElementById('sos_image').click()" style="display:none;margin-top:8px;width:100%;padding:7px;border:1.5px dashed var(--primary);border-radius:8px;background:rgba(37,99,235,0.05);color:var(--primary);font-weight:700;font-size:0.8rem;cursor:pointer;">
+              <i class="fa fa-plus me-1"></i> Add More Photos
+            </button>
           </div>
         </div>
 
@@ -2799,7 +2805,7 @@ input::-ms-clear {
         <option value="Accident">💥 Traffic Accident</option>
       </select>
       <div class="field-label" style="margin-bottom:6px;">Incident Details / Description</div>
-      <textarea id="commAlertDesc" class="glass-input" rows="3" placeholder="Explain what happened and exact location details..." required style="margin-bottom:20px;"></textarea>
+      <textarea id="commAlertDesc" class="glass-input" rows="3" placeholder="Explain what happened and exact location details..." required style="margin-bottom:20px;" spellcheck="false" data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false"></textarea>
       <div style="display:flex;gap:10px;">
         <button type="submit" class="btn-primary-custom" style="flex:1;padding:12px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:8px;">
           <i class="fa fa-paper-plane"></i> Broadcast Alert
@@ -2890,6 +2896,69 @@ input::-ms-clear {
       <button class="btn-danger-custom" onclick="closeSituationModal('emergency')" style="flex:1;background:#ef4444;box-shadow:0 8px 20px rgba(239,68,68,0.3);border-radius:14px;font-weight:700;padding:16px 0;font-size:1rem;">Send SOS</button>
     </div>
     
+  </div>
+</div>
+
+<!-- ===== MISSION HISTORY DETAIL MODAL ===== -->
+<div class="safety-modal-backdrop" id="historyDetailModal" onclick="if(event.target===this) closeHistoryDetailsModal()" style="display:none;z-index:999999;">
+  <div style="background:var(--card-bg, #fff);border-radius:24px;max-width:480px;width:92%;padding:24px;position:relative;box-shadow:0 20px 60px rgba(0,0,0,0.3);text-align:left;animation:fadeUp 0.3s cubic-bezier(0.2,0.8,0.2,1);margin:auto;">
+    
+    <!-- Top Header -->
+    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:14px;border-bottom:1px solid var(--border,#f1f5f9);">
+      <div style="display:flex;align-items:center;gap:10px;">
+        <div style="width:42px;height:42px;border-radius:12px;background:rgba(37,99,235,0.1);color:#2563eb;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">
+          <i class="fa fa-notes-medical"></i>
+        </div>
+        <div>
+          <h4 id="histModalType" style="margin:0;font-size:1.15rem;font-weight:800;color:var(--text,#0f172a);">Mission Details</h4>
+          <span id="histModalDate" style="font-size:0.75rem;color:var(--muted,#64748b);font-weight:600;"></span>
+        </div>
+      </div>
+      <div style="display:flex;align-items:center;gap:8px;">
+        <span id="histModalStatus" style="font-weight:800;font-size:0.72rem;padding:4px 12px;border-radius:50px;"></span>
+        <button onclick="closeHistoryDetailsModal()" style="background:none;border:none;color:var(--muted);font-size:1.2rem;cursor:pointer;padding:4px;"><i class="fa fa-xmark"></i></button>
+      </div>
+    </div>
+
+    <!-- Description / Incident Info -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Incident Details</div>
+      <div id="histModalDesc" style="background:rgba(0,0,0,0.02);border:1px solid var(--border,#f1f5f9);padding:12px 14px;border-radius:12px;font-size:0.88rem;color:var(--text);line-height:1.5;white-space:pre-wrap;"></div>
+    </div>
+
+    <!-- Location -->
+    <div style="margin-bottom:16px;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:4px;">Location</div>
+      <div style="display:flex;align-items:center;gap:8px;font-size:0.85rem;color:var(--text);font-weight:600;">
+        <i class="fa fa-location-dot" style="color:#ef4444;"></i>
+        <span id="histModalLocation"></span>
+      </div>
+    </div>
+
+    <!-- Rescuer / Unit Info -->
+    <div id="histModalUnitWrap" style="margin-bottom:16px;display:none;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Assigned Rescue Team</div>
+      <div style="background:rgba(37,99,235,0.04);border:1px solid rgba(37,99,235,0.12);padding:12px 14px;border-radius:14px;display:flex;align-items:center;justify-content:space-between;">
+        <div>
+          <div id="histModalDriver" style="font-weight:800;font-size:0.92rem;color:var(--text);"></div>
+          <div id="histModalUnit" style="font-size:0.78rem;color:var(--muted);font-weight:600;margin-top:2px;"></div>
+        </div>
+        <a id="histModalDriverCall" href="#" style="background:#2563eb;color:#fff;border-radius:10px;padding:8px 14px;font-size:0.8rem;font-weight:700;text-decoration:none;display:flex;align-items:center;gap:6px;">
+          <i class="fa fa-phone"></i> Call
+        </a>
+      </div>
+    </div>
+
+    <!-- Evidence Photos -->
+    <div id="histModalEvidenceWrap" style="margin-bottom:20px;display:none;">
+      <div style="font-size:0.75rem;font-weight:700;color:var(--muted);text-transform:uppercase;margin-bottom:6px;">Evidence Photos</div>
+      <div id="histModalEvidenceGrid" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+    </div>
+
+    <!-- Footer Action -->
+    <button onclick="closeHistoryDetailsModal()" style="width:100%;padding:12px;background:var(--surface,#f8fafc);border:1px solid var(--border,#e2e8f0);border-radius:12px;font-weight:800;font-size:0.9rem;color:var(--text,#0f172a);cursor:pointer;">
+      Close Details
+    </button>
   </div>
 </div>
 
@@ -3382,23 +3451,72 @@ document.getElementById('guideText').textContent = GUIDES['Medical'];
 // =====================================================================
 // IMAGE PREVIEW
 // =====================================================================
+// Holds the accumulated File objects for evidence images
+let sosImageFiles = [];
+
 function previewImage(input) {
-  const zone = document.getElementById('uploadZone');
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = e => {
-      zone.classList.add('has-image');
-      zone.innerHTML = `
-        <img src="${e.target.result}" alt="Evidence preview">
-        <div class="image-change-overlay">
-          <i class="fa-solid fa-camera-rotate" style="font-size:1.5rem; margin-bottom:6px;"></i>
-          <span>Change Photo</span>
-        </div>
-        <input type="file" id="sos_image" accept="image/*" class="d-none" onchange="previewImage(this)">
-      `;
-    };
-    reader.readAsDataURL(input.files[0]);
+  if (input.files && input.files.length > 0) {
+    addFilesToPreview(input.files);
+    // Reset input so same files can be re-selected if needed
+    input.value = '';
   }
+}
+
+function addFilesToPreview(fileList) {
+  const MAX = 5;
+  Array.from(fileList).forEach(file => {
+    if (sosImageFiles.length >= MAX) return;
+    if (!file.type.startsWith('image/')) return;
+    sosImageFiles.push(file);
+  });
+  renderImageThumbs();
+}
+
+function removeImageAt(idx) {
+  sosImageFiles.splice(idx, 1);
+  renderImageThumbs();
+}
+
+function renderImageThumbs() {
+  const grid     = document.getElementById('imgThumbGrid');
+  const content  = document.getElementById('uploadContent');
+  const addBtn   = document.getElementById('addMoreBtn');
+  const zone     = document.getElementById('uploadZone');
+
+  if (!grid) return;
+
+  if (sosImageFiles.length === 0) {
+    grid.style.display = 'none';
+    grid.innerHTML = '';
+    if (content) content.style.display = '';
+    if (addBtn)  addBtn.style.display  = 'none';
+    zone.classList.remove('has-image');
+    return;
+  }
+
+  // Hide the drop-zone text, show grid
+  if (content) content.style.display = 'none';
+  grid.style.display = 'flex';
+  grid.style.flexWrap = 'wrap';
+  grid.style.gap = '8px';
+  zone.classList.add('has-image');
+
+  let html = '';
+  sosImageFiles.forEach((file, idx) => {
+    const url = URL.createObjectURL(file);
+    html += `
+      <div style="position:relative;width:70px;height:70px;border-radius:8px;overflow:hidden;border:2px solid var(--primary);flex-shrink:0;">
+        <img src="${url}" style="width:100%;height:100%;object-fit:cover;" alt="Evidence ${idx+1}">
+        <button type="button" onclick="removeImageAt(${idx})"
+          style="position:absolute;top:2px;right:2px;width:18px;height:18px;border-radius:50%;background:rgba(239,68,68,0.9);border:none;color:#fff;font-size:0.65rem;cursor:pointer;display:flex;align-items:center;justify-content:center;">
+          <i class="fa fa-times"></i>
+        </button>
+      </div>`;
+  });
+  grid.innerHTML = html;
+
+  // Show Add More if under limit
+  if (addBtn) addBtn.style.display = sosImageFiles.length < 5 ? 'block' : 'none';
 }
 
 // =====================================================================
@@ -3479,8 +3597,11 @@ async function sendSOS() {
     'MEDICAL ID: ' + (document.getElementById('medical_info').value || '') +
     '\n\nMSG: ' + (document.getElementById('sos_description').value || ''));
   fd.append('neighborhood', customNeigh);
-  const imgFile = document.getElementById('sos_image').files[0];
-  if (imgFile) fd.append('evidence_image', imgFile);
+  // Append all selected evidence images
+  sosImageFiles.forEach((file, idx) => {
+    const key = idx === 0 ? 'evidence_image' : 'evidence_image_' + idx;
+    fd.append(key, file);
+  });
 
   if (!navigator.onLine) {
     pendingSOS = fd;
@@ -3526,9 +3647,11 @@ function resetSOSBtn() {
 function clearSOSInputs() {
   // Clear neighborhood input
   const neigh = document.getElementById('sos_neighborhood');
-  if (neigh) {
-    neigh.value = '';
-  }
+  if (neigh) neigh.value = '';
+
+  // Reset evidence images
+  sosImageFiles = [];
+  renderImageThumbs();
 
   // Do not clear the description textarea or character counter here
   // so that the typed text persists until the user manually changes/clears it.
@@ -4255,25 +4378,83 @@ function changePassword(e) {
 }
 
 // =====================================================================
-// HISTORY
-// =====================================================================
+// Holds loaded history items for modal details view
+let userHistoryData = [];
+
 function fetchHistory() {
   const tbody = document.getElementById('historyBody');
   tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--muted);">Loading…</td></tr>';
   fetch('../api/user/get_history.php')
     .then(r => r.json())
     .then(data => {
-      tbody.innerHTML = data.length
-        ? data.map(j => `
+      userHistoryData = Array.isArray(data) ? data : (data.history || []);
+      tbody.innerHTML = userHistoryData.length
+        ? userHistoryData.map((j, idx) => `
           <tr>
             <td style="font-weight:600;">${j.created_at}</td>
             <td><span style="background:rgba(37,99,235,0.1);color:var(--primary);font-weight:700;font-size:0.75rem;padding:4px 12px;border-radius:50px;">${j.emergency_type}</span></td>
-            <td><span style="background:${j.status==='completed'?'rgba(16,185,129,0.1)':'rgba(245,158,11,0.1)'};color:${j.status==='completed'?'var(--success)':'var(--warning)'};font-weight:700;font-size:0.75rem;padding:4px 12px;border-radius:50px;">${j.status.toUpperCase()}</span></td>
-            <td><button onclick="showToast('Details','${escHTML(j.description||'No description')}','info',8000)" style="background:none;border:1.5px solid var(--border);border-radius:8px;padding:5px 14px;font-size:0.75rem;font-weight:700;cursor:pointer;color:var(--text);">View</button></td>
+            <td><span style="background:${j.status==='completed'?'rgba(16,185,129,0.1)':(j.status==='cancelled'?'rgba(239,68,68,0.1)':'rgba(245,158,11,0.1)')};color:${j.status==='completed'?'var(--success)':(j.status==='cancelled'?'var(--danger)':'var(--warning)')};font-weight:700;font-size:0.75rem;padding:4px 12px;border-radius:50px;">${j.status.toUpperCase()}</span></td>
+            <td><button onclick="openHistoryDetails(${idx})" style="background:var(--primary);color:#fff;border:none;border-radius:8px;padding:6px 16px;font-size:0.78rem;font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(37,99,235,0.25);"><i class="fa fa-eye me-1"></i> View</button></td>
           </tr>`).join('')
         : '<tr><td colspan="4" style="text-align:center;padding:40px;color:var(--muted);">No history found.</td></tr>';
     })
     .catch(() => { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;padding:30px;color:var(--danger);">Failed to load.</td></tr>'; });
+}
+
+function openHistoryDetails(idx) {
+  const item = userHistoryData[idx];
+  if (!item) return;
+  
+  document.getElementById('histModalType').textContent = (item.emergency_type || 'Emergency') + ' Emergency';
+  document.getElementById('histModalDate').textContent = item.created_at || '';
+  document.getElementById('histModalDesc').textContent = item.description || 'No description provided.';
+  document.getElementById('histModalLocation').textContent = (item.neighborhood ? item.neighborhood + ' ' : '') + `(${item.lat}, ${item.lng})`;
+  
+  const statusBadge = document.getElementById('histModalStatus');
+  statusBadge.textContent = item.status.toUpperCase();
+  statusBadge.style.background = item.status==='completed'?'rgba(16,185,129,0.1)':(item.status==='cancelled'?'rgba(239,68,68,0.1)':'rgba(245,158,11,0.1)');
+  statusBadge.style.color = item.status==='completed'?'#10b981':(item.status==='cancelled'?'#ef4444':'#f59e0b');
+
+  // Driver / Unit section
+  const unitWrap = document.getElementById('histModalUnitWrap');
+  if (item.driver_assigned || item.driver_name || item.unit_name) {
+    unitWrap.style.display = 'block';
+    document.getElementById('histModalDriver').textContent = item.driver_name || 'Assigned Driver';
+    document.getElementById('histModalUnit').textContent = (item.unit_name || 'Unit') + (item.plate_number ? ' (' + item.plate_number + ')' : '');
+    const callBtn = document.getElementById('histModalDriverCall');
+    if (item.driver_phone && item.driver_phone.trim() !== '') {
+      callBtn.href = 'tel:' + item.driver_phone;
+      callBtn.style.display = 'flex';
+    } else {
+      callBtn.style.display = 'none';
+    }
+  } else {
+    unitWrap.style.display = 'none';
+  }
+
+  // Evidence images section
+  const imgWrap = document.getElementById('histModalEvidenceWrap');
+  const imgGrid = document.getElementById('histModalEvidenceGrid');
+  if (item.evidence_image && item.evidence_image.trim() !== '') {
+    imgWrap.style.display = 'block';
+    const imgs = item.evidence_image.split(',');
+    imgGrid.innerHTML = imgs.map(src => {
+      const cleanSrc = src.trim().startsWith('http') ? src.trim() : '../' + src.trim();
+      return `<a href="${cleanSrc}" target="_blank" style="display:inline-block;"><img src="${cleanSrc}" style="width:75px;height:75px;border-radius:10px;object-fit:cover;border:2px solid var(--border);" alt="Evidence"></a>`;
+    }).join('');
+  } else {
+    imgWrap.style.display = 'none';
+  }
+
+  const modal = document.getElementById('historyDetailModal');
+  modal.style.display = 'flex';
+  modal.classList.add('show');
+}
+
+function closeHistoryDetailsModal() {
+  const modal = document.getElementById('historyDetailModal');
+  modal.style.display = 'none';
+  modal.classList.remove('show');
 }
 // History is fetched lazily — only when the user opens the history tab
 // (see showTab() which calls fetchHistory() for id==='history')

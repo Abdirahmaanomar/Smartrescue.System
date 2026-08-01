@@ -9,14 +9,48 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 require_once 'includes/lang.php';
 
 // Filters
-$filter_status = $_GET['status'] ?? 'all';
-$filter_from   = $_GET['from']   ?? date('Y-m-01');
-$filter_to     = $_GET['to']     ?? date('Y-m-d');
+$filter_status = $_GET['status']      ?? 'all';
+$filter_user   = $_GET['user_id']     ?? 'all';
+$user_search   = trim($_GET['user_search'] ?? '');
+$filter_from   = $_GET['from']        ?? date('Y-m-01');
+$filter_to     = $_GET['to']          ?? date('Y-m-d');
+
+// Fetch all users for dropdown
+$users_q = mysqli_query($conn, "SELECT id, fullname, phone FROM users WHERE role='user' ORDER BY fullname ASC");
+$all_users = [];
+while ($u_row = mysqli_fetch_assoc($users_q)) {
+    $all_users[] = $u_row;
+}
 
 $where = "WHERE DATE(r.created_at) BETWEEN '$filter_from' AND '$filter_to'";
-if ($filter_status !== 'all') $where .= " AND r.status = '$filter_status'";
+if ($filter_status !== 'all') {
+    $status_esc = mysqli_real_escape_string($conn, $filter_status);
+    $where .= " AND r.status = '$status_esc'";
+}
+if (!empty($user_search)) {
+    $s_esc = mysqli_real_escape_string($conn, $user_search);
+    $where .= " AND (u.fullname LIKE '%$s_esc%' OR u.phone LIKE '%$s_esc%' OR u.id = '$s_esc')";
+} elseif ($filter_user !== 'all' && !empty($filter_user)) {
+    $user_esc = mysqli_real_escape_string($conn, $filter_user);
+    $where .= " AND r.user_id = '$user_esc'";
+}
 
-$q = "SELECT r.id, r.status, r.emergency_type, r.created_at,
+// Fetch selected user info if single user selected or searched
+$selected_user_info = null;
+if (!empty($user_search)) {
+    $s_esc = mysqli_real_escape_string($conn, $user_search);
+    $user_info_q = mysqli_query($conn, "SELECT id, fullname, phone, email FROM users WHERE (fullname LIKE '%$s_esc%' OR phone LIKE '%$s_esc%' OR id = '$s_esc') ORDER BY id DESC LIMIT 1");
+    if ($user_info_q && mysqli_num_rows($user_info_q) > 0) {
+        $selected_user_info = mysqli_fetch_assoc($user_info_q);
+    }
+} elseif ($filter_user !== 'all' && !empty($filter_user)) {
+    $user_info_q = mysqli_query($conn, "SELECT id, fullname, phone, email FROM users WHERE id = '" . mysqli_real_escape_string($conn, $filter_user) . "'");
+    if ($user_info_q && mysqli_num_rows($user_info_q) > 0) {
+        $selected_user_info = mysqli_fetch_assoc($user_info_q);
+    }
+}
+
+$q = "SELECT r.id, r.user_id, r.status, r.emergency_type, r.created_at,
              u.fullname as patient_name, u.phone as patient_phone,
              e.unit_name, d2.fullname as driver_name
       FROM rescue_requests r
@@ -140,7 +174,28 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
                 <?php endforeach; ?>
             </select>
         </div>
+        <div style="flex:1; min-width:210px;">
+            <label><?= t('Search User (Name / Phone)') ?></label>
+            <div style="position:relative;">
+                <input type="text" name="user_search" class="filter-control" style="width:100%; padding-left:34px;" placeholder="Search Name or Phone (e.g. Maxamed / 612...)" value="<?= htmlspecialchars($user_search) ?>">
+                <i class="fa fa-search" style="position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-muted); font-size:0.8rem;"></i>
+            </div>
+        </div>
+        <div>
+            <label><?= t('Select User') ?></label>
+            <select name="user_id" class="filter-control" onchange="this.form.submit()">
+                <option value="all">-- <?= t('All Users') ?> --</option>
+                <?php foreach($all_users as $u): ?>
+                <option value="<?= $u['id'] ?>" <?= (string)$filter_user === (string)$u['id'] ? 'selected' : '' ?>>
+                    <?= htmlspecialchars($u['fullname']) ?> (<?= htmlspecialchars($u['phone']) ?>)
+                </option>
+                <?php endforeach; ?>
+            </select>
+        </div>
         <button type="submit" class="filter-apply"><i class="fa fa-filter"></i> <?= t('Apply Filter') ?></button>
+        <?php if ($filter_user !== 'all' || $filter_status !== 'all' || !empty($user_search)): ?>
+        <a href="reports.php" class="view-btn text-muted" style="align-self:flex-end; padding:9px 14px;"><i class="fa fa-rotate-left"></i> Reset</a>
+        <?php endif; ?>
     </div>
 </form>
 
@@ -154,11 +209,21 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
 
 <!-- Export + Table -->
 <div class="export-bar">
-    <h5><i class="fa fa-file-lines text-primary"></i> <?= t('Incident Log') ?> 
-        <span style="font-size:0.75rem;font-weight:600;color:var(--text-muted)"><?= date('M j', strtotime($filter_from)) ?> – <?= date('M j, Y', strtotime($filter_to)) ?></span>
+    <h5>
+        <?php if ($selected_user_info): ?>
+            <i class="fa fa-user-circle text-primary"></i> User Report: <?= htmlspecialchars($selected_user_info['fullname']) ?>
+            <span style="font-size:0.75rem;font-weight:700;background:rgba(59,130,246,0.1);color:var(--accent);padding:3px 10px;border-radius:50px;margin-left:8px;">
+                User #<?= $selected_user_info['id'] ?> · <?= htmlspecialchars($selected_user_info['phone']) ?>
+            </span>
+        <?php elseif (!empty($user_search)): ?>
+            <i class="fa fa-magnifying-glass text-primary"></i> User Search: "<?= htmlspecialchars($user_search) ?>"
+        <?php else: ?>
+            <i class="fa fa-file-lines text-primary"></i> <?= t('Incident Log') ?> 
+            <span style="font-size:0.75rem;font-weight:600;color:var(--text-muted)"><?= date('M j', strtotime($filter_from)) ?> – <?= date('M j, Y', strtotime($filter_to)) ?></span>
+        <?php endif; ?>
     </h5>
     <div class="export-btns">
-        <button class="btn-export btn-csv" onclick="exportCSV()"><i class="fa fa-file-csv"></i> <?= t('Export CSV') ?></button>
+        <button class="btn-export btn-csv" onclick="exportCSV()"><i class="fa fa-file-csv"></i> <?= ($selected_user_info || !empty($user_search)) ? t('Export User Report (CSV)') : t('Export CSV') ?></button>
         <button class="btn-export btn-print" onclick="window.print()"><i class="fa fa-print"></i> <?= t('Print / PDF') ?></button>
     </div>
 </div>
@@ -202,8 +267,10 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
             <td style="font-size:0.82rem;font-weight:600;color:var(--text-muted)"><?= date('M j, H:i', strtotime($r['created_at'])) ?></td>
             <td style="font-size:0.82rem;font-weight:700"><?= $dur ?></td>
             <td><span class="status-chip chip-<?= $r['status'] ?>"><?= t(ucfirst($r['status'])) ?></span></td>
-            <td style="text-align:right;padding-right:24px">
-                <a href="incident.php?id=<?= $r['id'] ?>" class="view-btn"><i class="fa fa-eye"></i> <?= t('View') ?></a>
+            <td style="text-align:right;padding-right:24px;display:flex;gap:4px;justify-content:flex-end;">
+                <a href="incident.php?id=<?= $r['id'] ?>" class="view-btn" title="View Incident"><i class="fa fa-eye"></i></a>
+                <a href="view_user.php?id=<?= $r['user_id'] ?>" class="view-btn text-secondary" title="View User Profile"><i class="fa fa-user"></i> Profile</a>
+                <a href="reports.php?user_id=<?= $r['user_id'] ?>" class="view-btn text-primary" title="Filter User Report"><i class="fa fa-file-invoice"></i> Report</a>
             </td>
         </tr>
         <?php endforeach; ?>
@@ -226,7 +293,11 @@ function exportCSV() {
     const blob = new Blob([lines.join('\n')], {type:'text/csv'});
     const a = document.createElement('a');
     a.href = URL.createObjectURL(blob);
+    <?php if ($selected_user_info): ?>
+    a.download = 'user_report_<?= $selected_user_info['id'] ?>_<?= preg_replace('/[^a-zA-Z0-9_-]/', '_', strtolower($selected_user_info['fullname'])) ?>_<?= date('Y-m-d') ?>.csv';
+    <?php else: ?>
     a.download = 'smartrescue_report_<?= date('Y-m-d') ?>.csv';
+    <?php endif; ?>
     a.click();
 }
 </script>

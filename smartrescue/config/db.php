@@ -150,18 +150,22 @@ if (mysqli_num_rows($tables) == 0) {
 
 // Insert all default settings (ignore if already exist)
 $default_settings = [
-    'site_name'     => 'SmartRescue',
-    'contact_email' => 'admin@smartrescue.so',
-    'contact_phone' => '+252 61 000 0000',
-    'notif_email'   => '0',
-    'notif_sms'     => '0',
-    'notif_sound'   => '1',
-    'refresh_rate'  => '4',
-    'language'      => 'en',
-    'auto_backup'   => '0',
-    'sms_username'  => '',
-    'sms_password'  => '',
-    'sms_sender'    => 'SmartRescue',
+    'site_name'               => 'SmartRescue',
+    'contact_email'           => 'admin@smartrescue.so',
+    'contact_phone'           => '+252 61 000 0000',
+    'notif_email'             => '0',
+    'notif_sms'               => '0',
+    'notif_sound'             => '1',
+    'refresh_rate'            => '4',
+    'language'                => 'en',
+    'auto_backup'             => '0',
+    'sms_username'            => '',
+    'sms_password'            => '',
+    'sms_sender'              => 'SmartRescue',
+    'sos_timeout_warn'        => '10',
+    'auto_assign_closest'     => '1',
+    'max_missions_per_driver' => '1',
+    'allow_multi_responders'  => '0',
 ];
 foreach ($default_settings as $key => $default_val) {
     $check_setting = mysqli_query($conn, "SELECT id FROM system_settings WHERE setting_key = '$key'");
@@ -169,6 +173,9 @@ foreach ($default_settings as $key => $default_val) {
         mysqli_query($conn, "INSERT INTO system_settings (setting_key, setting_value) VALUES ('$key', '$default_val')");
     }
 }
+// Ensure max_missions_per_driver is set to 1 Mission at a time and debug_mode is disabled
+mysqli_query($conn, "UPDATE system_settings SET setting_value = '1' WHERE setting_key = 'max_missions_per_driver'");
+mysqli_query($conn, "UPDATE system_settings SET setting_value = '0' WHERE setting_key = 'debug_mode'");
 
 // 7. Ensure database indexes exist for performance (user_id on rescue_requests and notifications)
 $check_index = mysqli_query($conn, "SHOW INDEX FROM rescue_requests WHERE Key_name = 'user_id'");

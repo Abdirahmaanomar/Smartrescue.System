@@ -163,18 +163,22 @@ run_sql($conn, "CREATE TABLE IF NOT EXISTS system_settings (
 )", $log, "system_settings table");
 
 $default_settings = [
-    'site_name'     => 'SmartRescue',
-    'contact_email' => 'admin@smartrescue.so',
-    'contact_phone' => '+252 61 000 0000',
-    'notif_email'   => '0',
-    'notif_sms'     => '0',
-    'notif_sound'   => '1',
-    'refresh_rate'  => '4',
-    'language'      => 'en',
-    'auto_backup'   => '0',
-    'sms_username'  => '',
-    'sms_password'  => '',
-    'sms_sender'    => 'SmartRescue',
+    'site_name'               => 'SmartRescue',
+    'contact_email'           => 'admin@smartrescue.so',
+    'contact_phone'           => '+252 61 000 0000',
+    'notif_email'             => '0',
+    'notif_sms'               => '0',
+    'notif_sound'             => '1',
+    'refresh_rate'            => '4',
+    'language'                => 'en',
+    'auto_backup'             => '0',
+    'sms_username'            => '',
+    'sms_password'            => '',
+    'sms_sender'              => 'SmartRescue',
+    'sos_timeout_warn'        => '10',
+    'auto_assign_closest'     => '1',
+    'max_missions_per_driver' => '1',
+    'allow_multi_responders'  => '0',
 ];
 foreach ($default_settings as $key => $val) {
     $k = mysqli_real_escape_string($conn, $key);
@@ -184,6 +188,8 @@ foreach ($default_settings as $key => $val) {
         run_sql($conn, "INSERT INTO system_settings (setting_key, setting_value) VALUES ('$k', '$v')", $log, "default setting: $key");
     }
 }
+run_sql($conn, "UPDATE system_settings SET setting_value = '1' WHERE setting_key = 'max_missions_per_driver'", $log, "Set max_missions_per_driver to 1");
+run_sql($conn, "UPDATE system_settings SET setting_value = '0' WHERE setting_key = 'debug_mode'", $log, "Set debug_mode to 0");
 
 // ── 7. system_logs ──────────────────────────────────────────────────────────
 run_sql($conn, "CREATE TABLE IF NOT EXISTS system_logs (

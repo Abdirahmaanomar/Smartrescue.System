@@ -147,6 +147,17 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
   .content{padding:16px 14px;}
   .kpi-row{grid-template-columns:1fr 1fr;}
 }
+
+@media print {
+  body { background: #fff !important; color: #000 !important; font-size: 11pt; }
+  .sidebar, .topbar, .back-link, .dropdown, button, .no-print { display: none !important; }
+  .main-wrapper { margin-left: 0 !important; padding: 0 !important; }
+  .content { padding: 15px !important; }
+  .layout { display: block !important; }
+  .profile-card, .card-box, .kpi-mini { box-shadow: none !important; border: 1px solid #ccc !important; margin-bottom: 15px !important; page-break-inside: avoid; }
+  .print-header { display: block !important; margin-bottom: 20px; border-bottom: 2px solid #333; padding-bottom: 10px; }
+  .req-table th, .req-table td { border-bottom: 1px solid #ddd !important; }
+}
 </style>
 </head>
 <body>
@@ -231,6 +242,7 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);font
                 </div>
               </div>
             </div>
+
           </div>
         </div>
       </div>
