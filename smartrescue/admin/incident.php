@@ -11,10 +11,31 @@ if (!$id) { header("Location: index.php"); exit(); }
 // Handle status update actions BEFORE any output
 if (isset($_GET['action'])) {
     $action = $_GET['action'];
-    if ($action === 'complete') {
-        mysqli_query($conn, "UPDATE rescue_requests SET status='completed' WHERE id=$id");
-    } elseif ($action === 'cancel') {
-        mysqli_query($conn, "UPDATE rescue_requests SET status='cancelled' WHERE id=$id");
+    $req_q = mysqli_query($conn, "SELECT user_id, assigned_unit_id, emergency_type FROM rescue_requests WHERE id = $id LIMIT 1");
+    $req_data = $req_q ? mysqli_fetch_assoc($req_q) : null;
+    
+    if ($req_data) {
+        $victim_id = intval($req_data['user_id']);
+        $assigned_unit_id = intval($req_data['assigned_unit_id'] ?? 0);
+        $em_type = mysqli_real_escape_string($conn, $req_data['emergency_type'] ?? 'Emergency');
+
+        if ($action === 'complete') {
+            mysqli_query($conn, "UPDATE rescue_requests SET status='completed' WHERE id=$id");
+            if ($assigned_unit_id > 0) {
+                mysqli_query($conn, "UPDATE emergency_units SET status='available' WHERE id=$assigned_unit_id");
+            }
+            if ($victim_id > 0) {
+                mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$victim_id', '✅ Rescue Completed', 'Your emergency SOS request ($em_type) has been marked as completed. Stay safe!', 0)");
+            }
+        } elseif ($action === 'cancel') {
+            mysqli_query($conn, "UPDATE rescue_requests SET status='cancelled' WHERE id=$id");
+            if ($assigned_unit_id > 0) {
+                mysqli_query($conn, "UPDATE emergency_units SET status='available' WHERE id=$assigned_unit_id");
+            }
+            if ($victim_id > 0) {
+                mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$victim_id', '🚨 Request Cancelled', 'Your emergency SOS request ($em_type) was cancelled by admin.', 0)");
+            }
+        }
     }
     header("Location: incident.php?id=$id");
     exit();
@@ -198,12 +219,6 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
                     <span class="info-row-label">GPS Coordinates</span>
                     <span class="info-row-value"><?= !empty($inc['lat']) ? round($inc['lat'],5).', '.round($inc['lng'],5) : 'Unknown' ?></span>
                 </div>
-                <div class="info-row">
-                    <span class="info-row-label">📍 Xaafadda / Neighborhood</span>
-                    <span class="info-row-value" style="color:<?= !empty($inc['neighborhood']) ? '#10b981' : '#94a3b8' ?>;font-weight:800;">
-                        <?= !empty($inc['neighborhood']) ? htmlspecialchars($inc['neighborhood']) : '<span style="color:#94a3b8;font-weight:500;">Not recorded</span>' ?>
-                    </span>
-                </div>
             </div>
         </div>
 
@@ -354,13 +369,13 @@ body{font-family:'Outfit',sans-serif;background:var(--bg);color:var(--text);}
                 <button class="action-btn action-primary" onclick="openAssignModal(<?= $inc['id'] ?>, <?= $inc['lat'] ? floatval($inc['lat']) : 'null' ?>, <?= $inc['lng'] ? floatval($inc['lng']) : 'null' ?>, '<?= addslashes(htmlspecialchars($inc['emergency_type'] ?? '')) ?>') ">
                     <i class="fa fa-rotate"></i> Change Responder
                 </button>
-                <a href="process_assign.php?id=<?= $inc['id'] ?>&action=complete" class="action-btn action-success"
+                <a href="incident.php?id=<?= $inc['id'] ?>&action=complete" class="action-btn action-success"
                    onclick="return confirm('Mark this mission as completed?')">
                     <i class="fa fa-circle-check"></i> Mark as Complete
                 </a>
                 <?php endif; ?>
                 <?php if ($inc['status'] !== 'cancelled' && $inc['status'] !== 'completed'): ?>
-                <a href="process_assign.php?id=<?= $inc['id'] ?>&action=cancel" class="action-btn action-secondary"
+                <a href="incident.php?id=<?= $inc['id'] ?>&action=cancel" class="action-btn action-secondary"
                    onclick="return confirm('Cancel this mission?')" style="color:#ef4444;border-color:rgba(239,68,68,0.2);">
                     <i class="fa fa-ban"></i> Cancel Mission
                 </a>

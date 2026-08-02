@@ -226,10 +226,9 @@ $result = mysqli_query($conn, $query);
                 <thead>
                     <tr>
                         <th style="padding-left:24px">#</th>
-                        <th>Date & Time</th>
+                        <th>Date &amp; Time</th>
                         <th>Victim</th>
                         <th>Emergency Type</th>
-                        <th>📍 Xaafadda</th>
                         <th>Details Sent</th>
                         <th>Assigned Unit</th>
                         <th>Status</th>
@@ -256,15 +255,6 @@ $result = mysqli_query($conn, $query);
                             <?php endif; ?>
                         </td>
                         <td><span class="et-badge"><?php echo htmlspecialchars($row['emergency_type'] ?? '—'); ?></span></td>
-                        <td>
-                            <?php if (!empty($row['neighborhood'])): ?>
-                                <span style="display:inline-flex;align-items:center;gap:4px;background:rgba(16,185,129,0.1);color:#10b981;padding:3px 10px;border-radius:20px;font-size:0.75rem;font-weight:800;border:1px solid rgba(16,185,129,0.25);">
-                                    📍 <?php echo htmlspecialchars($row['neighborhood']); ?>
-                                </span>
-                            <?php else: ?>
-                                <span style="color:#94a3b8;font-size:0.78rem;">—</span>
-                            <?php endif; ?>
-                        </td>
                         <td>
                             <?php 
                             $has_details = false;

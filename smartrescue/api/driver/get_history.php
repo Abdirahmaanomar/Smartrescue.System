@@ -80,15 +80,28 @@ if ($result) {
     }
 }
 
+$saves_q   = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id' AND status='completed'");
+$total_saves = (int)(mysqli_fetch_assoc($saves_q)['c'] ?? 0);
+
+$missions_q  = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id'");
+$total_missions = (int)(mysqli_fetch_assoc($missions_q)['c'] ?? 0);
+
+$success_rate = $total_missions > 0 ? round(($total_saves / $total_missions) * 100) : 0;
+
 echo json_encode([
     "status" => "success",
-    "saves" => $saves,
+    "saves" => $total_saves,
+    "total_missions" => $total_missions,
+    "success_rate" => $success_rate,
     "unit" => [
         "id" => (int)$unit['id'],
         "unit_name" => $unit['unit_name'],
         "unit_type" => $unit['unit_type'],
         "plate_number" => $unit['plate_number'],
         "status" => $unit['status'],
+        "lives_saved" => $total_saves,
+        "total_missions" => $total_missions,
+        "success_rate" => $success_rate,
     ],
     "history" => $history
 ]);

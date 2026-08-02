@@ -12,6 +12,8 @@ class DriverProvider extends ChangeNotifier {
   List<dynamic> _pendingRequests = [];
   List<dynamic> _history = [];
   int _saves = 0;
+  int _totalMissions = 0;
+  int _successRate = 0;
   Map<String, dynamic>? _unit;
   String _unitStatus = 'offline'; // available (online), busy (offline)
   
@@ -33,6 +35,8 @@ class DriverProvider extends ChangeNotifier {
   List<dynamic> get pendingRequests => _pendingRequests;
   List<dynamic> get history => _history;
   int get saves => _saves;
+  int get totalMissions => _totalMissions;
+  int get successRate => _successRate;
   Map<String, dynamic>? get unit => _unit;
   String get unitStatus => _unitStatus;
   bool get isSessionExpired => _isSessionExpired;
@@ -148,10 +152,13 @@ class DriverProvider extends ChangeNotifier {
       final histRes = await ApiService.getDriverHistory();
       if (histRes['status'] == 'success') {
         _history = histRes['history'] ?? [];
-        _saves = histRes['saves'] ?? 0;
+        _saves = int.tryParse(histRes['saves']?.toString() ?? '0') ?? 0;
+        _totalMissions = int.tryParse(histRes['total_missions']?.toString() ?? '0') ?? _history.length;
+        _successRate = int.tryParse(histRes['success_rate']?.toString() ?? '0') ?? (_totalMissions > 0 ? ((_saves / _totalMissions) * 100).round() : 0);
+
         // If no unit from getActiveJob, fall back to history unit
         if (_unit == null && histRes['unit'] != null) {
-          _unit = histRes['unit'];
+          _unit = Map<String, dynamic>.from(histRes['unit'] as Map);
           _unitStatus = _unit!['status'] ?? 'offline';
         }
       }

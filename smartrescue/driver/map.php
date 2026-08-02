@@ -36,7 +36,7 @@ $is_avail    = ($unit_status === 'available');
 $type_map = [
     'medical'  => ['icon' => 'fa-truck-medical',     'color' => '#3b82f6'],
     'fire'     => ['icon' => 'fa-fire-extinguisher', 'color' => '#ef4444'],
-    'police'   => ['icon' => 'fa-shield-halved',     'color' => '#6366f1'],
+    'police'   => ['icon' => 'fa-shield-halved',     'color' => '#2563eb'],
     'accident' => ['icon' => 'fa-car-burst',         'color' => '#f59e0b'],
 ];
 $tm = $type_map[$unit_type] ?? $type_map['medical'];

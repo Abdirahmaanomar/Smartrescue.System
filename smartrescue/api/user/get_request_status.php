@@ -41,7 +41,7 @@ $sql = "SELECT * FROM (
             LIMIT 1
         ) as latest
         WHERE latest.status NOT IN ('completed', 'cancelled')
-           OR (latest.status = 'completed' AND latest.updated_at >= NOW() - INTERVAL 2 MINUTE)";
+           OR ((latest.status = 'completed' OR latest.status = 'cancelled') AND latest.updated_at >= NOW() - INTERVAL 2 MINUTE)";
 
 $result = mysqli_query($conn, $sql);
 $row = $result ? mysqli_fetch_assoc($result) : null;

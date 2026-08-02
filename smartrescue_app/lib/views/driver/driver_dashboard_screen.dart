@@ -437,53 +437,90 @@ class _DriverDashboardScreenState extends State<DriverDashboardScreen>
 
   // ─── KPI Grid ───────────────────────────────────────────────────────────────
   Widget _buildKpiGrid(DriverProvider driver, bool isDark) {
+    final gpsAccuracyStr = driver.currentPosition != null && driver.currentPosition!.accuracy > 0
+        ? '±${driver.currentPosition!.accuracy.toStringAsFixed(0)}m'
+        : '±55m';
+
     // Cards lift up over hero header
     return Transform.translate(
       offset: const Offset(0, -16),
       child: AnimatedBuilder(
         animation: _countController,
         builder: (context, _) {
-          final completedCount = driver.history
-              .where((m) => m['status'] == 'completed')
-              .length;
-          final total = driver.history.length;
-          final rate = total > 0 ? ((completedCount / total) * 100).round() : 0;
+          return LayoutBuilder(
+            builder: (context, constraints) {
+              final double cardWidth = (constraints.maxWidth - 24) / 4;
+              final useScroll = cardWidth < 100;
 
-          return Row(
-            children: [
-              Expanded(
-                child: _GlassKpiCard(
+              final cards = [
+                _GlassKpiCard(
                   isDark: isDark,
-                  icon: Icons.favorite_rounded,
-                  iconGradient: const [Color(0xFFFF6B6B), Color(0xFFEF4444)],
-                  title: 'Saved',
-                  value: _savesAnim.value.toInt().toString(),
-                  subtitle: 'Lives rescued',
+                  icon: Icons.shield_rounded,
+                  iconBg: const Color(0xFF10B981).withValues(alpha: 0.14),
+                  iconColor: const Color(0xFF10B981),
+                  title: 'Lives Saved',
+                  value: driver.saves.toString(),
+                  trendIcon: Icons.trending_up_rounded,
+                  subtitle: 'Expert Responder',
+                  subtitleColor: const Color(0xFF10B981),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _GlassKpiCard(
+                _GlassKpiCard(
                   isDark: isDark,
                   icon: Icons.assignment_rounded,
-                  iconGradient: const [Color(0xFF818CF8), Color(0xFF6366F1)],
-                  title: 'Missions',
-                  value: _missionsAnim.value.toInt().toString(),
+                  iconBg: const Color(0xFF2563EB).withValues(alpha: 0.14),
+                  iconColor: const Color(0xFF2563EB),
+                  title: 'Total Missions',
+                  value: driver.totalMissions.toString(),
+                  trendIcon: Icons.calendar_today_rounded,
                   subtitle: 'All time',
+                  subtitleColor: const Color(0xFF2563EB),
                 ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: _GlassKpiCard(
+                _GlassKpiCard(
                   isDark: isDark,
-                  icon: Icons.insights_rounded,
-                  iconGradient: const [Color(0xFF34D399), Color(0xFF10B981)],
-                  title: 'Success',
-                  value: '$rate%',
-                  subtitle: 'Completion',
+                  icon: Icons.show_chart_rounded,
+                  iconBg: const Color(0xFF10B981).withValues(alpha: 0.14),
+                  iconColor: const Color(0xFF10B981),
+                  title: 'Success Completion',
+                  value: '${driver.successRate}%',
+                  trendIcon: Icons.check_rounded,
+                  subtitle: 'Completion rate',
+                  subtitleColor: const Color(0xFF10B981),
                 ),
-              ),
-            ],
+                _GlassKpiCard(
+                  isDark: isDark,
+                  icon: Icons.gps_fixed_rounded,
+                  iconBg: const Color(0xFFF59E0B).withValues(alpha: 0.14),
+                  iconColor: const Color(0xFFF59E0B),
+                  title: 'GPS Accuracy',
+                  value: gpsAccuracyStr,
+                  trendIcon: Icons.satellite_alt_rounded,
+                  subtitle: 'Tracking live',
+                  subtitleColor: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                ),
+              ];
+
+              if (useScroll) {
+                return SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  physics: const BouncingScrollPhysics(),
+                  child: Row(
+                    children: cards.map((card) => Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: SizedBox(width: 112, child: card),
+                    )).toList(),
+                  ),
+                );
+              }
+
+              return Row(
+                children: cards.map((card) => Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 3),
+                    child: card,
+                  ),
+                )).toList(),
+              );
+            },
           );
         },
       ),
@@ -1103,24 +1140,32 @@ class _DriverDashboardScreenState extends State<DriverDashboardScreen>
 class _GlassKpiCard extends StatelessWidget {
   final bool isDark;
   final IconData icon;
-  final List<Color> iconGradient;
+  final Color iconBg;
+  final Color iconColor;
   final String title;
   final String value;
+  final IconData? trendIcon;
   final String subtitle;
+  final Color? subtitleColor;
 
   const _GlassKpiCard({
     required this.isDark,
     required this.icon,
-    required this.iconGradient,
+    required this.iconBg,
+    required this.iconColor,
     required this.title,
     required this.value,
+    this.trendIcon,
     required this.subtitle,
+    this.subtitleColor,
   });
 
   @override
   Widget build(BuildContext context) {
+    final subColor = subtitleColor ?? (isDark ? Colors.grey.shade400 : Colors.grey.shade600);
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 16),
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 14),
       decoration: BoxDecoration(
         color: isDark ? const Color(0xFF0F1C30) : Colors.white,
         borderRadius: BorderRadius.circular(20),
@@ -1134,7 +1179,7 @@ class _GlassKpiCard extends StatelessWidget {
           BoxShadow(
             color: isDark
                 ? Colors.black.withValues(alpha: 0.30)
-                : Colors.blue.withValues(alpha: 0.08),
+                : Colors.blue.withValues(alpha: 0.06),
             blurRadius: 18,
             offset: const Offset(0, 6),
           ),
@@ -1143,55 +1188,65 @@ class _GlassKpiCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // Icon Box with translucent rounded background
           Container(
-            width: 36,
-            height: 36,
+            width: 38,
+            height: 38,
             decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: iconGradient,
-                begin: Alignment.topLeft,
-                end: Alignment.bottomRight,
-              ),
-              borderRadius: BorderRadius.circular(10),
-              boxShadow: [
-                BoxShadow(
-                  color: iconGradient.last.withValues(alpha: 0.35),
-                  blurRadius: 8,
-                  offset: const Offset(0, 3),
-                ),
-              ],
+              color: iconBg,
+              borderRadius: BorderRadius.circular(12),
             ),
-            child: Icon(icon, color: Colors.white, size: 18),
+            child: Icon(icon, color: iconColor, size: 20),
           ),
           const SizedBox(height: 12),
-          Text(
-            value,
-            style: TextStyle(
-              fontWeight: FontWeight.w900,
-              fontSize: 22,
-              color: isDark ? Colors.white : const Color(0xFF0F172A),
-              letterSpacing: -0.5,
+          // Value (e.g. 83, 106, 78%, ±55m)
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            alignment: Alignment.centerLeft,
+            child: Text(
+              value,
+              style: TextStyle(
+                fontWeight: FontWeight.w900,
+                fontSize: 21,
+                color: isDark ? Colors.white : const Color(0xFF0F172A),
+                letterSpacing: -0.5,
+              ),
             ),
           ),
           const SizedBox(height: 2),
+          // Label (Lives Saved, Total Missions, etc.)
           Text(
             title,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              color: isDark ? Colors.grey.shade400 : Colors.grey.shade500,
+              color: isDark ? Colors.grey.shade400 : Colors.grey.shade600,
               fontSize: 10,
               fontWeight: FontWeight.w700,
             ),
           ),
-          const SizedBox(height: 1),
-          Text(
-            subtitle,
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: TextStyle(
-              color: isDark ? Colors.grey.shade600 : Colors.grey.shade400,
-              fontSize: 9,
-              fontWeight: FontWeight.w500,
-            ),
+          const SizedBox(height: 4),
+          // Subtitle / Trend Badge with Icon
+          Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              if (trendIcon != null) ...[
+                Icon(trendIcon, size: 11, color: subColor),
+                const SizedBox(width: 3),
+              ],
+              Expanded(
+                child: Text(
+                  subtitle,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: TextStyle(
+                    color: subColor,
+                    fontSize: 9.5,
+                    fontWeight: FontWeight.w700,
+                  ),
+                ),
+              ),
+            ],
           ),
         ],
       ),

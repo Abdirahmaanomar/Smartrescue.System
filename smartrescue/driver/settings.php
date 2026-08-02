@@ -36,7 +36,7 @@ $unit_status= strtolower($unit['status'] ?? 'available');
 $is_avail   = ($unit_status === 'available');
 
 $type_icons  = ['medical'=>'fa-truck-medical','fire'=>'fa-fire-extinguisher','police'=>'fa-shield-halved','accident'=>'fa-car-burst'];
-$type_colors = ['medical'=>'#3b82f6','fire'=>'#ef4444','police'=>'#6366f1','accident'=>'#f59e0b'];
+$type_colors = ['medical'=>'#3b82f6','fire'=>'#ef4444','police'=>'#2563eb','accident'=>'#f59e0b'];
 $unit_icon   = $type_icons[$unit_type]  ?? 'fa-truck-medical';
 $unit_color  = $type_colors[$unit_type] ?? '#3b82f6';
 ?>

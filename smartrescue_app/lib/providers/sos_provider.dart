@@ -345,7 +345,7 @@ class SosProvider extends ChangeNotifier {
       final newRequest = RescueRequestModel.fromJson(result);
 
       // ── Guard: if this request was already dismissed by the user, stay idle ──
-      if (newRequest.status == 'completed' &&
+      if ((newRequest.status == 'completed' || newRequest.status == 'cancelled') &&
           newRequest.id == _dismissedCompletedRequestId) {
         _sosState = SosState.idle;
         _activeRequest = null;
@@ -368,9 +368,23 @@ class SosProvider extends ChangeNotifier {
           (_activeRequest == null || _activeRequest!.status != 'completed') &&
           newRequest.id != _dismissedCompletedRequestId;
 
+      final justCancelled = newRequest.status == 'cancelled' &&
+          (_activeRequest == null || _activeRequest!.status != 'cancelled') &&
+          newRequest.id != _dismissedCompletedRequestId;
+
       _activeRequest = newRequest;
       
-      if (justCompleted) {
+      if (justCancelled) {
+        _dismissedCompletedRequestId = newRequest.id;
+        SoundService.stopAmbulanceSirenLoop();
+        SoundService.playNotificationBeep();
+        _popupMessage = 'INCIDENT_CANCELLED';
+        _sosState = SosState.idle;
+        _activeRequest = null;
+        _updatePollingInterval(8);
+        notifyListeners();
+        return;
+      } else if (justCompleted) {
         _dismissedCompletedRequestId = newRequest.id;
         SoundService.stopAmbulanceSirenLoop();
         SoundService.playNotificationBeep();

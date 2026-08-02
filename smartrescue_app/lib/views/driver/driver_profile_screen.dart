@@ -5,6 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:image_picker/image_picker.dart';
 import '../../constants/api_constants.dart';
 import '../../providers/auth_provider.dart';
+import '../../providers/driver_provider.dart';
 import '../../utils/helpers.dart';
 import '../../services/api_service.dart';
 import '../../components/app_button.dart';
@@ -374,6 +375,7 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
   @override
   Widget build(BuildContext context) {
     final user = Provider.of<AuthProvider>(context).user;
+    final driver = Provider.of<DriverProvider>(context);
     final isDark = Theme.of(context).brightness == Brightness.dark;
 
     if (user == null) {
@@ -393,6 +395,10 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
             _buildAvatarCard(user, initials, isDark),
             const SizedBox(height: 20),
 
+            // ── Unit Card (Live from database via DriverProvider) ─────────────
+            _buildUnitCard(driver, isDark),
+            const SizedBox(height: 20),
+
             // ── Personal Info Section Header ──────────────────────────────────
             _sectionHeader(Icons.person_outline_rounded, Colors.blue, 'Personal Information', isDark),
             const SizedBox(height: 12),
@@ -409,6 +415,237 @@ class _DriverProfileScreenState extends State<DriverProfileScreen> {
             _buildPasswordForm(isDark),
           ],
         ),
+      ),
+    );
+  }
+
+  // ─── Unit Detail Card (live data from database) ───────────────────────────
+  Widget _buildUnitCard(DriverProvider driver, bool isDark) {
+    final unit = driver.unit;
+    final saves = driver.saves;
+    final totalMissions = driver.history.length;
+    final completed = driver.history.where((m) => m['status'] == 'completed').length;
+    final rate = totalMissions > 0 ? ((completed / totalMissions) * 100).round() : 0;
+
+    String rank = 'Rookie Responder';
+    if (saves >= 50) rank = 'Elite Responder';
+    else if (saves >= 20) rank = 'Senior Responder';
+    else if (saves >= 10) rank = 'Expert Responder';
+    else if (saves >= 5) rank = 'Skilled Responder';
+
+    final unitType = (unit?['unit_type'] ?? 'medical').toString().toLowerCase();
+    final unitName = unit?['unit_name'] ?? 'Rescue Unit';
+    final plateNum = unit?['plate_number'] ?? '---';
+    final unitStatus = unit?['status'] ?? 'offline';
+    final isAvailable = unitStatus == 'available';
+
+    // Gradient & icon by unit type (matching website)
+    final Map<String, Map<String, dynamic>> typeMap = {
+      'medical':  {'grad': [const Color(0xFF1E40AF), const Color(0xFF3B82F6)], 'icon': Icons.local_hospital_rounded},
+      'fire':     {'grad': [const Color(0xFF991B1B), const Color(0xFFEF4444)], 'icon': Icons.local_fire_department_rounded},
+      'police':   {'grad': [const Color(0xFF1D4ED8), const Color(0xFF2563EB)], 'icon': Icons.shield_rounded},
+      'accident': {'grad': [const Color(0xFF92400E), const Color(0xFFF59E0B)], 'icon': Icons.car_crash_rounded},
+    };
+    final tm = typeMap[unitType] ?? typeMap['medical']!;
+    final gradient = tm['grad'] as List<Color>;
+    final unitIcon = tm['icon'] as IconData;
+
+    return Container(
+      decoration: BoxDecoration(
+        color: isDark ? const Color(0xFF1E293B) : Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.shade100,
+          width: 1.2,
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: gradient[1].withValues(alpha: 0.18),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      clipBehavior: Clip.antiAlias,
+      child: Column(
+        children: [
+          // ── Gradient Header ──────────────────────────────────────────────
+          Container(
+            padding: const EdgeInsets.fromLTRB(20, 20, 20, 18),
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: gradient,
+                begin: Alignment.topLeft,
+                end: Alignment.bottomRight,
+              ),
+            ),
+            child: Stack(
+              children: [
+                Positioned(
+                  top: -20,
+                  right: -20,
+                  child: Container(
+                    width: 90,
+                    height: 90,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.white.withValues(alpha: 0.08),
+                    ),
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Icon(unitIcon, color: Colors.white.withValues(alpha: 0.9), size: 30),
+                    const SizedBox(height: 10),
+                    Text(
+                      unitName,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w900,
+                        letterSpacing: -0.3,
+                      ),
+                    ),
+                    const SizedBox(height: 2),
+                    Text(
+                      '${unitType[0].toUpperCase()}${unitType.substring(1)} Response Unit',
+                      style: TextStyle(
+                        color: Colors.white.withValues(alpha: 0.75),
+                        fontSize: 12,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    const SizedBox(height: 10),
+                    // Plate badge
+                    Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                      decoration: BoxDecoration(
+                        color: Colors.white.withValues(alpha: 0.18),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Row(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          const Icon(Icons.credit_card_rounded, color: Colors.white, size: 13),
+                          const SizedBox(width: 5),
+                          Text(
+                            plateNum,
+                            style: const TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w700,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+
+          // ── Stats Grid ───────────────────────────────────────────────────
+          Padding(
+            padding: const EdgeInsets.all(14),
+            child: Column(
+              children: [
+                Row(
+                  children: [
+                    _UnitStatTile(
+                      isDark: isDark,
+                      icon: Icons.favorite_rounded,
+                      iconColor: const Color(0xFFEF4444),
+                      label: 'Lives Saved',
+                      value: saves.toString(),
+                      valueColor: const Color(0xFF10B981),
+                    ),
+                    const SizedBox(width: 10),
+                    _UnitStatTile(
+                      isDark: isDark,
+                      icon: Icons.flag_rounded,
+                      iconColor: const Color(0xFF6366F1),
+                      label: 'Missions',
+                      value: totalMissions.toString(),
+                    ),
+                    const SizedBox(width: 10),
+                    _UnitStatTile(
+                      isDark: isDark,
+                      icon: Icons.insights_rounded,
+                      iconColor: const Color(0xFF10B981),
+                      label: 'Success',
+                      value: '$rate%',
+                      valueColor: const Color(0xFF10B981),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 12),
+                // Status & Rank row
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                  decoration: BoxDecoration(
+                    color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+                    borderRadius: BorderRadius.circular(14),
+                    border: Border.all(
+                      color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.shade100,
+                    ),
+                  ),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      // Status
+                      Row(
+                        children: [
+                          Icon(
+                            Icons.circle,
+                            size: 9,
+                            color: isAvailable ? const Color(0xFF10B981) : Colors.grey,
+                          ),
+                          const SizedBox(width: 6),
+                          Text(
+                            isAvailable ? 'Available' : unitStatus == 'busy' ? 'On Mission' : 'Offline',
+                            style: TextStyle(
+                              fontSize: 13,
+                              fontWeight: FontWeight.w700,
+                              color: isAvailable ? const Color(0xFF10B981) : isDark ? Colors.grey.shade400 : Colors.grey.shade600,
+                            ),
+                          ),
+                        ],
+                      ),
+                      // Rank badge
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF59E0B).withValues(alpha: 0.12),
+                          borderRadius: BorderRadius.circular(20),
+                          border: Border.all(
+                            color: const Color(0xFFF59E0B).withValues(alpha: 0.3),
+                          ),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.emoji_events_rounded, size: 12, color: Color(0xFFD97706)),
+                            const SizedBox(width: 4),
+                            Text(
+                              rank,
+                              style: const TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.w800,
+                                color: Color(0xFFD97706),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -806,6 +1043,75 @@ class _SourceOption extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+// ── Unit Stat Tile used in _buildUnitCard ─────────────────────────────────────
+class _UnitStatTile extends StatelessWidget {
+  final bool isDark;
+  final IconData icon;
+  final Color iconColor;
+  final String label;
+  final String value;
+  final Color? valueColor;
+
+  const _UnitStatTile({
+    required this.isDark,
+    required this.icon,
+    required this.iconColor,
+    required this.label,
+    required this.value,
+    this.valueColor,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final vColor = valueColor ?? (isDark ? Colors.white : const Color(0xFF0F172A));
+    return Expanded(
+      child: Container(
+        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 8),
+        decoration: BoxDecoration(
+          color: isDark ? const Color(0xFF0F172A) : const Color(0xFFF8FAFC),
+          borderRadius: BorderRadius.circular(16),
+          border: Border.all(
+            color: isDark ? Colors.white.withValues(alpha: 0.06) : Colors.grey.shade100,
+          ),
+        ),
+        child: Column(
+          children: [
+            Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: iconColor.withValues(alpha: 0.12),
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Icon(icon, color: iconColor, size: 16),
+            ),
+            const SizedBox(height: 8),
+            Text(
+              value,
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.w900,
+                color: vColor,
+                letterSpacing: -0.3,
+              ),
+            ),
+            const SizedBox(height: 2),
+            Text(
+              label,
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                fontSize: 10,
+                fontWeight: FontWeight.w600,
+                color: isDark ? Colors.grey.shade500 : Colors.grey.shade500,
+              ),
+            ),
+          ],
+        ),
       ),
     );
   }

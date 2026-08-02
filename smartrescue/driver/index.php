@@ -56,6 +56,8 @@ $total_missions = (int)(mysqli_fetch_assoc($missions_q)['c'] ?? 0);
 $pending_q   = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id' AND status IN('pending','accepted','en_route','arrived')");
 $active_cnt  = (int)(mysqli_fetch_assoc($pending_q)['c'] ?? 0);
 
+$success_rate = $total_missions > 0 ? round(($total_saves / $total_missions) * 100) : 0;
+
 // Rank based on saves
 $rank = 'Rookie Responder';
 if ($total_saves >= 50) $rank = 'Elite Responder';
@@ -67,7 +69,7 @@ elseif ($total_saves >= 5)  $rank = 'Skilled Responder';
 $type_map = [
     'medical'  => ['icon' => 'fa-truck-medical',      'color' => '#3b82f6', 'bg' => 'rgba(59,130,246,0.15)', 'grad' => 'linear-gradient(135deg,#1e40af,#3b82f6)'],
     'fire'     => ['icon' => 'fa-fire-extinguisher',  'color' => '#ef4444', 'bg' => 'rgba(239,68,68,0.15)',  'grad' => 'linear-gradient(135deg,#991b1b,#ef4444)'],
-    'police'   => ['icon' => 'fa-shield-halved',      'color' => '#6366f1', 'bg' => 'rgba(99,102,241,0.15)', 'grad' => 'linear-gradient(135deg,#3730a3,#6366f1)'],
+    'police'   => ['icon' => 'fa-shield-halved',      'color' => '#2563eb', 'bg' => 'rgba(37,99,235,0.15)', 'grad' => 'linear-gradient(135deg,#1d4ed8,#2563eb)'],
     'accident' => ['icon' => 'fa-car-burst',          'color' => '#f59e0b', 'bg' => 'rgba(245,158,11,0.15)', 'grad' => 'linear-gradient(135deg,#92400e,#f59e0b)'],
 ];
 $tm = $type_map[$unit_type] ?? $type_map['medical'];
@@ -376,7 +378,7 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 ══════════════════════════════════════════════════════ */
 .stats-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 16px;
     margin-bottom: 24px;
 }
@@ -399,8 +401,9 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
     transform: translate(20px, -20px);
     opacity: .06;
 }
-.stat-card.saves::after  { background: var(--green); }
+.stat-card.saves::after   { background: var(--green); }
 .stat-card.missions::after{ background: var(--blue); }
+.stat-card.success::after { background: var(--green); }
 .stat-card.active::after  { background: var(--red); }
 .stat-icon-wrap {
     width: 52px; height: 52px; border-radius: 16px;
@@ -830,6 +833,17 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
                 <div class="stat-value"><?php echo $total_missions; ?></div>
                 <div class="stat-label">Total Missions</div>
                 <div class="stat-trend info"><i class="fa-solid fa-calendar"></i> All time</div>
+            </div>
+        </div>
+
+        <div class="stat-card success">
+            <div class="stat-icon-wrap" style="background:rgba(16,185,129,.12);color:#10b981">
+                <i class="fa-solid fa-chart-line"></i>
+            </div>
+            <div class="stat-info">
+                <div class="stat-value"><?php echo $success_rate; ?>%</div>
+                <div class="stat-label">Success Completion</div>
+                <div class="stat-trend up"><i class="fa-solid fa-check"></i> Completion rate</div>
             </div>
         </div>
 

@@ -3,12 +3,12 @@ header("Content-Type: application/json");
 session_start();
 require_once '../../config/db.php';
 
-// Support both session and raw user_id request input for resilience
+// Support both raw user_id request input and session for resilience
 $user_id = null;
-if (isset($_SESSION['user_id'])) {
-    $user_id = intval($_SESSION['user_id']);
-} elseif (isset($_REQUEST['user_id'])) {
+if (isset($_REQUEST['user_id']) && intval($_REQUEST['user_id']) > 0) {
     $user_id = intval($_REQUEST['user_id']);
+} elseif (isset($_SESSION['user_id'])) {
+    $user_id = intval($_SESSION['user_id']);
 }
 
 if (!$user_id) {
@@ -63,6 +63,9 @@ if ($stmt->execute()) {
             $stmt_up->close();
         }
     }
+
+    // 4. Create notification for the user
+    mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$user_id', '🚨 Request Cancelled', 'Your emergency SOS request has been cancelled.', 0)");
 
     echo json_encode(["status" => "success", "message" => "Emergency cancelled successfully"]);
 } else {

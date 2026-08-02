@@ -73,7 +73,7 @@ $is_avail   = ($unit_status === 'available');
 $type_map = [
     'medical'  => ['icon' => 'fa-truck-medical',     'color' => '#3b82f6', 'bg' => 'rgba(59,130,246,0.12)', 'grad' => 'linear-gradient(135deg,#1e40af,#3b82f6)'],
     'fire'     => ['icon' => 'fa-fire-extinguisher', 'color' => '#ef4444', 'bg' => 'rgba(239,68,68,0.12)',  'grad' => 'linear-gradient(135deg,#991b1b,#ef4444)'],
-    'police'   => ['icon' => 'fa-shield-halved',     'color' => '#6366f1', 'bg' => 'rgba(99,102,241,0.12)', 'grad' => 'linear-gradient(135deg,#3730a3,#6366f1)'],
+    'police'   => ['icon' => 'fa-shield-halved',     'color' => '#2563eb', 'bg' => 'rgba(37,99,235,0.12)', 'grad' => 'linear-gradient(135deg,#1d4ed8,#2563eb)'],
     'accident' => ['icon' => 'fa-car-burst',         'color' => '#f59e0b', 'bg' => 'rgba(245,158,11,0.12)', 'grad' => 'linear-gradient(135deg,#92400e,#f59e0b)'],
 ];
 $tm = $type_map[$unit_type] ?? $type_map['medical'];
@@ -83,6 +83,7 @@ $saves_q   = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE a
 $total_saves = (int)(mysqli_fetch_assoc($saves_q)['c'] ?? 0);
 $missions_q  = mysqli_query($conn, "SELECT COUNT(*) c FROM rescue_requests WHERE assigned_unit_id='$unit_id'");
 $total_missions = (int)(mysqli_fetch_assoc($missions_q)['c'] ?? 0);
+$success_rate = $total_missions > 0 ? round(($total_saves / $total_missions) * 100) : 0;
 $rank = 'Rookie Responder';
 if ($total_saves >= 50) $rank = 'Elite Responder';
 elseif ($total_saves >= 20) $rank = 'Senior Responder';
@@ -169,7 +170,7 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
 .profile-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px;flex-shrink:0}
 
 /* STATS */
-.profile-stats{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;margin-bottom:24px}
+.profile-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:24px}
 .ps-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow-sm);text-align:center;transition:transform .2s}
 .ps-card:hover{transform:translateY(-2px)}
 .ps-val{font-weight:900;font-size:28px}
@@ -318,6 +319,10 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
         <div class="ps-card">
             <div class="ps-val" style="color:var(--blue)"><?php echo $total_missions; ?></div>
             <div class="ps-label">Total Missions</div>
+        </div>
+        <div class="ps-card">
+            <div class="ps-val" style="color:#10b981"><?php echo $success_rate; ?>%</div>
+            <div class="ps-label">Success Completion</div>
         </div>
     </div>
 

@@ -45,6 +45,37 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         // Haddii cilad dhacdo
         echo "Cilad farsamo: " . mysqli_error($conn);
     }
+} else if (isset($_GET['action']) && isset($_GET['id'])) {
+    $id = intval($_GET['id']);
+    $action = $_GET['action'];
+    $req_q = mysqli_query($conn, "SELECT user_id, assigned_unit_id, emergency_type FROM rescue_requests WHERE id = $id LIMIT 1");
+    $req_data = $req_q ? mysqli_fetch_assoc($req_q) : null;
+    
+    if ($req_data) {
+        $victim_id = intval($req_data['user_id']);
+        $assigned_unit_id = intval($req_data['assigned_unit_id'] ?? 0);
+        $em_type = mysqli_real_escape_string($conn, $req_data['emergency_type'] ?? 'Emergency');
+
+        if ($action === 'complete') {
+            mysqli_query($conn, "UPDATE rescue_requests SET status='completed' WHERE id=$id");
+            if ($assigned_unit_id > 0) {
+                mysqli_query($conn, "UPDATE emergency_units SET status='available' WHERE id=$assigned_unit_id");
+            }
+            if ($victim_id > 0) {
+                mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$victim_id', '✅ Rescue Completed', 'Your emergency SOS request ($em_type) has been marked as completed. Stay safe!', 0)");
+            }
+        } elseif ($action === 'cancel') {
+            mysqli_query($conn, "UPDATE rescue_requests SET status='cancelled' WHERE id=$id");
+            if ($assigned_unit_id > 0) {
+                mysqli_query($conn, "UPDATE emergency_units SET status='available' WHERE id=$assigned_unit_id");
+            }
+            if ($victim_id > 0) {
+                mysqli_query($conn, "INSERT INTO notifications (user_id, title, message, is_read) VALUES ('$victim_id', '🚨 Request Cancelled', 'Your emergency SOS request ($em_type) was cancelled by admin.', 0)");
+            }
+        }
+    }
+    header("Location: incident.php?id=$id");
+    exit();
 } else {
     // Haddii si qaldan bogga loo soo booqdo
     header("Location: index.php");

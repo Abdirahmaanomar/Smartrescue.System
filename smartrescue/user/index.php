@@ -3702,6 +3702,13 @@ function pollDispatch() {
         if (card) card.classList.remove('show');
         if (driverMarker) { map.removeLayer(driverMarker); driverMarker = null; }
         if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
+      } else if (isCancelled) {
+        setTimeline(-1);
+        showPanel('info', '🚫 REQUEST CANCELLED — Emergency request was cancelled.');
+        resetSOSBtn();
+        if (card) card.classList.remove('show');
+        if (driverMarker) { map.removeLayer(driverMarker); driverMarker = null; }
+        if (routePolyline) { map.removeLayer(routePolyline); routePolyline = null; }
       } else if (data.status === 'success' && data.driver_assigned) {
         // Show driver card
         const name  = data.driver_name || 'Driver';
