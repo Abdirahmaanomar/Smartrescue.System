@@ -2608,3 +2608,123 @@
     [driver_id] => 1048
 )
 
+2026-08-04 13:10:19 - REQUEST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-08-04 13:10:24 - REQUEST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-08-04 13:10:29 - REQUEST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-08-04 13:10:37 - REQUEST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 480
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+
+2026-08-06 09:25:13 - REQUEST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => accept
+    [driver_id] => 1047
+)
+
+2026-08-06 09:25:51 - REQUEST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => en_route
+    [driver_id] => 1047
+)
+
+2026-08-06 09:28:13 - REQUEST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => arrived
+    [driver_id] => 1047
+)
+
+2026-08-06 09:28:20 - REQUEST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+ - POST: Array
+(
+    [request_id] => 482
+    [unit_id] => 8
+    [action] => complete
+    [driver_id] => 1047
+)
+

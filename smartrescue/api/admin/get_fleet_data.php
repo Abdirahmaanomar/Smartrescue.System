@@ -35,11 +35,17 @@ $units_query = "SELECT e.*,
 $units_res = mysqli_query($conn, $units_query);
 $units = mysqli_fetch_all($units_res, MYSQLI_ASSOC);
 
-// Heartbeat verification: Keep unit status as configured in database
-// If unit status is empty, treat as offline (not available)
+// Heartbeat verification: A unit is truly available only if status is available AND location updated in last 10 minutes (600s)
+$now_ts = time();
 foreach ($units as &$u) {
     if (empty($u['status'])) {
         $u['status'] = 'offline';
+    }
+    if (strtolower($u['status']) === 'available') {
+        $last_loc = !empty($u['driver_location_updated_at']) ? strtotime($u['driver_location_updated_at']) : 0;
+        if ($last_loc === 0 || ($now_ts - $last_loc) > 600) {
+            $u['status'] = 'offline';
+        }
     }
 }
 unset($u);

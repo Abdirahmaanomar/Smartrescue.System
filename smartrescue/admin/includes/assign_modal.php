@@ -182,36 +182,42 @@ function openAssignModal(id, vicLat, vicLng, type) {
                 return;
             }
 
-            // Filter matching emergency type first among online units
+            // Filter matching emergency type ONLY among online units
             let matchingOnline = onlineUnits.filter(u => {
                 let ut = (u.type||u.unit_type||'').toLowerCase();
                 if(et.includes('medical') && (ut === 'ambulance' || ut === 'medical')) return true;
                 if(et.includes('accident') && (ut === 'accident' || ut === 'ambulance' || ut === 'medical')) return true;
-                if(et.includes('fire') && ut === 'fire') return true;
+                if(et.includes('fire') && (ut === 'fire' || ut === 'firefighter')) return true;
                 if(et.includes('police') && ut === 'police') return true;
+                if(ut && (et.includes(ut) || ut.includes(et))) return true;
                 return false;
             });
 
-            let displayUnits = matchingOnline.length > 0 ? matchingOnline : onlineUnits;
-            let isFallback = (matchingOnline.length === 0);
+            if (matchingOnline.length === 0) {
+                let reqTypeLabel = escHtmlLocal(type || 'requested');
+                document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-triangle-exclamation" style="margin-right:4px;"></i> No online <b>' + reqTypeLabel + '</b> responder available.';
+                document.getElementById('assignMatchLabel').style.background = 'rgba(239, 68, 68, 0.1)';
+                document.getElementById('assignMatchLabel').style.color = '#dc2626';
+                document.getElementById('assignMatchLabel').style.border = '1px solid rgba(239,68,68,0.2)';
+                document.getElementById('assignMatchLabel').style.display = 'block';
+                grid.innerHTML = '<div style="padding:24px;text-align:center;color:#ef4444;font-weight:800;font-size:0.88rem;"><i class="fa fa-circle-xmark" style="font-size:1.8rem;display:block;margin-bottom:8px;"></i>No online <b>' + reqTypeLabel + '</b> responder available.<br><span style="font-size:0.78rem;color:#64748b;font-weight:600;margin-top:6px;display:block">Please ask a ' + reqTypeLabel + ' driver to go online first.</span></div>';
+                document.getElementById('btnAssignSubmit').disabled = true;
+                document.getElementById('btnAssignSubmit').style.opacity = '0.5';
+                document.getElementById('assignDriverInfo').style.display = 'none';
+                currentUnitsData = {};
+                return;
+            }
 
+            let displayUnits = matchingOnline;
             displayUnits.forEach(u => {
                 u.dist = calcDist(vicLat, vicLng, u.current_lat, u.current_lng);
             });
-
             displayUnits.sort((a,b) => a.dist - b.dist);
 
-            if (isFallback) {
-                document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-triangle-exclamation" style="margin-right:4px;"></i> No direct <b>' + escHtmlLocal(type) + '</b> online match. Showing available online responder(s) by distance.';
-                document.getElementById('assignMatchLabel').style.background = '#fef3c7';
-                document.getElementById('assignMatchLabel').style.color = '#b45309';
-                document.getElementById('assignMatchLabel').style.border = '1px solid #fde68a';
-            } else {
-                document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-crosshairs"></i> <b>' + displayUnits.length + '</b> online <b>' + escHtmlLocal(type) + '</b> responder(s) — sorted by nearest.';
-                document.getElementById('assignMatchLabel').style.background = 'rgba(34,197,94,0.1)';
-                document.getElementById('assignMatchLabel').style.color = '#15803d';
-                document.getElementById('assignMatchLabel').style.border = 'none';
-            }
+            document.getElementById('assignMatchLabel').innerHTML = '<i class="fa fa-crosshairs"></i> <b>' + displayUnits.length + '</b> online <b>' + escHtmlLocal(type) + '</b> responder(s) — sorted by nearest.';
+            document.getElementById('assignMatchLabel').style.background = 'rgba(34,197,94,0.1)';
+            document.getElementById('assignMatchLabel').style.color = '#15803d';
+            document.getElementById('assignMatchLabel').style.border = 'none';
             document.getElementById('assignMatchLabel').style.display = 'block';
             document.getElementById('btnAssignSubmit').disabled = false;
             document.getElementById('btnAssignSubmit').style.opacity = '1';
