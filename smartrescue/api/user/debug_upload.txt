@@ -1394,3 +1394,45 @@ POST: Array
     [birth_date] => 
 )
 
+2026-08-12 12:49:12
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => suriyan
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+2026-08-12 12:49:32
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => cade
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+2026-08-12 12:49:50
+FILES: Array
+(
+)
+
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+

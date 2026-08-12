@@ -15,7 +15,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $fullname = clean_input($_POST['fullname'], $conn);
     $phone    = clean_input($_POST['phone'], $conn);
     $email_val = clean_input($_POST['email'], $conn);
-    $email_sql = !empty($email_val) ? "'$email_val'" : 'NULL';
+    $email_sql = "'$email_val'";
     $birth_date = !empty($_POST['birth_date']) ? "'".clean_input($_POST['birth_date'], $conn)."'" : 'NULL';
     $gender   = clean_input($_POST['gender'], $conn);
     $role     = isset($_POST['role']) ? strtolower(clean_input($_POST['role'], $conn)) : 'user';
@@ -179,8 +179,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </div>
                 
                 <div class="form-floating mb-3">
-                    <input type="email" name="email" class="form-control" id="email" placeholder="axmed@email.com">
-                    <label for="email">Email (Optional)</label>
+                    <input type="email" name="email" class="form-control" id="email" placeholder="axmed@email.com" required>
+                    <label for="email">Email</label>
                 </div>
                 
 

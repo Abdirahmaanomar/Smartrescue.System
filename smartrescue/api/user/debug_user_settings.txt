@@ -6345,3 +6345,122 @@ SESSION: Array
 )
 
 
+2026-08-08 14:37:23
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+moobeel: 12346423: Brother
+maxamed saciid sahal: 612726806: Brother
+carab: 611226645: Brother
+    [user_id] => 1045
+    [is_blood_donor] => 0
+    [blood_group] => 
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => eng haaji Ahmed
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1786189013
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-12 12:49:12
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => suriyan
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-12 12:49:32
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => cade
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+    [fullname] => suriyan
+)
+
+
+2026-08-12 12:49:50
+POST: Array
+(
+    [action] => update_profile
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [phone] => 611000000
+    [email] => user1@gmail.com
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+    [fullname] => cade
+)
+
+
+2026-08-12 12:52:31
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1063
+)
+
+SESSION: Array
+(
+    [user_id] => 1063
+    [fullname] => Roble Haasan Mohamed
+    [role] => user
+    [_sg_checked_1063] => 1786528340
+    [_notif_seeded_1063] => 1
+)
+
+
+2026-08-12 12:52:33
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1063
+)
+
+SESSION: Array
+(
+    [user_id] => 1063
+    [fullname] => Roble Haasan Mohamed
+    [role] => user
+    [_sg_checked_1063] => 1786528340
+    [_notif_seeded_1063] => 1
+)
+
+

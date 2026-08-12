@@ -335,7 +335,7 @@ class _RegisterScreenState extends State<RegisterScreen>
                                           controller: _emailController,
                                           focusNode: _emailFocus,
                                           isFocused: _emailFocused,
-                                          label: 'Email Address (Optional)',
+                                          label: 'Email Address',
                                           hint: 'email@example.com',
                                           icon: Icons.alternate_email_rounded,
                                           keyboardType:
