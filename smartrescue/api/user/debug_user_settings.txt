@@ -6464,3 +6464,239 @@ SESSION: Array
 )
 
 
+2026-08-18 10:14:04
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood: O- | Allergies:  | Conditions:  | Meds: 
+
+Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+moobeel: 12346423: Brother
+maxamed saciid sahal: 612726806: Brother
+carab: 611226645: Brother
+    [is_blood_donor] => 1
+    [blood_group] => O-
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787037191
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:14:07
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood: O- | Allergies:  | Conditions:  | Meds: 
+
+Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+moobeel: 12346423: Brother
+maxamed saciid sahal: 612726806: Brother
+carab: 611226645: Brother
+    [is_blood_donor] => 0
+    [blood_group] => O-
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787037191
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:14:14
+POST: Array
+(
+    [action] => update_safety_info
+    [medical_info] => Blood: O- | Allergies:  | Conditions:  | Meds: 
+
+Blood Group: B+
+Allergies: malaay
+Chronic Conditions: hergab
+Medications: 6003mg
+Emergency Notes: 
+Volunteer Blood Donor: Yes
+    [emergency_contacts] => Cali cade: 619658435: Friend
+laptop computer: 675876: Brother
+moobeel: 12346423: Brother
+maxamed saciid sahal: 612726806: Brother
+carab: 611226645: Brother
+    [is_blood_donor] => 1
+    [blood_group] => O-
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787037251
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:14:56
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787037251
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:14:57
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => vibration_enabled
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787037251
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:23:34
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:23:35
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 10:28:03
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => false
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 11:19:01
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => notifications_enabled
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787041130
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 11:19:08
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_enabled
+    [value] => 0
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787041130
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-18 11:19:32
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => gps_enabled
+    [value] => 1
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787041130
+    [_notif_seeded_1045] => 1
+)
+
+

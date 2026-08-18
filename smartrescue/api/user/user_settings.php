@@ -174,7 +174,7 @@ elseif ($action === 'update_safety_info') {
     $is_blood_donor = isset($_POST['is_blood_donor']) ? intval($_POST['is_blood_donor']) : 0;
     $blood_group = clean_input($_POST['blood_group'] ?? '', $conn);
 
-    $query = "UPDATE users SET medical_info = '$medical', emergency_contacts = '$contacts' WHERE id = '$user_id'";
+    $query = "UPDATE users SET medical_info = '$medical', emergency_contacts = '$contacts', is_volunteer = '$is_blood_donor' WHERE id = '$user_id'";
     if (mysqli_query($conn, $query)) {
         
         // Handle Blood Donor Registry Sync

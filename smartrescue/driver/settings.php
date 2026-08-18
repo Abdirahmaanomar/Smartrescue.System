@@ -347,23 +347,6 @@ html,body{font-family:'Inter',system-ui,sans-serif;background:var(--bg);color:va
                 <span class="toggle-track" style="--track-color:#6366f1"></span>
             </label>
         </div>
-
-        <div class="setting-row">
-            <div class="sr-left">
-                <div class="sr-icon" style="background:rgba(236,72,153,.12);color:#ec4899">
-                    <i class="fa-solid fa-mobile-screen-button"></i>
-                </div>
-                <div>
-                    <div class="sr-label">Vibration</div>
-                    <div class="sr-sub">Haptic feedback on new emergency</div>
-                </div>
-            </div>
-            <label class="toggle-wrap">
-                <input type="checkbox" class="toggle-inp" id="hapticToggle" checked
-                    onchange="savePref('vibration_enabled', this.checked ? 1 : 0)">
-                <span class="toggle-track" style="--track-color:#ec4899"></span>
-            </label>
-        </div>
     </div>
 
     <!-- ── LANGUAGE ────────────────────────────────────── -->

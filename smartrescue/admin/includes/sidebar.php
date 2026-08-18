@@ -429,6 +429,10 @@ if (isset($conn) && isset($_SESSION['user_id']) && !isset($_SESSION['_profile_sy
             <span class="nav-icon"><i class="fa fa-list-check"></i></span>
             <?= t('Mission Logs') ?>
         </a>
+        <a href="blood_donors.php" class="nav-item-link <?= navActive('blood_donors.php', $current_page) ?>" style="<?= $current_page==='blood_donors.php' ? '' : '' ?>">
+            <span class="nav-icon" style="<?= navActive('blood_donors.php',$current_page)==='active' ? '' : 'color:#e11d48' ?>"><i class="fa fa-droplet"></i></span>
+            Blood Donors
+        </a>
 
         <div class="nav-section-label"><?= t('Intelligence') ?></div>
         <a href="analytics.php" class="nav-item-link <?= navActive('analytics.php', $current_page) ?>">

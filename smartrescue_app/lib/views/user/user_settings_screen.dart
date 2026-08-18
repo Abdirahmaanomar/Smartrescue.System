@@ -463,40 +463,6 @@ class _UserSettingsScreenState extends State<UserSettingsScreen> {
         ),
         const SizedBox(height: 14),
         _buildSwitchTile(
-          icon: Icons.vibration_rounded,
-          iconBgColor: Colors.orange.shade700,
-          title: 'Vibration',
-          subtitle: 'Haptic feedback on alerts',
-          value: _vibration,
-          isLoading: _updatingStates['vibration_enabled'] ?? false,
-          onChanged: (val) async {
-            setState(() => _updatingStates['vibration_enabled'] = true);
-            final result =
-                await ApiService.togglePreference(user.id.toString(), 'vibration_enabled', val);
-            if (mounted) {
-              setState(() {
-                _updatingStates['vibration_enabled'] = false;
-                if (result['status'] == 'success') {
-                  _vibration = val;
-                  Provider.of<AuthProvider>(context, listen: false)
-                      .updateUser(user.copyWith(vibrationEnabled: val));
-                  AppHelpers.showSnack(
-                    context,
-                    _t(val ? 'Vibration Enabled' : 'Vibration Disabled'),
-                  );
-                } else {
-                  AppHelpers.showSnack(
-                    context,
-                    _t('Failed to toggle vibration'),
-                    isError: true,
-                  );
-                }
-              });
-            }
-          },
-        ),
-        const SizedBox(height: 14),
-        _buildSwitchTile(
           icon: Icons.campaign_rounded,
           iconBgColor: Colors.red.shade600,
           title: 'Emergency Alerts',

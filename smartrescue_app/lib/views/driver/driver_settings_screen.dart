@@ -309,26 +309,6 @@ class _DriverSettingsScreenState extends State<DriverSettingsScreen> {
               onChanged: _toggleSoundAlerts,
             ),
           ),
-          const Divider(height: 24, thickness: 1),
-          _settingRow(
-            icon: Icons.vibration_rounded,
-            iconColor: const Color(0xFFEC4899),
-            label: 'Haptic Vibration',
-            subtitle: 'Vibrate on new emergency',
-            isDark: isDark,
-            trailing: _loadingVibration
-                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2))
-                : Switch(
-                    value: user?.vibrationEnabled ?? true,
-                    activeTrackColor: const Color(0xFFEC4899),
-                    activeThumbColor: Colors.white,
-                    onChanged: (val) => _togglePref(
-                      'vibration_enabled', val,
-                      () => setState(() => _loadingVibration = true),
-                      () => setState(() => _loadingVibration = false),
-                    ),
-                  ),
-          ),
         ],
       ),
     );

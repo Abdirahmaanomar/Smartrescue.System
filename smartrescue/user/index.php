@@ -24,6 +24,15 @@ $emergency_contacts = $user_data['emergency_contacts'] ?? '';
 $user_language      = $user_data['language'] ?? 'en';
 $initial_lat        = $user_data['current_lat'] ?? 2.0469;
 $initial_lng        = $user_data['current_lng'] ?? 45.3182;
+$is_volunteer       = intval($user_data['is_volunteer'] ?? 0);
+if (!empty($phone)) {
+    $ph_esc = mysqli_real_escape_string($conn, $phone);
+    $bd_q = mysqli_query($conn, "SELECT is_available FROM blood_donors WHERE phone = '$ph_esc'");
+    if ($bd_q && mysqli_num_rows($bd_q) > 0) {
+        $bd_row = mysqli_fetch_assoc($bd_q);
+        $is_volunteer = intval($bd_row['is_available']);
+    }
+}
 
 $notif_on = ($user_data['notifications_enabled'] ?? 1) ? 'on' : 'off';
 $vib_on = ($user_data['vibration_enabled'] ?? 1) ? 'on' : 'off';
@@ -56,6 +65,63 @@ $last_emergency = $last_row ? date('M d, H:i', strtotime($last_row['created_at']
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
 <style>
+/* ===== VOLUNTEER BLOOD DONOR TOGGLE ===== */
+.volunteer-toggle-box {
+  margin-top: 24px;
+  padding: 22px 26px;
+  background: var(--surface, #ffffff);
+  border: 1.5px solid var(--border, #e2e8f0);
+  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+  transition: all 0.25s ease;
+}
+.volunteer-toggle-box:hover {
+  border-color: rgba(239, 68, 68, 0.3);
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.05);
+}
+.volunteer-switch-btn {
+  position: relative;
+  display: inline-block;
+  width: 54px;
+  height: 30px;
+  flex-shrink: 0;
+  cursor: pointer;
+}
+.volunteer-switch-btn input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.volunteer-slider {
+  position: absolute;
+  cursor: pointer;
+  inset: 0;
+  background: #cbd5e1;
+  border-radius: 30px;
+  transition: background 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.volunteer-slider::before {
+  content: '';
+  position: absolute;
+  width: 24px;
+  height: 24px;
+  left: 3px;
+  bottom: 3px;
+  background: #ffffff;
+  border-radius: 50%;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.volunteer-switch-btn input:checked + .volunteer-slider {
+  background: #ff4d4d;
+}
+.volunteer-switch-btn input:checked + .volunteer-slider::before {
+  transform: translateX(24px);
+}
 /* ===== DESIGN TOKENS ===== */
 /* Block Quillbot and LanguageTool browser extension overlays on inputs */
 quillbot-extension-portal,
@@ -2133,6 +2199,18 @@ input::-ms-clear {
       </div>
       <div class="field-label" style="margin-top:4px;">Emergency Notes</div>
       <textarea id="medical_info" class="glass-input" rows="4" placeholder="Additional info for first responders..."><?php echo htmlspecialchars($medical_info); ?></textarea>
+
+      <!-- Volunteer as Blood Donor Box -->
+      <div class="volunteer-toggle-box">
+        <div>
+          <div style="font-size:1.05rem;font-weight:800;color:var(--text,#0f172a);letter-spacing:-0.2px;">Volunteer as a Blood Donor</div>
+          <div style="font-size:0.85rem;color:var(--muted,#64748b);margin-top:4px;line-height:1.4;">Your name, blood group, and contact will be visible to the community in emergencies.</div>
+        </div>
+        <label class="volunteer-switch-btn">
+          <input type="checkbox" id="isVolunteerDonor" <?php echo ($is_volunteer ? 'checked' : ''); ?> onchange="onVolunteerToggleChange(this)">
+          <span class="volunteer-slider"></span>
+        </label>
+      </div>
     </div>
   </div>
 
@@ -2484,18 +2562,6 @@ input::-ms-clear {
             </div>
             <div id="soundToggleSwitch" class="custom-toggle on" onclick="toggleSoundSetting()">
               <div class="custom-toggle-thumb" id="soundToggleThumb"></div>
-            </div>
-          </div>
-          <div class="setting-row">
-            <div class="setting-info">
-              <div class="setting-row-icon orange"><i class="fa fa-mobile-screen-button"></i></div>
-              <div>
-                <div class="setting-label">Vibration</div>
-                <div class="setting-desc">Haptic feedback on alerts</div>
-              </div>
-            </div>
-            <div class="custom-toggle <?php echo $vib_on; ?>" id="vibrateToggle" onclick="toggleSettingSwitch(this,'vibration_enabled')">
-              <div class="custom-toggle-thumb"></div>
             </div>
           </div>
           <div class="setting-row">
@@ -4337,15 +4403,28 @@ function saveMedicalInfo() {
   const allrg = document.getElementById('allergies').value;
   const chron = document.getElementById('chronicConditions').value;
   const meds  = document.getElementById('medications').value;
+  const isVolunteer = document.getElementById('isVolunteerDonor')?.checked ? 1 : 0;
+
   const combined = `Blood: ${blood} | Allergies: ${allrg} | Conditions: ${chron} | Meds: ${meds}\n\n${notes}`;
   const fd = new FormData();
   fd.append('action','update_safety_info');
   fd.append('medical_info', combined);
   fd.append('emergency_contacts', document.getElementById('emergency_contacts').value);
+  fd.append('is_blood_donor', isVolunteer);
+  fd.append('blood_group', blood);
+
   fetch('../api/user/user_settings.php', { method:'POST', body:fd })
     .then(r => r.json())
     .then(d => showToast('Saved', d.message || 'Medical ID updated.', d.status === 'success' ? 'success' : 'danger'))
     .catch(() => showToast('Error', 'Failed to save.', 'danger'));
+}
+
+function onVolunteerToggleChange(el) {
+  const blood = document.getElementById('bloodGroup').value;
+  if (el.checked && (!blood || blood === '— Select —')) {
+    showToast('Blood Group Required', 'Please select your Blood Group first before volunteering.', 'warning');
+  }
+  saveMedicalInfo();
 }
 
 // =====================================================================
