@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 session_start();
 require_once '../config/db.php';
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
@@ -288,7 +288,7 @@ if(empty($donors)):?>
       </select>
     </div>
     <div class="mb-3"><label class="flbl">Phone Number *</label><input type="text" name="phone" id="fPhone" class="finput" placeholder="e.g. 615XXXXXX" required autocomplete="off"></div>
-    <div class="mb-3"><label class="flbl">Notes (Optional)</label><textarea name="notes" id="fNotes" class="ftextarea" rows="2" placeholder="Any additional info..."></textarea></div>
+    <div class="mb-3"><label class="flbl">Notes (Optional)</label><textarea name="notes" id="fNotes" class="ftextarea" rows="2" placeholder="Any additional info..." data-gramm="false" data-gramm_editor="false" data-enable-grammarly="false" spellcheck="false"></textarea></div>
     <div class="mb-3">
       <div class="tog-row">
         <div><div class="tog-lbl">Volunteer as a Blood Donor</div><div class="tog-sub">Name, blood group, and contact will be visible to the community in emergencies</div></div>

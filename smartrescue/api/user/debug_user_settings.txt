@@ -6700,3 +6700,43 @@ SESSION: Array
 )
 
 
+2026-08-20 08:45:04
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 1
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787204679
+    [_notif_seeded_1045] => 1
+)
+
+
+2026-08-20 08:45:05
+POST: Array
+(
+    [action] => toggle_preference
+    [preference] => dark_mode
+    [value] => 0
+    [user_id] => 1045
+)
+
+SESSION: Array
+(
+    [user_id] => 1045
+    [fullname] => Abdirahman
+    [role] => user
+    [profile_image] => uploads/avatars/avatar_1045_1780948492.jpg
+    [_sg_checked_1045] => 1787204679
+    [_notif_seeded_1045] => 1
+)
+
+

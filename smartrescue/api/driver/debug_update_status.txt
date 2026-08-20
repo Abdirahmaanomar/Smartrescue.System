@@ -2848,3 +2848,63 @@
     [driver_id] => 1047
 )
 
+2026-08-20 08:24:29 - REQUEST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => accept
+    [driver_id] => 1049
+)
+ - POST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => accept
+    [driver_id] => 1049
+)
+
+2026-08-20 08:24:38 - REQUEST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => en_route
+    [driver_id] => 1049
+)
+ - POST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => en_route
+    [driver_id] => 1049
+)
+
+2026-08-20 08:25:13 - REQUEST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => arrived
+    [driver_id] => 1049
+)
+ - POST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => arrived
+    [driver_id] => 1049
+)
+
+2026-08-20 08:25:31 - REQUEST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => complete
+    [driver_id] => 1049
+)
+ - POST: Array
+(
+    [request_id] => 503
+    [unit_id] => 10
+    [action] => complete
+    [driver_id] => 1049
+)
+
